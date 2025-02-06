@@ -1,0 +1,1204 @@
+--Pet Ranch Script
+
+local VirtualUser=game:service'VirtualUser'
+game:service'Players'.LocalPlayer.Idled:connect(function()
+VirtualUser:CaptureController()
+VirtualUser:ClickButton2(Vector2.new())
+end)
+
+local plr = game.Players.LocalPlayer.Name
+local statdisplay = game.ReplicatedStorage[plr.."StatDisplay"]
+
+if statdisplay["Gamepass_2xCoins"].Value == false then
+ statdisplay["Gamepass_2xCoins"].Value = true
+else if statdisplay["Gamepass_2xCoins"].Value == true then
+ statdisplay["Gamepass_2xCoins"].Value = false
+end
+end
+
+local PetRanchSimulator = Instance.new("ScreenGui")
+local MainFrame = Instance.new("Frame")
+local YeetusDeletus = Instance.new("Frame")
+local Legendary = Instance.new("TextButton")
+local Epic = Instance.new("TextButton")
+local Common = Instance.new("TextButton")
+local Uncommon = Instance.new("TextButton")
+local Rare = Instance.new("TextButton")
+local UIListLayout = Instance.new("UIListLayout")
+local Equip = Instance.new("TextButton")
+local YeetusFetus = Instance.new("Frame")
+local UIListLayout_2 = Instance.new("UIListLayout")
+local ALegendary = Instance.new("TextButton")
+local AEpic = Instance.new("TextButton")
+local ACommon = Instance.new("TextButton")
+local AUncommon = Instance.new("TextButton")
+local ARare = Instance.new("TextButton")
+local Title = Instance.new("TextLabel")
+local Title_2 = Instance.new("TextLabel")
+local Title_3 = Instance.new("TextLabel")
+local RedeemAllCodes = Instance.new("TextButton")
+local Exit = Instance.new("TextButton")
+local Minimis = Instance.new("TextButton")
+local ScriptButton = Instance.new("ImageButton")
+
+local DeleteACommon = false
+local DeleteAUncommon = false
+local DeleteARare = false
+local DeleteAEpic = false
+local DeleteALegendary = false
+
+local mrf = game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction
+local mre = game:GetService("ReplicatedStorage").RemoteEvents.MainRemoteEvent
+
+
+local CommonIds = {
+	"rbxassetid://3321300808", --["Blue Butterfly"] // rarity = "Common"
+    "rbxassetid://3319895658", --["White Cat"] // rarity = "Common"
+    "rbxassetid://3324883683", --["Shiny Sweets Bat"] // rarity = "Common"
+    "rbxassetid://3321328407", --["Snow Fox"] // rarity = "Common"
+    "rbxassetid://3321301027", --["Shiny Blue Butterfly"] // rarity = "Common"
+    "rbxassetid://3319957680", --["Shiny White Cat"] // rarity = "Common"
+    "rbxassetid://3324884414", --["Sweets Bat"] // rarity = "Common"
+    "rbxassetid://3710867266", --["Shiny Red Butterfly"] // rarity = "Common"
+    "rbxassetid://3321273272", --["Shiny Wolf"] // rarity = "Common"
+    "rbxassetid://3321272769", --["Ice Cat"] // rarity = "Common"
+    "rbxassetid://3321273354", --["Wolf"] // rarity = "Common"
+    "rbxassetid://3321396991", --["Shiny Polar Bear"] // rarity = "Common"
+    "rbxassetid://3321301083", --["Shiny Brown Fox"] // rarity = "Common"
+    "rbxassetid://3321300887", --["Brown Fox"] // rarity = "Common"
+    "rbxassetid://3321273075", --["Shiny Ice Cat"] // rarity = "Common"
+    "rbxassetid://3321273024", --["Shiny Bat"] // rarity = "Common"
+    "rbxassetid://3319957578", --["Shiny Fox"] // rarity = "Common"
+    "rbxassetid://3321328346", --["Shiny Snow Fox"] // rarity = "Common"
+    "rbxassetid://3319895844", --["Fox"] // rarity = "Common"
+    "rbxassetid://3321396625", --["Polar Bear"] // rarity = "Common"
+    "rbxassetid://3319957475", --["Shiny Dog"] // rarity = "Common"
+    "rbxassetid://3319895754", --["Dog"] // rarity = "Common"
+    "rbxassetid://3324853749", --["Lucky Cat"] // rarity = "Common"
+    "rbxassetid://3321272690", --["Bat"] // rarity = "Common"
+    "rbxassetid://3321327915", --["Red Butterfly"] // rarity = "Common"
+}
+local UncommonIds = {
+    "rbxassetid://3321470334", --["Shiny Tuxedo Cat"] // rarity = "Uncommon"
+    "rbxassetid://3319895561", --["Bunny"] // rarity = "Uncommon"
+    "rbxassetid://3321470447", --["Tuxedo Cat"] // rarity = "Uncommon"
+    "rbxassetid://3321273142", --["Shiny Ruby Bunny"] // rarity = "Uncommon"
+    "rbxassetid://3321469337", --["Slime"] // rarity = "Uncommon"
+    "rbxassetid://3324883581", --["Shiny Polka Dot Butterfly"] // rarity = "Uncommon"
+    "rbxassetid://3321328173", --["Shiny Midnight Cat"] // rarity = "Uncommon"
+    "rbxassetid://3321327798", --["Midnight Cat"] // rarity = "Uncommon"
+    "rbxassetid://3321468618", --["Deer"] // rarity = "Uncommon"
+    "rbxassetid://3324853925", --["Shamrock Fox"] // rarity = "Uncommon"
+    "rbxassetid://3326596100", --["Youtube Cat"] // rarity = "Uncommon"
+    "rbxassetid://3321468985", --["Shiny Deer"] // rarity = "Uncommon"
+    "rbxassetid://3321469262", --["Shiny Slime"] // rarity = "Uncommon"
+    "rbxassetid://3321272831", --["Ruby Bunny"] // rarity = "Uncommon"
+    "rbxassetid://3319957364", --["Shiny Bunny"] // rarity = "Uncommon"
+    "rbxassetid://3321396365", --["Brown Wolf"] // rarity = "Uncommon"
+    "rbxassetid://3324883483", --["Polka Dot Butterfly"] // rarity = "Uncommon"
+    "rbxassetid://3321396725", --["Shiny Brown Wolf"] // rarity = "Uncommon"
+    "rbxassetid://3321301205", --["Shiny Stone Dog"] // rarity = "Uncommon"
+    "rbxassetid://3321301417", --["Stone Dog"] // rarity = "Uncommon"
+}
+local RareIds = {
+    "rbxassetid://3652596139", --["Moonlight Sphinx"] // rarity = "Rare"
+    "rbxassetid://3321301540", --["Vampire Bat"] // rarity = "Rare"
+    "rbxassetid://3324821828", --["Shiny Dwarf"] // rarity = "Rare"
+    "rbxassetid://3324793842", --["Yeti"] // rarity = "Rare"
+    "rbxassetid://3321396923", --["Shiny Frozen Wolf"] // rarity = "Rare"
+    "rbxassetid://4147751076", --["Shiny Candy Corn Bat"] // rarity = "Rare"
+    "rbxassetid://3326474870", --["Golden Cat"] // rarity = "Rare"
+    "rbxassetid://3321470382", --["Squid"] // rarity = "Rare"
+    "rbxassetid://3326474965", --["Golden Dog"] // rarity = "Rare"
+    "rbxassetid://3324770144", --["Shiny Pegasus"] // rarity = "Rare"
+    "rbxassetid://3877247625", --["Shiny Jellyfish"] // rarity = "Rare"
+    "rbxassetid://3877248666", --["Turkey"] // rarity = "Rare"
+    "rbxassetid://3324793682", --["Shiny Yeti"] // rarity = "Rare"
+    "rbxassetid://3652596213", --["Mossy Golem"] // rarity = "Rare"
+    "rbxassetid://3877246998", --["Jellyfish"] // rarity = "Rare"
+    "rbxassetid://3324883891", --["Shiny Dogbun"] // rarity = "Rare"
+    "rbxassetid://3321468858", --["Robot"] // rarity = "Rare"
+    "rbxassetid://3326595568", --["6M Baby Phoenix"] // rarity = "Rare"
+    "rbxassetid://3321301348", --["Shiny Vampire Bat"] // rarity = "Rare"
+    "rbxassetid://3321471795", --["Shiny Horse"] // rarity = "Rare"
+    "rbxassetid://3324770240", --["Shiny Phoenix"] // rarity = "Rare"
+    "rbxassetid://3326595635", --["10M Party Angel"] // rarity = "Rare"
+    "rbxassetid://4147749952", --["Candy Corn Bat"] // rarity = "Rare"
+    "rbxassetid://3321471442", --["Horse"] // rarity = "Rare"
+    "rbxassetid://3324820925", --["Basilisk"] // rarity = "Rare"
+    "rbxassetid://3324769317", --["Demon Dragon"] // rarity = "Rare"
+    "rbxassetid://3324821534", --["Shiny Basilisk"] // rarity = "Rare"
+    "rbxassetid://3321470734", --["Shiny Lava Slime"] // rarity = "Rare"
+    "rbxassetid://3321328040", --["Shiny Flame Butterfly"] // rarity = "Rare"
+    "rbxassetid://3326595872", --["Promo Mouse"] // rarity = "Rare"
+    "rbxassetid://3326595985", --["Shiny Baby Serpent"] // rarity = "Rare"
+    "rbxassetid://3877248140", --["Shiny Turkey"] // rarity = "Rare"
+    "rbxassetid://3324770445", --["Pegasus"] // rarity = "Rare"
+    "rbxassetid://4147750685", --["Pumpkin"] // rarity = "Rare"
+    "rbxassetid://3321470797", --["Shiny Squid"] // rarity = "Rare"
+    "rbxassetid://3324793773", --["Troll"] // rarity = "Rare"
+    "rbxassetid://3321327655", --["Flame Butterfly"] // rarity = "Rare"
+    "rbxassetid://3324769842", --["Shiny Demon Dragon"] // rarity = "Rare"
+    "rbxassetid://3321469868", --["Lava Slime"] // rarity = "Rare"
+    "rbxassetid://3326595696", --["30M Mouse"] // rarity = "Rare"
+    "rbxassetid://3324854567", --["Spring Unicorn"] // rarity = "Rare"
+    "rbxassetid://3324882989", --["Dogbun"] // rarity = "Rare"
+    "rbxassetid://3324793579", --["Shiny Troll"] // rarity = "Rare"
+    "rbxassetid://3321469214", --["Shiny Robot"] // rarity = "Rare"
+    "rbxassetid://3324821169", --["Dwarf"] // rarity = "Rare"
+    "rbxassetid://3326595937", --["20M Demon"] // rarity = "Rare"
+    "rbxassetid://3321273211", --["Shiny Sapphire Bunny"] // rarity = "Rare"
+    "rbxassetid://3319957269", --["Shiny Awesome Dog"] // rarity = "Rare"
+    "rbxassetid://3471250118", --["Shiny Dalmation"] // rarity = "Rare"
+    "rbxassetid://3652596602", --["Shiny Mossy Golem"] // rarity = "Rare"
+    "rbxassetid://3324769540", --["Phoenix"] // rarity = "Rare"
+    "rbxassetid://3324792831", --["Griffin"] // rarity = "Rare"
+    "rbxassetid://3324793264", --["Shiny Griffin"] // rarity = "Rare"
+    "rbxassetid://3319895464", --["Awesome Dog"] // rarity = "Rare"
+    "rbxassetid://3652596501", --["Shiny Moonlight Sphinx"] // rarity = "Rare"
+    "rbxassetid://3471251013", --["Lightspeed Bee"] // rarity = "Rare"
+    "rbxassetid://3321472084", --["Shiny Turtle"] // rarity = "Rare"
+    "rbxassetid://3321272890", --["Sapphire Bunny"] // rarity = "Rare"
+    "rbxassetid://4147751762", --["Shiny Pumpkin"] // rarity = "Rare"
+    "rbxassetid://3471249515", --["Dalmation"] // rarity = "Rare"
+    "rbxassetid://3471250205", --["Shiny Lightspeed Bee"] // rarity = "Rare"
+    "rbxassetid://3321472257", --["Turtle"] // rarity = "Rare"
+    "rbxassetid://3321396571", --["Frozen Wolf"] // rarity = "Rare"
+    "rbxassetid://3326595503", --["1M Baby Serpent"] // rarity = "Rare"
+    "rbxassetid://3326569961", --["Shiny Party Fox"] // rarity = "Rare"
+    "rbxassetid://3326569235", --["Firework Mouse"] // rarity = "Rare"
+    "rbxassetid://3326569795", --["Shiny Firework Mouse"] // rarity = "Rare"
+    "rbxassetid://3326569354", --["Party Fox"] // rarity = "Rare"
+
+}
+local EpicIds = {
+    "rbxassetid://3324770049", --["Shiny Nova Fox"] // rarity = "Epic"
+    "rbxassetid://3471249879", --["Shiny Deep Sea Narwhal"] // rarity = "Epic"
+    "rbxassetid://3321301144", --["Shiny Midnight Bat"] // rarity = "Epic"
+    "rbxassetid://3326569102", --["Disco Robot"] // rarity = "Epic"
+    "rbxassetid://3324883798", --["Shiny Bunny Lord"] // rarity = "Epic"
+    "rbxassetid://3321272615", --["Angel Dog"] // rarity = "Epic"
+    "rbxassetid://4147751883", --["Shiny Scarecrow"] // rarity = "Epic"
+    "rbxassetid://3324882897", --["Bunny Lord"] // rarity = "Epic"
+    "rbxassetid://3324822172", --["Thunderbird"] // rarity = "Epic"
+    "rbxassetid://4147751353", --["Shiny Ghoul"] // rarity = "Epic"
+    "rbxassetid://3321328221", --["Shiny Panda"] // rarity = "Epic"
+    "rbxassetid://4147750803", --["Scarecrow"] // rarity = "Epic"
+    "rbxassetid://3324883391", --["Eggster Flock"] // rarity = "Epic"
+    "rbxassetid://4147750270", --["Ghoul"] // rarity = "Epic"
+    "rbxassetid://3321471682", --["Shiny Direwolf"] // rarity = "Epic"
+    "rbxassetid://3321396849", --["Shiny Dark Unicorn"] // rarity = "Epic"
+    "rbxassetid://3326569673", --["Shiny Disco Robot"] // rarity = "Epic"
+    "rbxassetid://3324822097", --["Shiny Thunderbird"] // rarity = "Epic"
+    "rbxassetid://3326595809", --["40M Light Leviathan"] // rarity = "Epic"
+    "rbxassetid://3324853584", --["Celtic Owl"] // rarity = "Epic"
+    "rbxassetid://3321327860", --["Panda"] // rarity = "Epic"
+    "rbxassetid://3321472023", --["Shiny Thieving Crows"] // rarity = "Epic"
+    "rbxassetid://3321470190", --["Shiny Monkey"] // rarity = "Epic"
+    "rbxassetid://3471250281", --["Shiny Nesting Eagles"] // rarity = "Epic"
+    "rbxassetid://3326568936", --["Cake"] // rarity = "Epic"
+    "rbxassetid://3321396499", --["Dark Unicorn"] // rarity = "Epic"
+    "rbxassetid://3321471266", --["Direwolf"] // rarity = "Epic"
+    "rbxassetid://3321396301", --["Black Bear"] // rarity = "Epic"
+    "rbxassetid://3321471568", --["Moonbear"] // rarity = "Epic"
+    "rbxassetid://3324793165", --["Shiny Fairy"] // rarity = "Epic"
+    "rbxassetid://3324792743", --["Fairy"] // rarity = "Epic"
+    "rbxassetid://3321396676", --["Shiny Black Bear"] // rarity = "Epic"
+    "rbxassetid://3471249956", --["Shiny Cherry Blossom Owl"] // rarity = "Epic"
+    "rbxassetid://3326570094", --["Shiny Wonderful Present"] // rarity = "Epic"
+    "rbxassetid://3321300956", --["Midnight Bat"] // rarity = "Epic"
+    "rbxassetid://3476136313", --["Cherry Blossom Owl"] // rarity = "Epic"
+    "rbxassetid://3321272961", --["Shiny Angel Dog"] // rarity = "Epic"
+    "rbxassetid://3321469162", --["Shiny Owl"] // rarity = "Epic"
+    "rbxassetid://3324884316", --["Shiny Eggster Flock"] // rarity = "Epic"
+    "rbxassetid://3324822013", --["Shiny Roc"] // rarity = "Epic"
+    "rbxassetid://3321472197", --["Thieving Crows"] // rarity = "Epic"
+    "rbxassetid://3877248536", --["Tropical Monkey"] // rarity = "Epic"
+    "rbxassetid://3324770888", --["Nova Fox"] // rarity = "Epic"
+    "rbxassetid://3877246745", --["Ember Mouse"] // rarity = "Epic"
+    "rbxassetid://3321469928", --["Monkey"] // rarity = "Epic"
+    "rbxassetid://3321468801", --["Owl"] // rarity = "Epic"
+    "rbxassetid://3652597250", --["Sprite Swarm"] // rarity = "Epic"
+    "rbxassetid://3652596829", --["Shiny Sprite Swarm"] // rarity = "Epic"
+    "rbxassetid://3321468736", --["Narwhal"] // rarity = "Epic"
+    "rbxassetid://3321469728", --["Bee"] // rarity = "Epic"
+    "rbxassetid://3554077778", --["Speckled Rabbit"] // rarity = "Epic"
+    "rbxassetid://3326493843", --["Galaxy Dragon"] // rarity = "Epic"
+    "rbxassetid://3321470062", --["Shiny Bee"] // rarity = "Epic"
+    "rbxassetid://3471249598", --["Deep Sea Narwhal"] // rarity = "Epic"
+    "rbxassetid://3471249738", --["Nesting Eagles"] // rarity = "Epic"
+    "rbxassetid://3324821342", --["Roc"] // rarity = "Epic"
+    "rbxassetid://3321471903", --["Shiny Moonbear"] // rarity = "Epic"
+    "rbxassetid://3877248031", --["Shiny Tropical Monkey"] // rarity = "Epic"
+    "rbxassetid://3321469102", --["Shiny Narwhal"] // rarity = "Epic"
+    "rbxassetid://3326569532", --["Shiny Cake"] // rarity = "Epic"
+    "rbxassetid://3326570157", --["Wonderful Present"] // rarity = "Epic"
+    "rbxassetid://3554077156", --["Calico Cat"] // rarity = "Epic"
+    "rbxassetid://3877247400", --["Shiny Ember Mouse"] // rarity = "Epic"
+}
+local LegendaryIds = {
+    "rbxassetid://3554077323", --["Grim Demonlord"] // rarity = "Legendary"
+    "rbxassetid://3971551900", --["80M DJ Eagle"] // rarity = "Legendary"
+    "rbxassetid://3321471512", --["Inferno Serpent"] // rarity = "Legendary"
+    "rbxassetid://3877247741", --["Shiny Lightning Satyr"] // rarity = "Legendary"
+    "rbxassetid://3652596913", --["Shiny Warped Wraith"] // rarity = "Legendary"
+    "rbxassetid://3324822252", --["Wisp"] // rarity = "Legendary"
+    "rbxassetid://3324884225", --["Shiny Eggiverse"] // rarity = "Legendary"
+    "rbxassetid://3321468917", --["Shiny Angel"] // rarity = "Legendary"
+    "rbxassetid://3971551745", --["80M Golden Sun Eagle"] // rarity = "Legendary"
+    "rbxassetid://3326475264", --["Satyr"] // rarity = "Legendary"
+    "rbxassetid://3471250459", --["Shiny Snow Elemental"] // rarity = "Legendary"
+    "rbxassetid://3877247131", --["Lightning Satyr"] // rarity = "Legendary"
+    "rbxassetid://3699317740", --["70M Overcharged Alicorn"] // rarity = "Legendary"
+    "rbxassetid://3321397110", --["Vampire Dragon"] // rarity = "Legendary"
+    "rbxassetid://3326474675", --["Alicorn"] // rarity = "Legendary"
+    "rbxassetid://3321397063", --["Shiny Vampire Dragon"] // rarity = "Legendary"
+    "rbxassetid://3321301489", --["Unicorn"] // rarity = "Legendary"
+    "rbxassetid://4315140017", --["90M Phoenix Flock"] // rarity = "Legendary"
+    "rbxassetid://3326475188", --["Luminous Fox"] // rarity = "Legendary"
+    "rbxassetid://3471249272", --["60M Chaotic Thunderbird"] // rarity = "Legendary"
+    "rbxassetid://3321327577", --["Android Dragon"] // rarity = "Legendary"
+    "rbxassetid://3326569423", --["Phantom Cerberus"] // rarity = "Legendary"
+    "rbxassetid://3472078786", --["60M Digital Thunderbird"] // rarity = "Legendary"
+    "rbxassetid://3324821610", --["Shiny Cthulhu"] // rarity = "Legendary"
+    "rbxassetid://4147751493", --["Shiny Horror Serpent"] // rarity = "Legendary"
+    "rbxassetid://3554077394", --["Grotto Butterfly"] // rarity = "Legendary"
+    "rbxassetid://3326595761", --["50M Albatross King"] // rarity = "Legendary"
+    "rbxassetid://3652596423", --["100K Likes Glacial Serpent"] // rarity = "Legendary"
+    "rbxassetid://3319625280", --["50M Albatross God"] // rarity = "Legendary"
+    "rbxassetid://3326596048", --["Shiny Baby Sowopent"] // rarity = "Legendary"
+    "rbxassetid://3324769459", --["Monster Fox"] // rarity = "Legendary"
+    "rbxassetid://3326569181", --["Emperor"] // rarity = "Legendary"
+    "rbxassetid://3652597389", --["Warped Wraith"] // rarity = "Legendary"
+    "rbxassetid://3554077588", --["Radioactive Monster Fox"] // rarity = "Legendary"
+    "rbxassetid://3471249433", --["Corrosive Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3321328105", --["Shiny Flame Fox"] // rarity = "Legendary"
+    "rbxassetid://3321396441", --["Cerberus"] // rarity = "Legendary"
+    "rbxassetid://3321469672", --["Alien"] // rarity = "Legendary"
+    "rbxassetid://3321471848", --["Shiny Inferno Serpent"] // rarity = "Legendary"
+    "rbxassetid://3877247269", --["Shiny Ancient Earth Dragon"] // rarity = "Legendary"
+    "rbxassetid://3324792629", --["Chimera"] // rarity = "Legendary"
+    "rbxassetid://3321327975", --["Shiny Android Dragon"] // rarity = "Legendary"
+    "rbxassetid://4315302022", --["90M Blackhole Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3877246877", --["Guardian Angel"] // rarity = "Legendary"
+    "rbxassetid://3321472311", --["Void Gazer"] // rarity = "Legendary"
+    "rbxassetid://3324769635", --["Ruler"] // rarity = "Legendary"
+    "rbxassetid://3471249810", --["Radiance"] // rarity = "Legendary"
+    "rbxassetid://3652596674", --["Shiny Rift Observer"] // rarity = "Legendary"
+    "rbxassetid://3321470132", --["Shiny Ice Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3324821754", --["Shiny Duality"] // rarity = "Legendary"
+    "rbxassetid://3321469058", --["Shiny Demon"] // rarity = "Legendary"
+    "rbxassetid://3324769191", --["Dark Serpent"] // rarity = "Legendary"
+    "rbxassetid://3326570020", --["Shiny Phantom Cerberus"] // rarity = "Legendary"
+    "rbxassetid://3326569738", --["Shiny Emperor"] // rarity = "Legendary"
+    "rbxassetid://3652596742", --["Shiny Singularity"] // rarity = "Legendary"
+    "rbxassetid://3321471739", --["Shiny Flare Alicorn"] // rarity = "Legendary"
+    "rbxassetid://4147749761", --["Alchemist"] // rarity = "Legendary"
+    "rbxassetid://3324769737", --["Shiny Dark Serpent"] // rarity = "Legendary"
+    "rbxassetid://4147750409", --["Horror Serpent"] // rarity = "Legendary"
+    "rbxassetid://3321471318", --["Flare Alicorn"] // rarity = "Legendary"
+    "rbxassetid://3471250372", --["Shiny Radiance"] // rarity = "Legendary"
+    "rbxassetid://3324883194", --["Easter Serpent"] // rarity = "Legendary"
+    "rbxassetid://3326474785", --["Dark Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3471250034", --["Shiny Corrosive Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3471250541", --["Snow Elemental"] // rarity = "Legendary"
+    "rbxassetid://3326475334", --["Sphinx"] // rarity = "Legendary"
+    "rbxassetid://3321396783", --["Shiny Cerberus"] // rarity = "Legendary"
+    "rbxassetid://3554077680", --["Sky Unicorn"] // rarity = "Legendary"
+    "rbxassetid://3321469803", --["Ice Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3324769949", --["Shiny Monster Fox"] // rarity = "Legendary"
+    "rbxassetid://3321468679", --["Demon"] // rarity = "Legendary"
+    "rbxassetid://3699317919", --["70M Soundwave Alicorn"] // rarity = "Legendary"
+    "rbxassetid://3324854479", --["Leprechaun"] // rarity = "Legendary"
+    "rbxassetid://3877247516", --["Shiny Guardian Angel"] // rarity = "Legendary"
+    "rbxassetid://3324793394", --["Shiny Leviathan"] // rarity = "Legendary"
+    "rbxassetid://3324883284", --["Eggiverse"] // rarity = "Legendary"
+    "rbxassetid://3324853833", --["Rainbow Elementals"] // rarity = "Legendary"
+    "rbxassetid://3652597129", --["Singularity"] // rarity = "Legendary"
+    "rbxassetid://3324884140", --["Shiny Easter Serpent"] // rarity = "Legendary"
+    "rbxassetid://3656843464", --["Rift Observer"] // rarity = "Legendary"
+    "rbxassetid://3321468526", --["Angel"] // rarity = "Legendary"
+    "rbxassetid://3324770355", --["Shiny Ruler"] // rarity = "Legendary"
+    "rbxassetid://3554077482", --["Omega Gazer"] // rarity = "Legendary"
+    "rbxassetid://3326475117", --["Imp"] // rarity = "Legendary"
+    "rbxassetid://3324793074", --["Shiny Chimera"] // rarity = "Legendary"
+    "rbxassetid://3554077246", --["Elemental Chimera"] // rarity = "Legendary"
+    "rbxassetid://3324821000", --["Cthulhu"] // rarity = "Legendary"
+    "rbxassetid://3321301272", --["Shiny Unicorn"] // rarity = "Legendary"
+    "rbxassetid://3554077861", --["Zeta Alien"] // rarity = "Legendary"
+    "rbxassetid://3324821447", --["Shiny Wisp"] // rarity = "Legendary"
+    "rbxassetid://4147750931", --["Shiny Alchemist"] // rarity = "Legendary"
+    "rbxassetid://3321469993", --["Shiny Alien"] // rarity = "Legendary"
+    "rbxassetid://3321472138", --["Shiny Void Gazer"] // rarity = "Legendary"
+    "rbxassetid://3321327717", --["Flame Fox"] // rarity = "Legendary"
+    "rbxassetid://3326475396", --["Gargoyle"] // rarity = "Legendary"
+    "rbxassetid://3324792977", --["Leviathan"] // rarity = "Legendary"
+    "rbxassetid://3877246549", --["Ancient Earth Dragon"] // rarity = "Legendary"
+    "rbxassetid://3324821083", --["Duality"] // rarity = "Legendary"
+
+}
+local ACommonIds = {
+	"rbxassetid://", --["Feathered Aura"] // rarity = "Common"
+
+}
+local AUncommonIds = {
+	"rbxassetid://2867901021", --["Bunny"] // rarity = "Uncommon"
+
+}
+local ARareIds = {
+	"rbxassetid://4013448900", --["Feathered Aura"] // rarity = "Rare"
+	"rbxassetid://4013449018", --["Goo Aura"] // rarity = "Rare"
+
+}
+local AEpicIds = {
+	"rbxassetid://4013449146", --["Heart Aura"] // rarity = "Epic"
+	"rbxassetid://4013449484", --["Musical Aura"] // rarity = "Epic"
+
+}
+local ALegendaryIds = {
+	"rbxassetid://2867903124", --["Unicorn"] // rarity = "Legendary"
+
+}
+
+local PetsIdsToName = {
+    -- Common
+["rbxassetid://3321300808"] = "Blue Butterfly",
+["rbxassetid://3319895658"] = "White Cat",
+["rbxassetid://3324883683"] = "Shiny Sweets Bat",
+["rbxassetid://3321328407"] = "Snow Fox",
+["rbxassetid://3321301027"] = "Shiny Blue Butterfly",
+["rbxassetid://3319957680"] = "Shiny White Cat",
+["rbxassetid://3324884414"] = "Sweets Bat",
+["rbxassetid://3710867266"] = "Shiny Red Butterfly",
+["rbxassetid://3321273272"] = "Shiny Wolf",
+["rbxassetid://3321272769"] = "Ice Cat",
+["rbxassetid://3321273354"] = "Wolf",
+["rbxassetid://3321396991"] = "Shiny Polar Bear",
+["rbxassetid://3321301083"] = "Shiny Brown Fox",
+["rbxassetid://3321300887"] = "Brown Fox",
+["rbxassetid://3321273075"] = "Shiny Ice Cat",
+["rbxassetid://3321273024"] = "Shiny Bat",
+["rbxassetid://3319957578"] = "Shiny Fox",
+["rbxassetid://3321328346"] = "Shiny Snow Fox",
+["rbxassetid://3319895844"] = "Fox",
+["rbxassetid://3321396625"] = "Polar Bear",
+["rbxassetid://3319957475"] = "Shiny Dog",
+["rbxassetid://3319895754"] = "Dog",
+["rbxassetid://3324853749"] = "Lucky Cat",
+["rbxassetid://3321272690"] = "Bat",
+["rbxassetid://3321327915"] = "Red Butterfly",
+
+-- Uncommon
+["rbxassetid://3321470334"] = "Shiny Tuxedo Cat",
+["rbxassetid://3319895561"] = "Bunny",
+["rbxassetid://3321470447"] = "Tuxedo Cat",
+["rbxassetid://3321273142"] = "Shiny Ruby Bunny",
+["rbxassetid://3321469337"] = "Slime",
+["rbxassetid://3324883581"] = "Shiny Polka Dot Butterfly",
+["rbxassetid://3321328173"] = "Shiny Midnight Cat",
+["rbxassetid://3321327798"] = "Midnight Cat",
+["rbxassetid://3321468618"] = "Deer",
+["rbxassetid://3324853925"] = "Shamrock Fox",
+["rbxassetid://3326596100"] = "Youtube Cat",
+["rbxassetid://3321468985"] = "Shiny Deer",
+["rbxassetid://3321469262"] = "Shiny Slime",
+["rbxassetid://3321272831"] = "Ruby Bunny",
+["rbxassetid://3319957364"] = "Shiny Bunny",
+["rbxassetid://3321396365"] = "Brown Wolf",
+["rbxassetid://3324883483"] = "Polka Dot Butterfly",
+["rbxassetid://3321396725"] = "Shiny Brown Wolf",
+["rbxassetid://3321301205"] = "Shiny Stone Dog",
+["rbxassetid://3321301417"] = "Stone Dog",
+
+-- Rare
+["rbxassetid://3652596139"] = "Moonlight Sphinx",
+["rbxassetid://3321301540"] = "Vampire Bat",
+["rbxassetid://3324821828"] = "Shiny Dwarf",
+["rbxassetid://3324793842"] = "Yeti",
+["rbxassetid://3321396923"] = "Shiny Frozen Wolf",
+["rbxassetid://4147751076"] = "Shiny Candy Corn Bat",
+["rbxassetid://3326474870"] = "Golden Cat",
+["rbxassetid://3321470382"] = "Squid",
+["rbxassetid://3326474965"] = "Golden Dog",
+["rbxassetid://3324770144"] = "Shiny Pegasus",
+["rbxassetid://3877247625"] = "Shiny Jellyfish",
+["rbxassetid://3877248666"] = "Turkey",
+["rbxassetid://3324793682"] = "Shiny Yeti",
+["rbxassetid://3652596213"] = "Mossy Golem",
+["rbxassetid://3877246998"] = "Jellyfish",
+["rbxassetid://3324883891"] = "Shiny Dogbun",
+["rbxassetid://3321468858"] = "Robot",
+["rbxassetid://3326595568"] = "6M Baby Phoenix",
+["rbxassetid://3321301348"] = "Shiny Vampire Bat",
+["rbxassetid://3321471795"] = "Shiny Horse",
+["rbxassetid://3324770240"] = "Shiny Phoenix",
+["rbxassetid://3326595635"] = "10M Party Angel",
+["rbxassetid://4147749952"] = "Candy Corn Bat",
+["rbxassetid://3321471442"] = "Horse",
+["rbxassetid://3324820925"] = "Basilisk",
+["rbxassetid://3324769317"] = "Demon Dragon",
+["rbxassetid://3324821534"] = "Shiny Basilisk",
+["rbxassetid://3321470734"] = "Shiny Lava Slime",
+["rbxassetid://3321328040"] = "Shiny Flame Butterfly",
+["rbxassetid://3326595872"] = "Promo Mouse",
+["rbxassetid://3326595985"] = "Shiny Baby Serpent",
+["rbxassetid://3877248140"] = "Shiny Turkey",
+["rbxassetid://3324770445"] = "Pegasus",
+["rbxassetid://4147750685"] = "Pumpkin",
+["rbxassetid://3321470797"] = "Shiny Squid",
+["rbxassetid://3324793773"] = "Troll",
+["rbxassetid://3321327655"] = "Flame Butterfly",
+["rbxassetid://3324769842"] = "Shiny Demon Dragon",
+["rbxassetid://3321469868"] = "Lava Slime",
+["rbxassetid://3326595696"] = "30M Mouse",
+["rbxassetid://3324854567"] = "Spring Unicorn",
+["rbxassetid://3324882989"] = "Dogbun",
+["rbxassetid://3324793579"] = "Shiny Troll",
+["rbxassetid://3321469214"] = "Shiny Robot",
+["rbxassetid://3324821169"] = "Dwarf",
+["rbxassetid://3326595937"] = "20M Demon",
+["rbxassetid://3321273211"] = "Shiny Sapphire Bunny",
+["rbxassetid://3319957269"] = "Shiny Awesome Dog",
+["rbxassetid://3471250118"] = "Shiny Dalmation",
+["rbxassetid://3652596602"] = "Shiny Mossy Golem",
+["rbxassetid://3324769540"] = "Phoenix",
+["rbxassetid://3324792831"] = "Griffin",
+["rbxassetid://3324793264"] = "Shiny Griffin",
+["rbxassetid://3319895464"] = "Awesome Dog",
+["rbxassetid://3652596501"] = "Shiny Moonlight Sphinx",
+["rbxassetid://3471251013"] = "Lightspeed Bee",
+["rbxassetid://3321472084"] = "Shiny Turtle",
+["rbxassetid://3321272890"] = "Sapphire Bunny",
+["rbxassetid://4147751762"] = "Shiny Pumpkin",
+["rbxassetid://3471249515"] = "Dalmation",
+["rbxassetid://3471250205"] = "Shiny Lightspeed Bee",
+["rbxassetid://3321472257"] = "Turtle",
+["rbxassetid://3321396571"] = "Frozen Wolf",
+["rbxassetid://3326595503"] = "1M Baby Serpent",
+["rbxassetid://3326569961"] = "Shiny Party Fox",
+["rbxassetid://3326569235"] = "Firework Mouse",
+["rbxassetid://3326569795"] = "Shiny Firework Mouse",
+["rbxassetid://3326569354"] = "Party Fox",
+
+-- Epic
+["rbxassetid://3324770049"] = "Shiny Nova Fox",
+["rbxassetid://3471249879"] = "Shiny Deep Sea Narwhal",
+["rbxassetid://3321301144"] = "Shiny Midnight Bat",
+["rbxassetid://3326569102"] = "Disco Robot",
+["rbxassetid://3324883798"] = "Shiny Bunny Lord",
+["rbxassetid://3321272615"] = "Angel Dog",
+["rbxassetid://4147751883"] = "Shiny Scarecrow",
+["rbxassetid://3324882897"] = "Bunny Lord",
+["rbxassetid://3324822172"] = "Thunderbird",
+["rbxassetid://4147751353"] = "Shiny Ghoul",
+["rbxassetid://3321328221"] = "Shiny Panda",
+["rbxassetid://4147750803"] = "Scarecrow",
+["rbxassetid://3324883391"] = "Eggster Flock",
+["rbxassetid://4147750270"] = "Ghoul",
+["rbxassetid://3321471682"] = "Shiny Direwolf",
+["rbxassetid://3321396849"] = "Shiny Dark Unicorn",
+["rbxassetid://3326569673"] = "Shiny Disco Robot",
+["rbxassetid://3324822097"] = "Shiny Thunderbird",
+["rbxassetid://3326595809"] = "40M Light Leviathan",
+["rbxassetid://3324853584"] = "Celtic Owl",
+["rbxassetid://3321327860"] = "Panda",
+["rbxassetid://3321472023"] = "Shiny Thieving Crows",
+["rbxassetid://3321470190"] = "Shiny Monkey",
+["rbxassetid://3471250281"] = "Shiny Nesting Eagles",
+["rbxassetid://3326568936"] = "Cake",
+["rbxassetid://3321396499"] = "Dark Unicorn",
+["rbxassetid://3321471266"] = "Direwolf",
+["rbxassetid://3321396301"] = "Black Bear",
+["rbxassetid://3321471568"] = "Moonbear",
+["rbxassetid://3324793165"] = "Shiny Fairy",
+["rbxassetid://3324792743"] = "Fairy",
+["rbxassetid://3321396676"] = "Shiny Black Bear",
+["rbxassetid://3471249956"] = "Shiny Cherry Blossom Owl",
+["rbxassetid://3326570094"] = "Shiny Wonderful Present",
+["rbxassetid://3321300956"] = "Midnight Bat",
+["rbxassetid://3476136313"] = "Cherry Blossom Owl",
+["rbxassetid://3321272961"] = "Shiny Angel Dog",
+["rbxassetid://3321469162"] = "Shiny Owl",
+["rbxassetid://3324884316"] = "Shiny Eggster Flock",
+["rbxassetid://3324822013"] = "Shiny Roc",
+["rbxassetid://3321472197"] = "Thieving Crows",
+["rbxassetid://3877248536"] = "Tropical Monkey",
+["rbxassetid://3324770888"] = "Nova Fox",
+["rbxassetid://3877246745"] = "Ember Mouse",
+["rbxassetid://3321469928"] = "Monkey",
+["rbxassetid://3321468801"] = "Owl",
+["rbxassetid://3652597250"] = "Sprite Swarm",
+["rbxassetid://3652596829"] = "Shiny Sprite Swarm",
+["rbxassetid://3321468736"] = "Narwhal",
+["rbxassetid://3321469728"] = "Bee",
+["rbxassetid://3554077778"] = "Speckled Rabbit",
+["rbxassetid://3326493843"] = "Galaxy Dragon",
+["rbxassetid://3321470062"] = "Shiny Bee",
+["rbxassetid://3471249598"] = "Deep Sea Narwhal",
+["rbxassetid://3471249738"] = "Nesting Eagles",
+["rbxassetid://3324821342"] = "Roc",
+["rbxassetid://3321471903"] = "Shiny Moonbear",
+["rbxassetid://3877248031"] = "Shiny Tropical Monkey",
+["rbxassetid://3321469102"] = "Shiny Narwhal",
+["rbxassetid://3326569532"] = "Shiny Cake",
+["rbxassetid://3326570157"] = "Wonderful Present",
+["rbxassetid://3554077156"] = "Calico Cat",
+["rbxassetid://3877247400"] = "Shiny Ember Mouse",
+
+-- Legendary
+["rbxassetid://3554077323"] = "Grim Demonlord",
+["rbxassetid://3971551900"] = "80M DJ Eagle",
+["rbxassetid://3321471512"] = "Inferno Serpent",
+["rbxassetid://3877247741"] = "Shiny Lightning Satyr",
+["rbxassetid://3652596913"] = "Shiny Warped Wraith",
+["rbxassetid://3324822252"] = "Wisp",
+["rbxassetid://3324884225"] = "Shiny Eggiverse",
+["rbxassetid://3321468917"] = "Shiny Angel",
+["rbxassetid://3971551745"] = "80M Golden Sun Eagle",
+["rbxassetid://3326475264"] = "Satyr",
+["rbxassetid://3471250459"] = "Shiny Snow Elemental",
+["rbxassetid://3877247131"] = "Lightning Satyr",
+["rbxassetid://3699317740"] = "70M Overcharged Alicorn",
+["rbxassetid://3321397110"] = "Vampire Dragon",
+["rbxassetid://3326474675"] = "Alicorn",
+["rbxassetid://3321397063"] = "Shiny Vampire Dragon",
+["rbxassetid://3321301489"] = "Unicorn",
+["rbxassetid://4315140017"] = "90M Phoenix Flock",
+["rbxassetid://3326475188"] = "Luminous Fox",
+["rbxassetid://3471249272"] = "60M Chaotic Thunderbird",
+["rbxassetid://3321327577"] = "Android Dragon",
+["rbxassetid://3326569423"] = "Phantom Cerberus",
+["rbxassetid://3472078786"] = "60M Digital Thunderbird",
+["rbxassetid://3324821610"] = "Shiny Cthulhu",
+["rbxassetid://4147751493"] = "Shiny Horror Serpent",
+["rbxassetid://3554077394"] = "Grotto Butterfly",
+["rbxassetid://3326595761"] = "50M Albatross King",
+["rbxassetid://3652596423"] = "100K Likes Glacial Serpent",
+["rbxassetid://3319625280"] = "50M Albatross God",
+["rbxassetid://3326596048"] = "Shiny Baby Sowopent",
+["rbxassetid://3324769459"] = "Monster Fox",
+["rbxassetid://3326569181"] = "Emperor",
+["rbxassetid://3652597389"] = "Warped Wraith",
+["rbxassetid://3554077588"] = "Radioactive Monster Fox",
+["rbxassetid://3471249433"] = "Corrosive Phoenix",
+["rbxassetid://3321328105"] = "Shiny Flame Fox",
+["rbxassetid://3321396441"] = "Cerberus",
+["rbxassetid://3321469672"] = "Alien",
+["rbxassetid://3321471848"] = "Shiny Inferno Serpent",
+["rbxassetid://3877247269"] = "Shiny Ancient Earth Dragon",
+["rbxassetid://3324792629"] = "Chimera",
+["rbxassetid://3321327975"] = "Shiny Android Dragon",
+["rbxassetid://4315302022"] = "90M Blackhole Phoenix",
+["rbxassetid://3877246877"] = "Guardian Angel",
+["rbxassetid://3321472311"] = "Void Gazer",
+["rbxassetid://3324769635"] = "Ruler",
+["rbxassetid://3471249810"] = "Radiance",
+["rbxassetid://3652596742"] = "Shiny Rift Observer",
+["rbxassetid://3321471739"] = "Shiny Flare Alicorn",
+["rbxassetid://4147749761"] = "Alchemist",
+["rbxassetid://3324769737"] = "Shiny Dark Serpent",
+["rbxassetid://4147750409"] = "Horror Serpent",
+["rbxassetid://3321471318"] = "Flare Alicorn",
+["rbxassetid://3471250372"] = "Shiny Radiance",
+["rbxassetid://3324883194"] = "Easter Serpent",
+["rbxassetid://3326474785"] = "Dark Phoenix",
+["rbxassetid://3471250034"] = "Shiny Corrosive Phoenix",
+["rbxassetid://3471250541"] = "Snow Elemental",
+["rbxassetid://3326475334"] = "Sphinx",
+["rbxassetid://3321396783"] = "Shiny Cerberus",
+["rbxassetid://3554077680"] = "Sky Unicorn",
+["rbxassetid://3321469803"] = "Ice Phoenix",
+["rbxassetid://3324769949"] = "Shiny Monster Fox",
+["rbxassetid://3321468679"] = "Demon",
+["rbxassetid://3699317919"] = "70M Soundwave Alicorn",
+["rbxassetid://3324854479"] = "Leprechaun",
+["rbxassetid://3877247516"] = "Shiny Guardian Angel",
+["rbxassetid://3324793394"] = "Shiny Leviathan",
+["rbxassetid://3324883284"] = "Eggiverse",
+["rbxassetid://3324853833"] = "Rainbow Elementals",
+["rbxassetid://3652597129"] = "Singularity",
+["rbxassetid://3324884140"] = "Shiny Easter Serpent",
+["rbxassetid://3656843464"] = "Rift Observer",
+["rbxassetid://3321468526"] = "Angel",
+["rbxassetid://3324770355"] = "Shiny Ruler",
+["rbxassetid://3554077482"] = "Omega Gazer",
+["rbxassetid://3326475117"] = "Imp",
+["rbxassetid://3324793074"] = "Shiny Chimera",
+["rbxassetid://3554077246"] = "Elemental Chimera",
+["rbxassetid://3324821000"] = "Cthulhu",
+["rbxassetid://3321301272"] = "Shiny Unicorn",
+["rbxassetid://3554077861"] = "Zeta Alien",
+["rbxassetid://3324821447"] = "Shiny Wisp",
+["rbxassetid://4147750931"] = "Shiny Alchemist",
+["rbxassetid://3321469993"] = "Shiny Alien",
+["rbxassetid://3321472138"] = "Shiny Void Gazer",
+["rbxassetid://3321327717"] = "Flame Fox",
+["rbxassetid://3326475396"] = "Gargoyle",
+["rbxassetid://3324792977"] = "Leviathan",
+["rbxassetid://3877246549"] = "Ancient Earth Dragon",
+["rbxassetid://3324821083"] = "Duality",
+
+}
+
+--Properties:
+PetRanchSimulator.Name = "PetRanchSimulator"
+PetRanchSimulator.Parent = game.CoreGui
+
+MainFrame.Name = "MainFrame"
+MainFrame.Parent = PetRanchSimulator
+MainFrame.BackgroundColor3 = Color3.new(0.490196, 0.490196, 0.490196)
+MainFrame.BorderColor3 = Color3.new(1, 1, 1)
+MainFrame.BorderSizePixel = 2
+MainFrame.Position = UDim2.new(0.00625485647, 0, 0.517282486, 0)
+MainFrame.Size = UDim2.new(0, 450, 0, 325)
+MainFrame.Active = true
+MainFrame.Draggable = true
+
+YeetusDeletus.Name = "YeetusDeletus"
+YeetusDeletus.Parent = MainFrame
+YeetusDeletus.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+YeetusDeletus.BorderColor3 = Color3.new(1, 1, 1)
+YeetusDeletus.BorderSizePixel = 2
+YeetusDeletus.Position = UDim2.new(0.0337416567, 0, 0.27754283, 0)
+YeetusDeletus.Size = UDim2.new(0, 200, 0, 230)
+
+-- Replace the YeetusDeletus frame content with:
+local Select = Instance.new("TextButton")
+Select.Name = "Select"
+Select.Parent = YeetusDeletus
+Select.BackgroundColor3 = Color3.new(1, 0, 0)
+Select.BorderColor3 = Color3.new(1, 1, 1)
+Select.BorderSizePixel = 2
+Select.Position = UDim2.new(0.0599999987, 0, 0.0341880359, 0)
+Select.Size = UDim2.new(0, 175, 0, 25)
+Select.Font = Enum.Font.SourceSans
+Select.Text = "Select Pets"
+Select.TextColor3 = Color3.new(1, 1, 1)
+Select.TextSize = 14
+
+-- Create selection frame
+local SelectionFrame = Instance.new("Frame")
+SelectionFrame.Name = "SelectionFrame"
+SelectionFrame.Parent = MainFrame
+SelectionFrame.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+SelectionFrame.BorderColor3 = Color3.new(1, 1, 1)
+SelectionFrame.BorderSizePixel = 2
+SelectionFrame.Position = UDim2.new(1.02, 0, 0, 0)
+SelectionFrame.Size = UDim2.new(0, 200, 0, 325)
+SelectionFrame.Visible = false
+
+local ScrollFrame = Instance.new("ScrollingFrame")
+ScrollFrame.Name = "PetList"
+ScrollFrame.Parent = SelectionFrame
+ScrollFrame.BackgroundTransparency = 1
+ScrollFrame.Position = UDim2.new(0, 5, 0, 5)
+ScrollFrame.Size = UDim2.new(0.95, 0, 0.95, 0)
+ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ScrollFrame.ScrollBarThickness = 6
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Parent = ScrollFrame
+UIListLayout.Padding = UDim.new(0, 5)
+UIListLayout.SortOrder = Enum.SortOrder.Name
+
+Equip.Name = "Equip"
+Equip.Parent = MainFrame
+Equip.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+Equip.BorderColor3 = Color3.new(1, 1, 1)
+Equip.BorderSizePixel = 2
+Equip.Position = UDim2.new(0.574756384, 0, 0.112683572, 0)
+Equip.Size = UDim2.new(0, 150, 0, 30)
+Equip.Font = Enum.Font.SourceSans
+Equip.Text = "Equip Best Pets"
+Equip.TextColor3 = Color3.new(1, 1, 1)
+Equip.TextSize = 14
+
+YeetusFetus.Name = "YeetusFetus"
+YeetusFetus.Parent = MainFrame
+YeetusFetus.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+YeetusFetus.BorderColor3 = Color3.new(1, 1, 1)
+YeetusFetus.BorderSizePixel = 2
+YeetusFetus.Position = UDim2.new(0.520408392, 0, 0.27754283, 0)
+YeetusFetus.Size = UDim2.new(0, 200, 0, 230)
+
+UIListLayout_2.Parent = YeetusFetus
+UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout_2.VerticalAlignment = Enum.VerticalAlignment.Center
+UIListLayout_2.Padding = UDim.new(0.0500000007, 0)
+
+ALegendary.Name = "AuraLegendary"
+ALegendary.Parent = YeetusFetus
+ALegendary.BackgroundColor3 = Color3.new(1, 0, 0)
+ALegendary.BorderColor3 = Color3.new(1, 1, 1)
+ALegendary.BorderSizePixel = 2
+ALegendary.LayoutOrder = 5
+ALegendary.Position = UDim2.new(0.0549999997, 0, -0.123931631, 0)
+ALegendary.Size = UDim2.new(0, 175, 0, 25)
+ALegendary.Font = Enum.Font.SourceSans
+ALegendary.Text = "AuraLegendary"
+ALegendary.TextColor3 = Color3.new(1, 1, 1)
+ALegendary.TextSize = 14
+
+AEpic.Name = "AuraEpic"
+AEpic.Parent = YeetusFetus
+AEpic.BackgroundColor3 = Color3.new(1, 0, 0)
+AEpic.BorderColor3 = Color3.new(1, 1, 1)
+AEpic.BorderSizePixel = 2
+AEpic.LayoutOrder = 4
+AEpic.Position = UDim2.new(0.0599999987, 0, 0.0341880359, 0)
+AEpic.Size = UDim2.new(0, 175, 0, 25)
+AEpic.Font = Enum.Font.SourceSans
+AEpic.Text = "AuraEpic"
+AEpic.TextColor3 = Color3.new(1, 1, 1)
+AEpic.TextSize = 14
+
+ACommon.Name = "AuraCommon"
+ACommon.Parent = YeetusFetus
+ACommon.BackgroundColor3 = Color3.new(1, 0, 0)
+ACommon.BorderColor3 = Color3.new(1, 1, 1)
+ACommon.BorderSizePixel = 2
+ACommon.LayoutOrder = 1
+ACommon.Position = UDim2.new(0.0599999987, 0, 0.0341880359, 0)
+ACommon.Size = UDim2.new(0, 175, 0, 25)
+ACommon.Font = Enum.Font.SourceSans
+ACommon.Text = "AuraCommon"
+ACommon.TextColor3 = Color3.new(1, 1, 1)
+ACommon.TextSize = 14
+
+AUncommon.Name = "AuraUncommon"
+AUncommon.Parent = YeetusFetus
+AUncommon.BackgroundColor3 = Color3.new(1, 0, 0)
+AUncommon.BorderColor3 = Color3.new(1, 1, 1)
+AUncommon.BorderSizePixel = 2
+AUncommon.LayoutOrder = 2
+AUncommon.Position = UDim2.new(0.0599999987, 0, 0.0341880359, 0)
+AUncommon.Size = UDim2.new(0, 175, 0, 25)
+AUncommon.Font = Enum.Font.SourceSans
+AUncommon.Text = "AuraUncommon"
+AUncommon.TextColor3 = Color3.new(1, 1, 1)
+AUncommon.TextSize = 14
+
+ARare.Name = "AuraRare"
+ARare.Parent = YeetusFetus
+ARare.BackgroundColor3 = Color3.new(1, 0, 0)
+ARare.BorderColor3 = Color3.new(1, 1, 1)
+ARare.BorderSizePixel = 2
+ARare.LayoutOrder = 3
+ARare.Position = UDim2.new(0.114999995, 0, -0.141025648, 0)
+ARare.Size = UDim2.new(0, 175, 0, 25)
+ARare.Font = Enum.Font.SourceSans
+ARare.Text = "AuraRare"
+ARare.TextColor3 = Color3.new(1, 1, 1)
+ARare.TextSize = 14
+
+Title.Name = "Title"
+Title.Parent = MainFrame
+Title.BackgroundColor3 = Color3.new(1, 1, 1)
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0.332534194, 0, -0.000711294299, 0)
+Title.Size = UDim2.new(0, 150, 0, 30)
+Title.Font = Enum.Font.SourceSans
+Title.Text = "🐾Pet Ranch Simulator GUI"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.TextSize = 14
+
+Title_2.Name = "Title"
+Title_2.Parent = MainFrame
+Title_2.BackgroundColor3 = Color3.new(0, 0, 0)
+Title_2.BackgroundTransparency = 1
+Title_2.Position = UDim2.new(0.0331437178, 0, 0.204991266, 0)
+Title_2.Size = UDim2.new(0, 200, 0, 23)
+Title_2.Font = Enum.Font.SourceSans
+Title_2.Text = "Delete Pets"
+Title_2.TextColor3 = Color3.new(1, 1, 1)
+Title_2.TextSize = 14
+
+Title_3.Name = "Title"
+Title_3.Parent = MainFrame
+Title_3.BackgroundColor3 = Color3.new(0, 0, 0)
+Title_3.BackgroundTransparency = 1
+Title_3.Position = UDim2.new(0.519810379, 0, 0.204991266, 0)
+Title_3.Size = UDim2.new(0, 200, 0, 23)
+Title_3.Font = Enum.Font.SourceSans
+Title_3.Text = "Delete Aura"
+Title_3.TextColor3 = Color3.new(1, 1, 1)
+Title_3.TextSize = 14
+
+RedeemAllCodes.Name = "RedeemAllCodes"
+RedeemAllCodes.Parent = MainFrame
+RedeemAllCodes.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+RedeemAllCodes.Position = UDim2.new(0.0892971456, 0, 0.112683572, 0)
+RedeemAllCodes.Size = UDim2.new(0, 150, 0, 30)
+RedeemAllCodes.Font = Enum.Font.SourceSans
+RedeemAllCodes.Text = "RedeemAllCodes"
+RedeemAllCodes.TextColor3 = Color3.new(1, 1, 1)
+RedeemAllCodes.TextSize = 14
+
+Exit.Name = "Exit"
+Exit.Parent = MainFrame
+Exit.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+Exit.BorderColor3 = Color3.new(1, 1, 1)
+Exit.BorderSizePixel = 2
+Exit.Position = UDim2.new(0.942630529, 0, -0.00116257893, 0)
+Exit.Size = UDim2.new(0, 25, 0, 25)
+Exit.Font = Enum.Font.SourceSans
+Exit.Text = "X"
+Exit.TextColor3 = Color3.new(1, 1, 1)
+Exit.TextSize = 25
+
+ScriptButton.Parent = PetRanchSimulator
+ScriptButton.Image = "rbxassetid://80392558596740"
+ScriptButton.BackgroundTransparency = 1
+ScriptButton.Position = UDim2.new(0.946, 0, 0.686, 0)
+ScriptButton.Size = UDim2.new(0.0546, 0, 0.106042214, 0)
+ScriptButton.Visible = true
+
+--Function for roundedCorners
+local function addRoundedCorners(instance, radius)
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(radius, 0)
+    corner.Parent = instance
+end
+
+-- Frames with radius 0.05
+addRoundedCorners(MainFrame, 0.05)
+addRoundedCorners(Select, 0.05)
+addRoundedCorners(YeetusFetus, 0.05)
+addRoundedCorners(YeetusDeletus, 0.05)
+
+-- Exit button with radius 2
+addRoundedCorners(Exit, 2)
+
+-- All other buttons with radius 0.3
+addRoundedCorners(Equip, 0.3)
+addRoundedCorners(ALegendary, 0.3)
+addRoundedCorners(AEpic, 0.3)
+addRoundedCorners(ACommon, 0.3)
+addRoundedCorners(AUncommon, 0.3)
+addRoundedCorners(ARare, 0.3)
+addRoundedCorners(TextButton, 0.3)
+addRoundedCorners(RedeemAllCodes, 0.3)
+
+-- Scripts:
+
+local selectedPets = {}
+
+local function PopulatePetList()
+    -- Clear existing buttons
+    for _, child in pairs(ScrollFrame:GetChildren()) do
+        if child:IsA("TextButton") then
+            child:Destroy()
+        end
+    end
+    
+    -- Track created buttons
+    local petNames = {}
+    
+    -- Get all pets from inventory
+    local petInventory = game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+    
+    -- Iterate through ALL pets
+    for _, v in ipairs(petInventory:GetChildren()) do 
+        if v:IsA("ImageButton") and v:FindFirstChild("PetImage") then
+            local petId = v.PetImage.Image
+            local petName = PetsIdsToName[petId] or petId
+            
+            -- Create button for each unique pet
+            local button = Instance.new("TextButton")
+            button.Name = petId
+            button.Size = UDim2.new(0.95, 0, 0, 25)
+            button.BackgroundColor3 = Color3.new(1, 0, 0)
+            button.Text = petName
+            button.Parent = ScrollFrame
+            button.TextColor3 = Color3.new(1, 1, 1)
+            
+            button.MouseButton1Click:Connect(function()
+                selectedPets[petId] = not selectedPets[petId]
+                button.BackgroundColor3 = selectedPets[petId] and Color3.new(0,1,0) or Color3.new(1,0,0)
+            end)
+        end
+    end
+    
+    -- Update scroll frame size
+    local contentSize = UIListLayout.AbsoluteContentSize
+    ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, contentSize.Y + 10)
+end
+
+-- Toggle selection frame
+Select.MouseButton1Click:Connect(function()
+    SelectionFrame.Visible = not SelectionFrame.Visible
+    if SelectionFrame.Visible then
+        PopulatePetList()
+    end
+end)
+
+Exit.MouseButton1Click:connect(function()
+	PetRanchSimulator:Destroy()
+end)
+
+ScriptButton.MouseButton1Click:connect(function()
+    MainFrame.Visible = not MainFrame.Visible
+end)
+
+Equip.MouseButton1Click:connect(function()
+    -- First unequip all pets
+    local petInventory = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+    
+    for _, v in pairs(petInventory:GetChildren()) do
+        if v:IsA("ImageButton") then
+            local unequipArgs = {
+                [1] = "DestroyPet",
+                [2] = v.Name
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction"):InvokeServer(unpack(unequipArgs))
+            wait(0.01)
+        end
+    end
+    
+    -- Then equip best pets
+    wait(0.5) -- Short delay between unequipping and equipping
+    local equipArgs = {
+        [1] = "EquipTopPets"
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction"):InvokeServer(unpack(equipArgs))
+end)
+
+
+coroutine.resume(coroutine.create(function()
+	local hb = game:GetService("RunService").Heartbeat
+end))
+
+RedeemAllCodes.MouseButton1Click:connect(function()
+    local codes = {
+        "90MCOIN",
+        "90MPET",
+        "PlanetMilo",
+        "FIGSTER",
+        "Seer",
+        "Post",
+        "Azad",
+        "Sub2Telanthric",
+        "Mequallu",
+        "Liiafa",
+        "GoldenOwl",
+        "BlueTeam",
+        "AshleyDas777",
+        "Shiny",
+        "Albatross",
+        "PetRanch",
+        "FreePet",
+        "Youtube"
+    }
+    
+    for _, code in ipairs(codes) do
+        local args = {
+            [1] = "RedeemPromoCode",
+            [2] = code
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction"):InvokeServer(unpack(args))
+        wait(0.1) -- Small delay between code redemptions
+    end
+end)
+
+-- Modify the deletion function to only delete selected pets
+function DeleteSelectedPets()
+    for _, v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do 
+        if v:IsA("ImageButton") and selectedPets[v.Name] then
+            local args = {
+                [1] = "DeletePetInInventory",
+                [2] = v.Name
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("MainRemoteEvent"):FireServer(unpack(args))
+            wait(0.1)
+        end
+    end
+end
+
+function ACommonDeletus()
+	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
+		if v:IsA("ImageButton") then
+			for i = 1,#ACommonIds do
+				if v.PetImage.Image == ACommonIds[i] then
+					mre:FireServer("DeleteAuraInInventory", v.Name)
+				end
+			end
+		end
+	end
+end
+
+function AUncommonDeletus()
+	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
+		if v:IsA("ImageButton") then
+			for i = 1,#AUncommonIds do
+				if v.PetImage.Image == AUncommonIds[i] then
+					mre:FireServer("DeleteAuraInInventory", v.Name)
+				end
+			end
+		end
+	end
+end
+
+function ARareDeletus()
+	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
+		if v:IsA("ImageButton") then
+			for i = 1,#ARareIds do
+				if v.PetImage.Image == ARareIds[i] then
+					mre:FireServer("DeleteAuraInInventory", v.Name)
+				end
+			end
+		end
+	end
+end
+
+function AEpicDeletus()
+	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
+		if v:IsA("ImageButton") then
+			for i = 1,#AEpicIds do
+				if v.PetImage.Image == AEpicIds[i] then
+					mre:FireServer("DeleteAuraInInventory", v.Name)
+				end
+			end
+		end
+	end
+end
+
+function ALegendaryDeletus()
+	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
+		if v:IsA("ImageButton") then
+			for i = 1,#ALegendaryIds do
+				if v.PetImage.Image == ALegendaryIds[i] then
+					mre:FireServer("DeleteAuraInInventory", v.Name)
+				end
+			end
+		end
+	end
+end
+
+Common.MouseButton1Click:connect(function()
+    DeleteCommon = not DeleteCommon
+    print("DeleteCommon is now:", DeleteCommon)
+    if DeleteCommon then 
+        Common.BackgroundColor3 = Color3.new(0,1,0)
+    else
+        Common.BackgroundColor3 = Color3.new(1,0,0)
+    end
+end)
+
+
+Uncommon.MouseButton1Click:connect(function()
+	DeleteUncommon = not DeleteUncommon
+	if DeleteUncommon then
+		Uncommon.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		Uncommon.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+Rare.MouseButton1Click:connect(function()
+	DeleteRare = not DeleteRare
+	if DeleteRare then
+		Rare.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		Rare.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+Epic.MouseButton1Click:connect(function()
+	DeleteEpic = not DeleteEpic
+	if DeleteEpic then
+		Epic.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		Epic.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+Legendary.MouseButton1Click:connect(function()
+	DeleteLegendary = not DeleteLegendary
+	if DeleteLegendary then
+		Legendary.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		Legendary.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+ACommon.MouseButton1Click:connect(function()
+	DeleteACommon = not DeleteACommon
+	if DeleteACommon then
+		ACommon.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		ACommon.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+AUncommon.MouseButton1Click:connect(function()
+	DeleteAUncommon = not DeleteAUncommon
+	if DeleteAUncommon then
+		AUncommon.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		AUncommon.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+ARare.MouseButton1Click:connect(function()
+	DeleteARare = not DeleteARare
+	if DeleteARare then
+		ARare.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		ARare.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+AEpic.MouseButton1Click:connect(function()
+	DeleteAEpic = not DeleteAEpic
+	if DeleteAEpic then
+		AEpic.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		AEpic.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+ALegendary.MouseButton1Click:connect(function()
+	DeleteALegendary = not ALegendary
+	if DeleteALegendary then
+		ALegendary.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		ALegendary.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+
+while true do
+	wait(0.1)
+	if DeleteCommon then
+		CommonDeletus()
+	end
+	if DeleteUncommon then
+		UncommonDeletus()
+	end
+	if DeleteRare then
+		RareDeletus()
+	end
+	if DeleteEpic then
+		EpicDeletus()
+	end
+	if DeleteLegendary then
+		LegendaryDeletus()
+	end
+	wait(0.1)
+	if DeleteACommon then
+		ACommonDeletus()
+	end
+	if DeleteUncommon then
+		AUncommonDeletus()
+	end
+	if DeleteARare then
+		ARareDeletus()
+	end
+	if DeleteAEpic then
+		AEpicDeletus()
+	end
+	if DeleteALegendary then
+		ALegendaryDeletus()
+	end
+    end
