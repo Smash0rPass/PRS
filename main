@@ -1,24 +1,32 @@
---Pet Ranch Script
-
-local VirtualUser=game:service'VirtualUser'
-game:service'Players'.LocalPlayer.Idled:connect(function()
-VirtualUser:CaptureController()
-VirtualUser:ClickButton2(Vector2.new())
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local VirtualUser = game:GetService('VirtualUser')
+game:GetService('Players').LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new())
 end)
 
-local plr = game.Players.LocalPlayer.Name
-local statdisplay = game.ReplicatedStorage[plr.."StatDisplay"]
+
+local plr = game.Players.LocalPlayer
+local statdisplay = game.ReplicatedStorage[plr.Name.."StatDisplay"]
 
 if statdisplay["Gamepass_2xCoins"].Value == false then
- statdisplay["Gamepass_2xCoins"].Value = true
-else if statdisplay["Gamepass_2xCoins"].Value == true then
- statdisplay["Gamepass_2xCoins"].Value = false
-end
+    statdisplay["Gamepass_2xCoins"].Value = true
+elseif statdisplay["Gamepass_2xCoins"].Value == true then
+    statdisplay["Gamepass_2xCoins"].Value = false
 end
 
 local PetRanchSimulator = Instance.new("ScreenGui")
 local MainFrame = Instance.new("Frame")
-local YeetusDeletus = Instance.new("Frame")
+local RebirthFrame = Instance.new("Frame")
+local RebirthSettings = Instance.new("ImageButton")
+local PetScroll = Instance.new("ScrollingFrame")
+local AuraScroll = Instance.new("ScrollingFrame")
+local PetsTitleFrame = Instance.new("Frame")
+local AurasTitleFrame = Instance.new("Frame")
+local PetsDelete = Instance.new("Frame")
+local AutoRebirth = Instance.new("TextButton")
+local EzLegendary = Instance.new("TextButton")
 local Legendary = Instance.new("TextButton")
 local Epic = Instance.new("TextButton")
 local Common = Instance.new("TextButton")
@@ -26,26 +34,43 @@ local Uncommon = Instance.new("TextButton")
 local Rare = Instance.new("TextButton")
 local UIListLayout = Instance.new("UIListLayout")
 local Equip = Instance.new("TextButton")
-local YeetusFetus = Instance.new("Frame")
+local AutoEquip = Instance.new("TextButton")
+local AuraDelete = Instance.new("Frame")
 local UIListLayout_2 = Instance.new("UIListLayout")
-local ALegendary = Instance.new("TextButton")
-local AEpic = Instance.new("TextButton")
-local ACommon = Instance.new("TextButton")
-local AUncommon = Instance.new("TextButton")
-local ARare = Instance.new("TextButton")
+local LegendaryAura = Instance.new("TextButton")
+local EpicAura = Instance.new("TextButton")
+local CommonAura = Instance.new("TextButton")
+local UncommonAura = Instance.new("TextButton")
+local RareAura = Instance.new("TextButton")
 local Title = Instance.new("TextLabel")
 local Title_2 = Instance.new("TextLabel")
 local Title_3 = Instance.new("TextLabel")
 local RedeemAllCodes = Instance.new("TextButton")
+local AutoCollectToggle = Instance.new("TextButton")
+local AutoUpgRanch = Instance.new("TextButton")
+local AutoHatch = Instance.new("TextButton")
 local Exit = Instance.new("TextButton")
 local Minimis = Instance.new("TextButton")
 local ScriptButton = Instance.new("ImageButton")
 
-local DeleteACommon = false
-local DeleteAUncommon = false
-local DeleteARare = false
-local DeleteAEpic = false
-local DeleteALegendary = false
+local DeleteCommon = false
+local DeleteUncommon = false
+local DeleteRare = false
+local DeleteEpic = false
+local DeleteLegendary = false
+local DeleteEzLegendary = false
+
+local DeleteCommonAura = false
+local DeleteUncommonAura = false
+local DeleteRareAura = false
+local DeleteEpicAura = false
+local DeleteLegendaryAura = false
+
+local isAutoHatching = false
+local isAutoEquip = false
+local isAutoUpgRanch = false
+local isAutoRebirth = false
+local rangeVisualization = nil
 
 local mrf = game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction
 local mre = game:GetService("ReplicatedStorage").RemoteEvents.MainRemoteEvent
@@ -337,306 +362,42 @@ local LegendaryIds = {
     "rbxassetid://3324821083", --["Duality"] // rarity = "Legendary"
 
 }
-local ACommonIds = {
+local EzLegendaryIds = {
+    "rbxassetid://2867903124", --["Unicorn"] // rarity = "Legendary"
+	"rbxassetid://2867899126", --["Android Dragon"] // rarity = "Legendary"
+	"rbxassetid://2867901873", --["Flame Fox"] // rarity = "Legendary"
+	"rbxassetid://2867903314", --["Vampire Dragon"] // rarity = "Legendary"
+	"rbxassetid://2867902389", --["Monster Fox"] // rarity = "Legendary"
+	"rbxassetid://2868554099", --["Dark Serpent"] // rarity = "Legendary"
+	"rbxassetid://2912788391", --["Dark Phoenix"] // rarity = "Legendary"
+	"rbxassetid://2911048050", --["Luminous Fox"] // rarity = "Legendary"
+	"rbxassetid://1249021641", --["Phowoenix"] // rarity = "Legendary"
+	"rbxassetid://3877246877", --["Guardian Angel"] // rarity = "Legendary"
+	"rbxassetid://3656843464", --["Rift Observer"] // rarity = "Legendary"
+	"rbxassetid://3652596674", --["Shiny Rift Observer"] // rarity = "Legendary"
+	"rbxassetid://3652597129", --["Singularity"] // rarity = "Legendary"
+	"rbxassetid://3652597389", --["Warped Wraith"] // rarity = "Legendary"
+}
+local CommonAuraIds = {
 	"rbxassetid://", --["Feathered Aura"] // rarity = "Common"
 
 }
-local AUncommonIds = {
+local UncommonAuraIds = {
 	"rbxassetid://2867901021", --["Bunny"] // rarity = "Uncommon"
 
 }
-local ARareIds = {
+local RareAuraIds = {
 	"rbxassetid://4013448900", --["Feathered Aura"] // rarity = "Rare"
 	"rbxassetid://4013449018", --["Goo Aura"] // rarity = "Rare"
 
 }
-local AEpicIds = {
+local EpicAuraIds = {
 	"rbxassetid://4013449146", --["Heart Aura"] // rarity = "Epic"
 	"rbxassetid://4013449484", --["Musical Aura"] // rarity = "Epic"
 
 }
-local ALegendaryIds = {
+local LegendaryAuraIds = {
 	"rbxassetid://2867903124", --["Unicorn"] // rarity = "Legendary"
-
-}
-
-local PetsIdsToName = {
-    -- Common
-["rbxassetid://3321300808"] = "Blue Butterfly",
-["rbxassetid://3319895658"] = "White Cat",
-["rbxassetid://3324883683"] = "Shiny Sweets Bat",
-["rbxassetid://3321328407"] = "Snow Fox",
-["rbxassetid://3321301027"] = "Shiny Blue Butterfly",
-["rbxassetid://3319957680"] = "Shiny White Cat",
-["rbxassetid://3324884414"] = "Sweets Bat",
-["rbxassetid://3710867266"] = "Shiny Red Butterfly",
-["rbxassetid://3321273272"] = "Shiny Wolf",
-["rbxassetid://3321272769"] = "Ice Cat",
-["rbxassetid://3321273354"] = "Wolf",
-["rbxassetid://3321396991"] = "Shiny Polar Bear",
-["rbxassetid://3321301083"] = "Shiny Brown Fox",
-["rbxassetid://3321300887"] = "Brown Fox",
-["rbxassetid://3321273075"] = "Shiny Ice Cat",
-["rbxassetid://3321273024"] = "Shiny Bat",
-["rbxassetid://3319957578"] = "Shiny Fox",
-["rbxassetid://3321328346"] = "Shiny Snow Fox",
-["rbxassetid://3319895844"] = "Fox",
-["rbxassetid://3321396625"] = "Polar Bear",
-["rbxassetid://3319957475"] = "Shiny Dog",
-["rbxassetid://3319895754"] = "Dog",
-["rbxassetid://3324853749"] = "Lucky Cat",
-["rbxassetid://3321272690"] = "Bat",
-["rbxassetid://3321327915"] = "Red Butterfly",
-
--- Uncommon
-["rbxassetid://3321470334"] = "Shiny Tuxedo Cat",
-["rbxassetid://3319895561"] = "Bunny",
-["rbxassetid://3321470447"] = "Tuxedo Cat",
-["rbxassetid://3321273142"] = "Shiny Ruby Bunny",
-["rbxassetid://3321469337"] = "Slime",
-["rbxassetid://3324883581"] = "Shiny Polka Dot Butterfly",
-["rbxassetid://3321328173"] = "Shiny Midnight Cat",
-["rbxassetid://3321327798"] = "Midnight Cat",
-["rbxassetid://3321468618"] = "Deer",
-["rbxassetid://3324853925"] = "Shamrock Fox",
-["rbxassetid://3326596100"] = "Youtube Cat",
-["rbxassetid://3321468985"] = "Shiny Deer",
-["rbxassetid://3321469262"] = "Shiny Slime",
-["rbxassetid://3321272831"] = "Ruby Bunny",
-["rbxassetid://3319957364"] = "Shiny Bunny",
-["rbxassetid://3321396365"] = "Brown Wolf",
-["rbxassetid://3324883483"] = "Polka Dot Butterfly",
-["rbxassetid://3321396725"] = "Shiny Brown Wolf",
-["rbxassetid://3321301205"] = "Shiny Stone Dog",
-["rbxassetid://3321301417"] = "Stone Dog",
-
--- Rare
-["rbxassetid://3652596139"] = "Moonlight Sphinx",
-["rbxassetid://3321301540"] = "Vampire Bat",
-["rbxassetid://3324821828"] = "Shiny Dwarf",
-["rbxassetid://3324793842"] = "Yeti",
-["rbxassetid://3321396923"] = "Shiny Frozen Wolf",
-["rbxassetid://4147751076"] = "Shiny Candy Corn Bat",
-["rbxassetid://3326474870"] = "Golden Cat",
-["rbxassetid://3321470382"] = "Squid",
-["rbxassetid://3326474965"] = "Golden Dog",
-["rbxassetid://3324770144"] = "Shiny Pegasus",
-["rbxassetid://3877247625"] = "Shiny Jellyfish",
-["rbxassetid://3877248666"] = "Turkey",
-["rbxassetid://3324793682"] = "Shiny Yeti",
-["rbxassetid://3652596213"] = "Mossy Golem",
-["rbxassetid://3877246998"] = "Jellyfish",
-["rbxassetid://3324883891"] = "Shiny Dogbun",
-["rbxassetid://3321468858"] = "Robot",
-["rbxassetid://3326595568"] = "6M Baby Phoenix",
-["rbxassetid://3321301348"] = "Shiny Vampire Bat",
-["rbxassetid://3321471795"] = "Shiny Horse",
-["rbxassetid://3324770240"] = "Shiny Phoenix",
-["rbxassetid://3326595635"] = "10M Party Angel",
-["rbxassetid://4147749952"] = "Candy Corn Bat",
-["rbxassetid://3321471442"] = "Horse",
-["rbxassetid://3324820925"] = "Basilisk",
-["rbxassetid://3324769317"] = "Demon Dragon",
-["rbxassetid://3324821534"] = "Shiny Basilisk",
-["rbxassetid://3321470734"] = "Shiny Lava Slime",
-["rbxassetid://3321328040"] = "Shiny Flame Butterfly",
-["rbxassetid://3326595872"] = "Promo Mouse",
-["rbxassetid://3326595985"] = "Shiny Baby Serpent",
-["rbxassetid://3877248140"] = "Shiny Turkey",
-["rbxassetid://3324770445"] = "Pegasus",
-["rbxassetid://4147750685"] = "Pumpkin",
-["rbxassetid://3321470797"] = "Shiny Squid",
-["rbxassetid://3324793773"] = "Troll",
-["rbxassetid://3321327655"] = "Flame Butterfly",
-["rbxassetid://3324769842"] = "Shiny Demon Dragon",
-["rbxassetid://3321469868"] = "Lava Slime",
-["rbxassetid://3326595696"] = "30M Mouse",
-["rbxassetid://3324854567"] = "Spring Unicorn",
-["rbxassetid://3324882989"] = "Dogbun",
-["rbxassetid://3324793579"] = "Shiny Troll",
-["rbxassetid://3321469214"] = "Shiny Robot",
-["rbxassetid://3324821169"] = "Dwarf",
-["rbxassetid://3326595937"] = "20M Demon",
-["rbxassetid://3321273211"] = "Shiny Sapphire Bunny",
-["rbxassetid://3319957269"] = "Shiny Awesome Dog",
-["rbxassetid://3471250118"] = "Shiny Dalmation",
-["rbxassetid://3652596602"] = "Shiny Mossy Golem",
-["rbxassetid://3324769540"] = "Phoenix",
-["rbxassetid://3324792831"] = "Griffin",
-["rbxassetid://3324793264"] = "Shiny Griffin",
-["rbxassetid://3319895464"] = "Awesome Dog",
-["rbxassetid://3652596501"] = "Shiny Moonlight Sphinx",
-["rbxassetid://3471251013"] = "Lightspeed Bee",
-["rbxassetid://3321472084"] = "Shiny Turtle",
-["rbxassetid://3321272890"] = "Sapphire Bunny",
-["rbxassetid://4147751762"] = "Shiny Pumpkin",
-["rbxassetid://3471249515"] = "Dalmation",
-["rbxassetid://3471250205"] = "Shiny Lightspeed Bee",
-["rbxassetid://3321472257"] = "Turtle",
-["rbxassetid://3321396571"] = "Frozen Wolf",
-["rbxassetid://3326595503"] = "1M Baby Serpent",
-["rbxassetid://3326569961"] = "Shiny Party Fox",
-["rbxassetid://3326569235"] = "Firework Mouse",
-["rbxassetid://3326569795"] = "Shiny Firework Mouse",
-["rbxassetid://3326569354"] = "Party Fox",
-
--- Epic
-["rbxassetid://3324770049"] = "Shiny Nova Fox",
-["rbxassetid://3471249879"] = "Shiny Deep Sea Narwhal",
-["rbxassetid://3321301144"] = "Shiny Midnight Bat",
-["rbxassetid://3326569102"] = "Disco Robot",
-["rbxassetid://3324883798"] = "Shiny Bunny Lord",
-["rbxassetid://3321272615"] = "Angel Dog",
-["rbxassetid://4147751883"] = "Shiny Scarecrow",
-["rbxassetid://3324882897"] = "Bunny Lord",
-["rbxassetid://3324822172"] = "Thunderbird",
-["rbxassetid://4147751353"] = "Shiny Ghoul",
-["rbxassetid://3321328221"] = "Shiny Panda",
-["rbxassetid://4147750803"] = "Scarecrow",
-["rbxassetid://3324883391"] = "Eggster Flock",
-["rbxassetid://4147750270"] = "Ghoul",
-["rbxassetid://3321471682"] = "Shiny Direwolf",
-["rbxassetid://3321396849"] = "Shiny Dark Unicorn",
-["rbxassetid://3326569673"] = "Shiny Disco Robot",
-["rbxassetid://3324822097"] = "Shiny Thunderbird",
-["rbxassetid://3326595809"] = "40M Light Leviathan",
-["rbxassetid://3324853584"] = "Celtic Owl",
-["rbxassetid://3321327860"] = "Panda",
-["rbxassetid://3321472023"] = "Shiny Thieving Crows",
-["rbxassetid://3321470190"] = "Shiny Monkey",
-["rbxassetid://3471250281"] = "Shiny Nesting Eagles",
-["rbxassetid://3326568936"] = "Cake",
-["rbxassetid://3321396499"] = "Dark Unicorn",
-["rbxassetid://3321471266"] = "Direwolf",
-["rbxassetid://3321396301"] = "Black Bear",
-["rbxassetid://3321471568"] = "Moonbear",
-["rbxassetid://3324793165"] = "Shiny Fairy",
-["rbxassetid://3324792743"] = "Fairy",
-["rbxassetid://3321396676"] = "Shiny Black Bear",
-["rbxassetid://3471249956"] = "Shiny Cherry Blossom Owl",
-["rbxassetid://3326570094"] = "Shiny Wonderful Present",
-["rbxassetid://3321300956"] = "Midnight Bat",
-["rbxassetid://3476136313"] = "Cherry Blossom Owl",
-["rbxassetid://3321272961"] = "Shiny Angel Dog",
-["rbxassetid://3321469162"] = "Shiny Owl",
-["rbxassetid://3324884316"] = "Shiny Eggster Flock",
-["rbxassetid://3324822013"] = "Shiny Roc",
-["rbxassetid://3321472197"] = "Thieving Crows",
-["rbxassetid://3877248536"] = "Tropical Monkey",
-["rbxassetid://3324770888"] = "Nova Fox",
-["rbxassetid://3877246745"] = "Ember Mouse",
-["rbxassetid://3321469928"] = "Monkey",
-["rbxassetid://3321468801"] = "Owl",
-["rbxassetid://3652597250"] = "Sprite Swarm",
-["rbxassetid://3652596829"] = "Shiny Sprite Swarm",
-["rbxassetid://3321468736"] = "Narwhal",
-["rbxassetid://3321469728"] = "Bee",
-["rbxassetid://3554077778"] = "Speckled Rabbit",
-["rbxassetid://3326493843"] = "Galaxy Dragon",
-["rbxassetid://3321470062"] = "Shiny Bee",
-["rbxassetid://3471249598"] = "Deep Sea Narwhal",
-["rbxassetid://3471249738"] = "Nesting Eagles",
-["rbxassetid://3324821342"] = "Roc",
-["rbxassetid://3321471903"] = "Shiny Moonbear",
-["rbxassetid://3877248031"] = "Shiny Tropical Monkey",
-["rbxassetid://3321469102"] = "Shiny Narwhal",
-["rbxassetid://3326569532"] = "Shiny Cake",
-["rbxassetid://3326570157"] = "Wonderful Present",
-["rbxassetid://3554077156"] = "Calico Cat",
-["rbxassetid://3877247400"] = "Shiny Ember Mouse",
-
--- Legendary
-["rbxassetid://3554077323"] = "Grim Demonlord",
-["rbxassetid://3971551900"] = "80M DJ Eagle",
-["rbxassetid://3321471512"] = "Inferno Serpent",
-["rbxassetid://3877247741"] = "Shiny Lightning Satyr",
-["rbxassetid://3652596913"] = "Shiny Warped Wraith",
-["rbxassetid://3324822252"] = "Wisp",
-["rbxassetid://3324884225"] = "Shiny Eggiverse",
-["rbxassetid://3321468917"] = "Shiny Angel",
-["rbxassetid://3971551745"] = "80M Golden Sun Eagle",
-["rbxassetid://3326475264"] = "Satyr",
-["rbxassetid://3471250459"] = "Shiny Snow Elemental",
-["rbxassetid://3877247131"] = "Lightning Satyr",
-["rbxassetid://3699317740"] = "70M Overcharged Alicorn",
-["rbxassetid://3321397110"] = "Vampire Dragon",
-["rbxassetid://3326474675"] = "Alicorn",
-["rbxassetid://3321397063"] = "Shiny Vampire Dragon",
-["rbxassetid://3321301489"] = "Unicorn",
-["rbxassetid://4315140017"] = "90M Phoenix Flock",
-["rbxassetid://3326475188"] = "Luminous Fox",
-["rbxassetid://3471249272"] = "60M Chaotic Thunderbird",
-["rbxassetid://3321327577"] = "Android Dragon",
-["rbxassetid://3326569423"] = "Phantom Cerberus",
-["rbxassetid://3472078786"] = "60M Digital Thunderbird",
-["rbxassetid://3324821610"] = "Shiny Cthulhu",
-["rbxassetid://4147751493"] = "Shiny Horror Serpent",
-["rbxassetid://3554077394"] = "Grotto Butterfly",
-["rbxassetid://3326595761"] = "50M Albatross King",
-["rbxassetid://3652596423"] = "100K Likes Glacial Serpent",
-["rbxassetid://3319625280"] = "50M Albatross God",
-["rbxassetid://3326596048"] = "Shiny Baby Sowopent",
-["rbxassetid://3324769459"] = "Monster Fox",
-["rbxassetid://3326569181"] = "Emperor",
-["rbxassetid://3652597389"] = "Warped Wraith",
-["rbxassetid://3554077588"] = "Radioactive Monster Fox",
-["rbxassetid://3471249433"] = "Corrosive Phoenix",
-["rbxassetid://3321328105"] = "Shiny Flame Fox",
-["rbxassetid://3321396441"] = "Cerberus",
-["rbxassetid://3321469672"] = "Alien",
-["rbxassetid://3321471848"] = "Shiny Inferno Serpent",
-["rbxassetid://3877247269"] = "Shiny Ancient Earth Dragon",
-["rbxassetid://3324792629"] = "Chimera",
-["rbxassetid://3321327975"] = "Shiny Android Dragon",
-["rbxassetid://4315302022"] = "90M Blackhole Phoenix",
-["rbxassetid://3877246877"] = "Guardian Angel",
-["rbxassetid://3321472311"] = "Void Gazer",
-["rbxassetid://3324769635"] = "Ruler",
-["rbxassetid://3471249810"] = "Radiance",
-["rbxassetid://3652596742"] = "Shiny Rift Observer",
-["rbxassetid://3321471739"] = "Shiny Flare Alicorn",
-["rbxassetid://4147749761"] = "Alchemist",
-["rbxassetid://3324769737"] = "Shiny Dark Serpent",
-["rbxassetid://4147750409"] = "Horror Serpent",
-["rbxassetid://3321471318"] = "Flare Alicorn",
-["rbxassetid://3471250372"] = "Shiny Radiance",
-["rbxassetid://3324883194"] = "Easter Serpent",
-["rbxassetid://3326474785"] = "Dark Phoenix",
-["rbxassetid://3471250034"] = "Shiny Corrosive Phoenix",
-["rbxassetid://3471250541"] = "Snow Elemental",
-["rbxassetid://3326475334"] = "Sphinx",
-["rbxassetid://3321396783"] = "Shiny Cerberus",
-["rbxassetid://3554077680"] = "Sky Unicorn",
-["rbxassetid://3321469803"] = "Ice Phoenix",
-["rbxassetid://3324769949"] = "Shiny Monster Fox",
-["rbxassetid://3321468679"] = "Demon",
-["rbxassetid://3699317919"] = "70M Soundwave Alicorn",
-["rbxassetid://3324854479"] = "Leprechaun",
-["rbxassetid://3877247516"] = "Shiny Guardian Angel",
-["rbxassetid://3324793394"] = "Shiny Leviathan",
-["rbxassetid://3324883284"] = "Eggiverse",
-["rbxassetid://3324853833"] = "Rainbow Elementals",
-["rbxassetid://3652597129"] = "Singularity",
-["rbxassetid://3324884140"] = "Shiny Easter Serpent",
-["rbxassetid://3656843464"] = "Rift Observer",
-["rbxassetid://3321468526"] = "Angel",
-["rbxassetid://3324770355"] = "Shiny Ruler",
-["rbxassetid://3554077482"] = "Omega Gazer",
-["rbxassetid://3326475117"] = "Imp",
-["rbxassetid://3324793074"] = "Shiny Chimera",
-["rbxassetid://3554077246"] = "Elemental Chimera",
-["rbxassetid://3324821000"] = "Cthulhu",
-["rbxassetid://3321301272"] = "Shiny Unicorn",
-["rbxassetid://3554077861"] = "Zeta Alien",
-["rbxassetid://3324821447"] = "Shiny Wisp",
-["rbxassetid://4147750931"] = "Shiny Alchemist",
-["rbxassetid://3321469993"] = "Shiny Alien",
-["rbxassetid://3321472138"] = "Shiny Void Gazer",
-["rbxassetid://3321327717"] = "Flame Fox",
-["rbxassetid://3326475396"] = "Gargoyle",
-["rbxassetid://3324792977"] = "Leviathan",
-["rbxassetid://3877246549"] = "Ancient Earth Dragon",
-["rbxassetid://3324821083"] = "Duality",
 
 }
 
@@ -654,195 +415,346 @@ MainFrame.Size = UDim2.new(0, 450, 0, 325)
 MainFrame.Active = true
 MainFrame.Draggable = true
 
-YeetusDeletus.Name = "YeetusDeletus"
-YeetusDeletus.Parent = MainFrame
-YeetusDeletus.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
-YeetusDeletus.BorderColor3 = Color3.new(1, 1, 1)
-YeetusDeletus.BorderSizePixel = 2
-YeetusDeletus.Position = UDim2.new(0.0337416567, 0, 0.27754283, 0)
-YeetusDeletus.Size = UDim2.new(0, 200, 0, 230)
+RebirthFrame.Name = "RebirthFrame"
+RebirthFrame.Parent = MainFrame
+RebirthFrame.BackgroundColor3 = Color3.new(125, 125, 125)
+RebirthFrame.BorderSizePixel = 2
+RebirthFrame.Position = UDim2.new(0, 237, 0, 516)
+RebirthFrame.Size = UDim2.new(0, 225, 0, 325)
+RebirthFrame.Visible = false
+RebirthFrame.Active = true
+RebirthFrame.Draggable = false
 
--- Replace the YeetusDeletus frame content with:
-local Select = Instance.new("TextButton")
-Select.Name = "Select"
-Select.Parent = YeetusDeletus
-Select.BackgroundColor3 = Color3.new(1, 0, 0)
-Select.BorderColor3 = Color3.new(1, 1, 1)
-Select.BorderSizePixel = 2
-Select.Position = UDim2.new(0.0599999987, 0, 0.0341880359, 0)
-Select.Size = UDim2.new(0, 175, 0, 25)
-Select.Font = Enum.Font.SourceSans
-Select.Text = "Select Pets"
-Select.TextColor3 = Color3.new(1, 1, 1)
-Select.TextSize = 14
+RebirthSettings.Name = "RebirthSettings"
+RebirthSettings.Parent = MainFrame
+RebirthSettings.BackgroundTransparency = 1
+RebirthSettings.LayoutOrder = 1
+RebirthSettings.Position = UDim2.new(0, 195, 0, 78)
+RebirthSettings.Size = UDim2.new(0, 25, 0, 24)
+RebirthSettings.Image = "rbxassetid://85338445899943"
 
--- Create selection frame
-local SelectionFrame = Instance.new("Frame")
-SelectionFrame.Name = "SelectionFrame"
-SelectionFrame.Parent = MainFrame
-SelectionFrame.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
-SelectionFrame.BorderColor3 = Color3.new(1, 1, 1)
-SelectionFrame.BorderSizePixel = 2
-SelectionFrame.Position = UDim2.new(1.02, 0, 0, 0)
-SelectionFrame.Size = UDim2.new(0, 200, 0, 325)
-SelectionFrame.Visible = false
+PetsDelete.Name = "PetsDelete"
+PetsDelete.Parent = MainFrame
+PetsDelete.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+PetsDelete.BorderColor3 = Color3.new(1, 1, 1)
+PetsDelete.BorderSizePixel = 2
+PetsDelete.Position = UDim2.new(0, 10, 0, 140)
+PetsDelete.Size = UDim2.new(0, 200, 0, 180)
 
-local ScrollFrame = Instance.new("ScrollingFrame")
-ScrollFrame.Name = "PetList"
-ScrollFrame.Parent = SelectionFrame
-ScrollFrame.BackgroundTransparency = 1
-ScrollFrame.Position = UDim2.new(0, 5, 0, 5)
-ScrollFrame.Size = UDim2.new(0.95, 0, 0.95, 0)
-ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-ScrollFrame.ScrollBarThickness = 6
+PetsTitleFrame.Name = "PetsTitleFrame"
+PetsTitleFrame.Position = UDim2.new(0, 55, 0, 110)
+PetsTitleFrame.Size = UDim2.new(0, 105, 0, 25)
+PetsTitleFrame.Parent = MainFrame
 
-local UIListLayout = Instance.new("UIListLayout")
-UIListLayout.Parent = ScrollFrame
-UIListLayout.Padding = UDim.new(0, 5)
-UIListLayout.SortOrder = Enum.SortOrder.Name
+PetScroll.Name = "PetsContainer"
+PetScroll.Parent = PetsDelete
+PetScroll.BackgroundTransparency = 1
+PetScroll.ScrollBarImageTransparency = 1
+PetScroll.Size = UDim2.new(0, 200, 0, 160)
+PetScroll.CanvasSize = UDim2.new(0, 0, 1, 0)
+
+Common.Name = "Common Pets"
+Common.Parent = PetScroll
+Common.BackgroundColor3 = Color3.new(1, 0, 0)
+Common.BorderColor3 = Color3.new(1, 1, 1)
+Common.BorderSizePixel = 2
+Common.LayoutOrder = 1
+Common.Position = UDim2.new(0, 10, 0, 0)
+Common.Size = UDim2.new(0, 175, 0, 25)
+Common.Font = Enum.Font.GothamBold
+Common.Text = "Common Pets"
+Common.TextColor3 = Color3.new(1, 1, 1)
+Common.TextSize = 14
+
+Uncommon.Name = "Uncommon Pets"
+Uncommon.Parent = PetScroll
+Uncommon.BackgroundColor3 = Color3.new(1, 0, 0)
+Uncommon.BorderColor3 = Color3.new(1, 1, 1)
+Uncommon.BorderSizePixel = 2
+Uncommon.LayoutOrder = 2
+Uncommon.Position = UDim2.new(0, 10, 0, 30)
+Uncommon.Size = UDim2.new(0, 175, 0, 25)
+Uncommon.Font = Enum.Font.GothamBold
+Uncommon.Text = "Uncommon Pets"
+Uncommon.TextColor3 = Color3.new(1, 1, 1)
+Uncommon.TextSize = 14
+
+Rare.Name = "Rare Pets"
+Rare.Parent = PetScroll
+Rare.BackgroundColor3 = Color3.new(1, 0, 0)
+Rare.BorderColor3 = Color3.new(1, 1, 1)
+Rare.BorderSizePixel = 2
+Rare.LayoutOrder = 3
+Rare.Position = UDim2.new(0, 10, 0, 60)
+Rare.Size = UDim2.new(0, 175, 0, 25)
+Rare.Font = Enum.Font.GothamBold
+Rare.Text = "Rare Pets"
+Rare.TextColor3 = Color3.new(1, 1, 1)
+Rare.TextSize = 14
+
+Epic.Name = "Epic Pets"
+Epic.Parent = PetScroll
+Epic.BackgroundColor3 = Color3.new(1, 0, 0)
+Epic.BorderColor3 = Color3.new(1, 1, 1)
+Epic.BorderSizePixel = 2
+Epic.LayoutOrder = 4
+Epic.Position = UDim2.new(0, 10, 0, 90)
+Epic.Size = UDim2.new(0, 175, 0, 25)
+Epic.Font = Enum.Font.GothamBold
+Epic.Text = "Epic Pets"
+Epic.TextColor3 = Color3.new(1, 1, 1)
+Epic.TextSize = 14
+
+Legendary.Name = "All Legendary Pets"
+Legendary.Parent = PetScroll
+Legendary.BackgroundColor3 = Color3.new(1, 0, 0)
+Legendary.BorderColor3 = Color3.new(1, 1, 1)
+Legendary.BorderSizePixel = 2
+Legendary.LayoutOrder = 5
+Legendary.Position = UDim2.new(0, 10, 0, 120)
+Legendary.Size = UDim2.new(0, 175, 0, 25)
+Legendary.Font = Enum.Font.GothamBold
+Legendary.Text = "All Legendary Pets"
+Legendary.TextColor3 = Color3.new(1, 1, 1)
+Legendary.TextSize = 14
+
+EzLegendary.Name = "Easy Legendary Pets"
+EzLegendary.Parent = PetScroll
+EzLegendary.BackgroundColor3 = Color3.new(1, 0, 0)
+EzLegendary.BorderColor3 = Color3.new(1, 1, 1)
+EzLegendary.BorderSizePixel = 2
+EzLegendary.LayoutOrder = 5
+EzLegendary.Position = UDim2.new(0, 10, 0, 150)
+EzLegendary.Size = UDim2.new(0, 175, 0, 25)
+EzLegendary.Font = Enum.Font.GothamBold
+EzLegendary.Text = "Easy Legendary Pets"
+EzLegendary.TextColor3 = Color3.new(1, 1, 1)
+EzLegendary.TextSize = 14
+
+UIListLayout.Parent = PetsDelete
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+UIListLayout.Padding = UDim.new(0.0500000007, 0)
 
 Equip.Name = "Equip"
 Equip.Parent = MainFrame
 Equip.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
 Equip.BorderColor3 = Color3.new(1, 1, 1)
 Equip.BorderSizePixel = 2
-Equip.Position = UDim2.new(0.574756384, 0, 0.112683572, 0)
-Equip.Size = UDim2.new(0, 150, 0, 30)
-Equip.Font = Enum.Font.SourceSans
+Equip.Position = UDim2.new(0, 120, 0.112683572, 0)
+Equip.Size = UDim2.new(0, 100, 0, 30)
+Equip.Font = Enum.Font.GothamBold
 Equip.Text = "Equip Best Pets"
+Equip.TextScaled = true
 Equip.TextColor3 = Color3.new(1, 1, 1)
 Equip.TextSize = 14
 
-YeetusFetus.Name = "YeetusFetus"
-YeetusFetus.Parent = MainFrame
-YeetusFetus.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
-YeetusFetus.BorderColor3 = Color3.new(1, 1, 1)
-YeetusFetus.BorderSizePixel = 2
-YeetusFetus.Position = UDim2.new(0.520408392, 0, 0.27754283, 0)
-YeetusFetus.Size = UDim2.new(0, 200, 0, 230)
+AutoEquip.Name = "AutoEquip"
+AutoEquip.Parent = MainFrame
+AutoEquip.BackgroundColor3 = Color3.new(255, 0, 0)
+AutoEquip.BorderSizePixel = 2
+AutoEquip.Position = UDim2.new(0, 340, 0, 75)
+AutoEquip.Size = UDim2.new(0, 100, 0, 30)
+AutoEquip.Font = Enum.Font.GothamBold
+AutoEquip.Text = "Auto Equip Best"
+AutoEquip.TextColor3 = Color3.new(1, 1, 1)
+AutoEquip.TextScaled = true
+AutoEquip.TextSize = 14
 
-UIListLayout_2.Parent = YeetusFetus
+AuraDelete.Name = "AuraDelete"
+AuraDelete.Parent = MainFrame
+AuraDelete.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+AuraDelete.BorderColor3 = Color3.new(1, 1, 1)
+AuraDelete.BorderSizePixel = 2
+AuraDelete.Position = UDim2.new(0, 230, 0, 140)
+AuraDelete.Size = UDim2.new(0, 200, 0, 180)
+
+UIListLayout_2.Parent = AuraDelete
 UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
 UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout_2.VerticalAlignment = Enum.VerticalAlignment.Center
 UIListLayout_2.Padding = UDim.new(0.0500000007, 0)
 
-ALegendary.Name = "AuraLegendary"
-ALegendary.Parent = YeetusFetus
-ALegendary.BackgroundColor3 = Color3.new(1, 0, 0)
-ALegendary.BorderColor3 = Color3.new(1, 1, 1)
-ALegendary.BorderSizePixel = 2
-ALegendary.LayoutOrder = 5
-ALegendary.Position = UDim2.new(0.0549999997, 0, -0.123931631, 0)
-ALegendary.Size = UDim2.new(0, 175, 0, 25)
-ALegendary.Font = Enum.Font.SourceSans
-ALegendary.Text = "AuraLegendary"
-ALegendary.TextColor3 = Color3.new(1, 1, 1)
-ALegendary.TextSize = 14
+AuraScroll.Name = "AurasContainer"
+AuraScroll.Parent = AuraDelete
+AuraScroll.BackgroundTransparency = 1
+AuraScroll.ScrollBarImageTransparency = 1
+AuraScroll.Size = UDim2.new(0, 200, 0, 160)
+AuraScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
 
-AEpic.Name = "AuraEpic"
-AEpic.Parent = YeetusFetus
-AEpic.BackgroundColor3 = Color3.new(1, 0, 0)
-AEpic.BorderColor3 = Color3.new(1, 1, 1)
-AEpic.BorderSizePixel = 2
-AEpic.LayoutOrder = 4
-AEpic.Position = UDim2.new(0.0599999987, 0, 0.0341880359, 0)
-AEpic.Size = UDim2.new(0, 175, 0, 25)
-AEpic.Font = Enum.Font.SourceSans
-AEpic.Text = "AuraEpic"
-AEpic.TextColor3 = Color3.new(1, 1, 1)
-AEpic.TextSize = 14
+AurasTitleFrame.Name = "AurasTitleFrame"
+AurasTitleFrame.Position = UDim2.new(0, 280, 0, 110)
+AurasTitleFrame.Size = UDim2.new(0, 105, 0, 25)
+AurasTitleFrame.Parent = MainFrame
 
-ACommon.Name = "AuraCommon"
-ACommon.Parent = YeetusFetus
-ACommon.BackgroundColor3 = Color3.new(1, 0, 0)
-ACommon.BorderColor3 = Color3.new(1, 1, 1)
-ACommon.BorderSizePixel = 2
-ACommon.LayoutOrder = 1
-ACommon.Position = UDim2.new(0.0599999987, 0, 0.0341880359, 0)
-ACommon.Size = UDim2.new(0, 175, 0, 25)
-ACommon.Font = Enum.Font.SourceSans
-ACommon.Text = "AuraCommon"
-ACommon.TextColor3 = Color3.new(1, 1, 1)
-ACommon.TextSize = 14
+CommonAura.Name = "Common Auras"
+CommonAura.Parent = AuraScroll
+CommonAura.BackgroundColor3 = Color3.new(1, 0, 0)
+CommonAura.BorderColor3 = Color3.new(1, 1, 1)
+CommonAura.BorderSizePixel = 2
+CommonAura.LayoutOrder = 1
+CommonAura.Position = UDim2.new(0, 13, 0, 0)
+CommonAura.Size = UDim2.new(0, 175, 0, 25)
+CommonAura.Font = Enum.Font.GothamBold
+CommonAura.Text = "Common Auras"
+CommonAura.TextColor3 = Color3.new(1, 1, 1)
+CommonAura.TextSize = 14
 
-AUncommon.Name = "AuraUncommon"
-AUncommon.Parent = YeetusFetus
-AUncommon.BackgroundColor3 = Color3.new(1, 0, 0)
-AUncommon.BorderColor3 = Color3.new(1, 1, 1)
-AUncommon.BorderSizePixel = 2
-AUncommon.LayoutOrder = 2
-AUncommon.Position = UDim2.new(0.0599999987, 0, 0.0341880359, 0)
-AUncommon.Size = UDim2.new(0, 175, 0, 25)
-AUncommon.Font = Enum.Font.SourceSans
-AUncommon.Text = "AuraUncommon"
-AUncommon.TextColor3 = Color3.new(1, 1, 1)
-AUncommon.TextSize = 14
+UncommonAura.Name = "Uncommon Auras"
+UncommonAura.Parent = AuraScroll
+UncommonAura.BackgroundColor3 = Color3.new(1, 0, 0)
+UncommonAura.BorderColor3 = Color3.new(1, 1, 1)
+UncommonAura.BorderSizePixel = 2
+UncommonAura.LayoutOrder = 2
+UncommonAura.Position = UDim2.new(0, 13, 0, 30)
+UncommonAura.Size = UDim2.new(0, 175, 0, 25)
+UncommonAura.Font = Enum.Font.GothamBold
+UncommonAura.Text = "uncommon Auras"
+UncommonAura.TextColor3 = Color3.new(1, 1, 1)
+UncommonAura.TextSize = 14
 
-ARare.Name = "AuraRare"
-ARare.Parent = YeetusFetus
-ARare.BackgroundColor3 = Color3.new(1, 0, 0)
-ARare.BorderColor3 = Color3.new(1, 1, 1)
-ARare.BorderSizePixel = 2
-ARare.LayoutOrder = 3
-ARare.Position = UDim2.new(0.114999995, 0, -0.141025648, 0)
-ARare.Size = UDim2.new(0, 175, 0, 25)
-ARare.Font = Enum.Font.SourceSans
-ARare.Text = "AuraRare"
-ARare.TextColor3 = Color3.new(1, 1, 1)
-ARare.TextSize = 14
+RareAura.Name = "Rare Auras"
+RareAura.Parent = AuraScroll
+RareAura.BackgroundColor3 = Color3.new(1, 0, 0)
+RareAura.BorderColor3 = Color3.new(1, 1, 1)
+RareAura.BorderSizePixel = 2
+RareAura.LayoutOrder = 3
+RareAura.Position = UDim2.new(0, 13, 0, 60)
+RareAura.Size = UDim2.new(0, 175, 0, 25)
+RareAura.Font = Enum.Font.GothamBold
+RareAura.Text = "Rare Auras"
+RareAura.TextColor3 = Color3.new(1, 1, 1)
+RareAura.TextSize = 14
 
-Title.Name = "Title"
+EpicAura.Name = "Epic Auras"
+EpicAura.Parent = AuraScroll
+EpicAura.BackgroundColor3 = Color3.new(1, 0, 0)
+EpicAura.BorderColor3 = Color3.new(1, 1, 1)
+EpicAura.BorderSizePixel = 2
+EpicAura.LayoutOrder = 4
+EpicAura.Position = UDim2.new(0, 13, 0, 90)
+EpicAura.Size = UDim2.new(0, 175, 0, 25)
+EpicAura.Font = Enum.Font.GothamBold
+EpicAura.Text = "Epic Auras"
+EpicAura.TextColor3 = Color3.new(1, 1, 1)
+EpicAura.TextSize = 14
+
+LegendaryAura.Name = "Legendary Auras"
+LegendaryAura.Parent = AuraScroll
+LegendaryAura.BackgroundColor3 = Color3.new(1, 0, 0)
+LegendaryAura.BorderColor3 = Color3.new(1, 1, 1)
+LegendaryAura.BorderSizePixel = 2
+LegendaryAura.LayoutOrder = 5
+LegendaryAura.Position = UDim2.new(0, 13, 0, 120)
+LegendaryAura.Size = UDim2.new(0, 175, 0, 25)
+LegendaryAura.Font = Enum.Font.GothamBold
+LegendaryAura.Text = "Legendary Auras"
+LegendaryAura.TextColor3 = Color3.new(1, 1, 1)
+LegendaryAura.TextSize = 14
+
+Title.Name = "Script Title"
 Title.Parent = MainFrame
 Title.BackgroundColor3 = Color3.new(1, 1, 1)
 Title.BackgroundTransparency = 1
 Title.Position = UDim2.new(0.332534194, 0, -0.000711294299, 0)
 Title.Size = UDim2.new(0, 150, 0, 30)
-Title.Font = Enum.Font.SourceSans
-Title.Text = "🐾Pet Ranch Simulator GUI"
+Title.Font = Enum.Font.GothamBold
+Title.Text = "🐾 Pet Ranch Simulator GUI"
 Title.TextColor3 = Color3.new(1, 1, 1)
+Title.TextScaled = true
 Title.TextSize = 14
 
-Title_2.Name = "Title"
-Title_2.Parent = MainFrame
+Title_2.Name = "PetsTitle"
+Title_2.Parent = PetsTitleFrame
 Title_2.BackgroundColor3 = Color3.new(0, 0, 0)
 Title_2.BackgroundTransparency = 1
-Title_2.Position = UDim2.new(0.0331437178, 0, 0.204991266, 0)
-Title_2.Size = UDim2.new(0, 200, 0, 23)
-Title_2.Font = Enum.Font.SourceSans
+Title_2.Position = UDim2.new(0, 0, 0, 2)
+Title_2.Size = UDim2.new(0, 105, 0, 23)
+Title_2.Font = Enum.Font.GothamBold
 Title_2.Text = "Delete Pets"
 Title_2.TextColor3 = Color3.new(1, 1, 1)
-Title_2.TextSize = 14
+Title_2.TextScaled = true
+Title_2.TextSize = 17
 
-Title_3.Name = "Title"
-Title_3.Parent = MainFrame
+Title_3.Name = "Aura Title"
+Title_3.Parent = AurasTitleFrame
 Title_3.BackgroundColor3 = Color3.new(0, 0, 0)
 Title_3.BackgroundTransparency = 1
-Title_3.Position = UDim2.new(0.519810379, 0, 0.204991266, 0)
-Title_3.Size = UDim2.new(0, 200, 0, 23)
-Title_3.Font = Enum.Font.SourceSans
-Title_3.Text = "Delete Aura"
+Title_3.Position = UDim2.new(0, 0, 0, 2)
+Title_3.Size = UDim2.new(0, 105, 0, 23)
+Title_3.Font = Enum.Font.GothamBold
+Title_3.Text = "Delete Auras"
 Title_3.TextColor3 = Color3.new(1, 1, 1)
-Title_3.TextSize = 14
+Title_3.TextScaled = true
+Title_3.TextSize = 16
 
-RedeemAllCodes.Name = "RedeemAllCodes"
+RedeemAllCodes.Name = "Redeem All Codes"
 RedeemAllCodes.Parent = MainFrame
 RedeemAllCodes.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
-RedeemAllCodes.Position = UDim2.new(0.0892971456, 0, 0.112683572, 0)
-RedeemAllCodes.Size = UDim2.new(0, 150, 0, 30)
-RedeemAllCodes.Font = Enum.Font.SourceSans
-RedeemAllCodes.Text = "RedeemAllCodes"
+RedeemAllCodes.Position = UDim2.new(0, 10, 0.112683572, 0)
+RedeemAllCodes.Size = UDim2.new(0, 100, 0, 30)
+RedeemAllCodes.Font = Enum.Font.GothamBold
+RedeemAllCodes.Text = "Redeem All Codes"
 RedeemAllCodes.TextColor3 = Color3.new(1, 1, 1)
-RedeemAllCodes.TextSize = 14
+RedeemAllCodes.TextScaled = true
+RedeemAllCodes.TextSize = 12
+
+AutoCollectToggle.Name = "Auto Collect"
+AutoCollectToggle.Parent = MainFrame
+AutoCollectToggle.Size = UDim2.new(0, 100, 0, 30)
+AutoCollectToggle.Position = UDim2.new(0, 230, 0, 35)
+AutoCollectToggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+AutoCollectToggle.Font = Enum.Font.GothamBold
+AutoCollectToggle.Text = "Auto Collect"
+AutoCollectToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoCollectToggle.TextSize = 16.000
+AutoCollectToggle.TextScaled = true
+AutoCollectToggle.Parent = RedeemAllCodes.Parent
+
+AutoUpgRanch.Name = "Auto Upgrade Ranch"
+AutoUpgRanch.Parent = MainFrame
+AutoUpgRanch.Size = UDim2.new(0, 100, 0, 30)
+AutoUpgRanch.Position = UDim2.new(0, 230, 0, 75)
+AutoUpgRanch.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+AutoUpgRanch.Font = Enum.Font.GothamBold
+AutoUpgRanch.Text = "Auto Upgrade Ranch"
+AutoUpgRanch.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoUpgRanch.TextSize = 16.000
+AutoUpgRanch.TextScaled = true
+AutoUpgRanch.Parent = RedeemAllCodes.Parent
+
+AutoHatch.Name = "Auto Hatch"
+AutoHatch.Parent = MainFrame
+AutoHatch.Size = UDim2.new(0, 100, 0, 30)
+AutoHatch.Position = UDim2.new(0, 340, 0, 35)
+AutoHatch.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+AutoHatch.Font = Enum.Font.GothamBold
+AutoHatch.Text = "Auto Hatch"
+AutoHatch.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoHatch.TextScaled = true
+AutoHatch.TextSize = 16.000
+
+AutoRebirth.Name = "Auto Rebirth"
+AutoRebirth.Parent = MainFrame
+AutoRebirth.Size = UDim2.new(0, 70, 0, 30)
+AutoRebirth.Position = UDim2.new(0, 120, 0, 75)
+AutoRebirth.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+AutoRebirth.Font = Enum.Font.GothamBold
+AutoRebirth.Text = "Auto Rebirth"
+AutoRebirth.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoRebirth.TextSize = 16.000
+AutoRebirth.TextScaled = true
+AutoRebirth.Parent = RedeemAllCodes.Parent
 
 Exit.Name = "Exit"
 Exit.Parent = MainFrame
-Exit.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+Exit.BackgroundColor3 = Color3.new(255, 0, 0)
 Exit.BorderColor3 = Color3.new(1, 1, 1)
 Exit.BorderSizePixel = 2
-Exit.Position = UDim2.new(0.942630529, 0, -0.00116257893, 0)
+Exit.Position = UDim2.new(0, 420, 0, 5)
 Exit.Size = UDim2.new(0, 25, 0, 25)
-Exit.Font = Enum.Font.SourceSans
+Exit.Font = Enum.Font.GothamBold
 Exit.Text = "X"
 Exit.TextColor3 = Color3.new(1, 1, 1)
 Exit.TextSize = 25
@@ -855,84 +767,46 @@ ScriptButton.Size = UDim2.new(0.0546, 0, 0.106042214, 0)
 ScriptButton.Visible = true
 
 --Function for roundedCorners
-local function addRoundedCorners(instance, radius)
+local function addRoundedCorners(instance, radius, radius2)
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(radius, 0)
+    corner.CornerRadius = UDim.new(radius, radius2)
     corner.Parent = instance
 end
 
 -- Frames with radius 0.05
 addRoundedCorners(MainFrame, 0.05)
-addRoundedCorners(Select, 0.05)
-addRoundedCorners(YeetusFetus, 0.05)
-addRoundedCorners(YeetusDeletus, 0.05)
+addRoundedCorners(RebirthFrame, 0.05)
+addRoundedCorners(PetsDelete, 0.05)
+addRoundedCorners(AuraDelete, 0.05)
+addRoundedCorners(PetsTitleFrame, 0, 6)
+addRoundedCorners(AurasTitleFrame, 0, 6)
+
 
 -- Exit button with radius 2
 addRoundedCorners(Exit, 2)
 
 -- All other buttons with radius 0.3
+addRoundedCorners(AutoEquip, 0.3)
+addRoundedCorners(AutoRebirth, 0.3)
+addRoundedCorners(AutoHatch, 0.3)
+addRoundedCorners(EzLegendary, 0.3)
+addRoundedCorners(Legendary, 0.3)
+addRoundedCorners(Epic, 0.3)
+addRoundedCorners(Common, 0.3)
+addRoundedCorners(Uncommon, 0.3)
+addRoundedCorners(Rare, 0.3)
 addRoundedCorners(Equip, 0.3)
-addRoundedCorners(ALegendary, 0.3)
-addRoundedCorners(AEpic, 0.3)
-addRoundedCorners(ACommon, 0.3)
-addRoundedCorners(AUncommon, 0.3)
-addRoundedCorners(ARare, 0.3)
+addRoundedCorners(LegendaryAura, 0.3)
+addRoundedCorners(EpicAura, 0.3)
+addRoundedCorners(CommonAura, 0.3)
+addRoundedCorners(UncommonAura, 0.3)
+addRoundedCorners(RareAura, 0.3)
 addRoundedCorners(TextButton, 0.3)
 addRoundedCorners(RedeemAllCodes, 0.3)
+addRoundedCorners(AutoCollectToggle, 0.3)
+addRoundedCorners(AutoUpgRanch, 0.3)
 
 -- Scripts:
-
-local selectedPets = {}
-
-local function PopulatePetList()
-    -- Clear existing buttons
-    for _, child in pairs(ScrollFrame:GetChildren()) do
-        if child:IsA("TextButton") then
-            child:Destroy()
-        end
-    end
-    
-    -- Track created buttons
-    local petNames = {}
-    
-    -- Get all pets from inventory
-    local petInventory = game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
-    
-    -- Iterate through ALL pets
-    for _, v in ipairs(petInventory:GetChildren()) do 
-        if v:IsA("ImageButton") and v:FindFirstChild("PetImage") then
-            local petId = v.PetImage.Image
-            local petName = PetsIdsToName[petId] or petId
-            
-            -- Create button for each unique pet
-            local button = Instance.new("TextButton")
-            button.Name = petId
-            button.Size = UDim2.new(0.95, 0, 0, 25)
-            button.BackgroundColor3 = Color3.new(1, 0, 0)
-            button.Text = petName
-            button.Parent = ScrollFrame
-            button.TextColor3 = Color3.new(1, 1, 1)
-            
-            button.MouseButton1Click:Connect(function()
-                selectedPets[petId] = not selectedPets[petId]
-                button.BackgroundColor3 = selectedPets[petId] and Color3.new(0,1,0) or Color3.new(1,0,0)
-            end)
-        end
-    end
-    
-    -- Update scroll frame size
-    local contentSize = UIListLayout.AbsoluteContentSize
-    ScrollFrame.CanvasSize = UDim2.new(0, 0, 0, contentSize.Y + 10)
-end
-
--- Toggle selection frame
-Select.MouseButton1Click:Connect(function()
-    SelectionFrame.Visible = not SelectionFrame.Visible
-    if SelectionFrame.Visible then
-        PopulatePetList()
-    end
-end)
-
 Exit.MouseButton1Click:connect(function()
 	PetRanchSimulator:Destroy()
 end)
@@ -941,27 +815,65 @@ ScriptButton.MouseButton1Click:connect(function()
     MainFrame.Visible = not MainFrame.Visible
 end)
 
-Equip.MouseButton1Click:connect(function()
-    -- First unequip all pets
+Equip.MouseButton1Click:Connect(function()
+    -- Get the pet inventory
     local petInventory = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
-    
+
+    -- State to track if any pets were destroyed
+    local petsDestroyed = false
+
+    -- Check each pet
     for _, v in pairs(petInventory:GetChildren()) do
         if v:IsA("ImageButton") then
-            local unequipArgs = {
-                [1] = "DestroyPet",
-                [2] = v.Name
-            }
-            game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction"):InvokeServer(unpack(unequipArgs))
-            wait(0.01)
+            -- Check if the pet has the specific colors
+            if v.ImageColor3 == Color3.new(255/255, 255/255, 127/255) or v.ImageColor3 == Color3.new(135/255, 255/255, 183/255) then
+                petsDestroyed = true -- Set state to true if a pet is destroyed
+                local destroyArgs = {
+                    [1] = "DestroyPet",
+                    [2] = v.Name
+                }
+                mrf:InvokeServer(unpack(destroyArgs))
+                wait(0.01) -- Small delay between each destroy call
+            end
         end
     end
+
+    -- Only fire the EquipTopPets remote if at least one pet was destroyed
+    if petsDestroyed then
+        wait(0.5) -- Short delay to ensure all DestroyPet calls are processed
+        local equipArgs = {
+            [1] = "EquipTopPets"
+        }
+        mrf:InvokeServer(unpack(equipArgs))
+    end
+end)
+
+AutoEquip.MouseButton1Click:Connect(function()
+    isAutoEquip = not isAutoEquip
+    AutoEquip.BackgroundColor3 = isAutoEquip and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
     
-    -- Then equip best pets
-    wait(0.5) -- Short delay between unequipping and equipping
-    local equipArgs = {
-        [1] = "EquipTopPets"
-    }
-    game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction"):InvokeServer(unpack(equipArgs))
+    while isAutoEquip do
+        local equipArgs = {
+            [1] = "EquipTopPets"
+        }
+        mrf:InvokeServer(unpack(equipArgs))
+        task.wait(0.1)
+    end
+end)
+
+AutoUpgRanch.MouseButton1Click:Connect(function()
+    isAutoUpgRanch = not isAutoUpgRanch
+    AutoUpgRanch.BackgroundColor3 = isAutoUpgRanch and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    
+    while isAutoUpgRanch do
+        local args = {
+            [1] = "UpgradeRanch",
+            [2] = false
+        }
+        
+        mrf:InvokeServer(unpack(args))
+        task.wait(0.1)
+    end
 end)
 
 
@@ -996,30 +908,231 @@ RedeemAllCodes.MouseButton1Click:connect(function()
             [1] = "RedeemPromoCode",
             [2] = code
         }
-        game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction"):InvokeServer(unpack(args))
+        mrf:InvokeServer(unpack(args))
         wait(0.1) -- Small delay between code redemptions
     end
 end)
 
--- Modify the deletion function to only delete selected pets
-function DeleteSelectedPets()
-    for _, v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame:GetChildren()) do 
-        if v:IsA("ImageButton") and selectedPets[v.Name] then
-            local args = {
-                [1] = "DeletePetInInventory",
-                [2] = v.Name
-            }
-            game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("MainRemoteEvent"):FireServer(unpack(args))
-            wait(0.1)
+local Players = game:GetService("Players")
+local isRunning = false
+
+local function fireAllButtonSignals(button)
+    local signals = {"Activated", "MouseButton1Down", "MouseButton2Down", "MouseButton1Click", "MouseButton2Click"}
+    for _, signal in pairs(signals) do
+        firesignal(button[signal])
+    end
+end
+
+local function clickBubbleButtons()
+    local bubbleGuis = Players.LocalPlayer.PlayerGui.BubbleGuis:GetChildren()
+    
+    for _, gui in ipairs(bubbleGuis) do
+        if gui:IsA("BillboardGui") and gui.Enabled then
+            -- Fire signals for any ImageButton or TextButton found in the BillboardGui
+            for _, button in pairs(gui:GetDescendants()) do
+                if button:IsA("ImageButton") or button:IsA("TextButton") then
+                    fireAllButtonSignals(button)
+                end
+            end
         end
     end
 end
 
-function ACommonDeletus()
+AutoCollectToggle.MouseButton1Click:Connect(function()
+    isRunning = not isRunning
+    AutoCollectToggle.BackgroundColor3 = isRunning and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    
+    while isRunning do
+        clickBubbleButtons()
+        task.wait(0.1)
+    end
+end)
+
+-- Function to create or update range visualization
+local function updateRangeVisualization(center, enabled)
+    if not enabled then
+        if rangeVisualization then
+            rangeVisualization:Destroy()
+            rangeVisualization = nil
+        end
+        return
+    end
+
+    if not rangeVisualization then
+        rangeVisualization = Instance.new("Part")
+        rangeVisualization.Name = "RangeVisualization"
+        rangeVisualization.Anchored = true
+        rangeVisualization.CanCollide = false
+        rangeVisualization.Transparency = 0.9
+        rangeVisualization.Color = Color3.fromRGB(255, 255, 255)
+        rangeVisualization.Material = Enum.Material.Neon
+        rangeVisualization.Parent = workspace
+        rangeVisualizationCylinder = Instance.new("CylinderMesh")
+        rangeVisualizationCylinder.Parent = rangeVisualization
+    end
+
+    rangeVisualization.Size = Vector3.new(15, 0.2, 15) -- Circle with 10 studs radius (X/Z size), flat on Y
+    rangeVisualization.Position = center
+end
+
+AutoHatch.MouseButton1Click:Connect(function()
+    isAutoHatching = not isAutoHatching
+    AutoHatch.BackgroundColor3 = isAutoHatching and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+
+    while isAutoHatching do
+        local targetModels = {
+            "Tier1EggCapsule", "Tier2EggCapsule", "Tier3EggCapsule", "Tier4EggCapsule",
+            "Tier5EggCapsule", "Tier6EggCapsule", "Tier7EggCapsule", "Tier8EggCapsule",
+            "Tier9EggCapsule", "Tier10EggCapsule", "AuraBox1", "RebirthAuraBox1",
+            "RebirthAuraBox2", "RebirthAuraBox3", "RebirthEggCapsule",
+            "AdvancedRebirthEggCapsule", "UltimateRebirthEggCapsule",
+            "GoldyRebirthEggCapsule"
+        }
+
+        local player = Players.LocalPlayer
+        local character = player.Character
+
+        if character then
+            local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+            if humanoidRootPart then
+                -- Update range visualization
+                updateRangeVisualization(humanoidRootPart.Position, isAutoHatching)
+
+                local closestDistance = math.huge
+                local closestModel = nil
+
+                for _, modelName in ipairs(targetModels) do
+                    local model = workspace:FindFirstChild(modelName)
+                    if model then
+                        -- Find any part in the model to use as reference
+                        local referencePart
+                        for _, part in ipairs(model:GetDescendants()) do
+                            if part:IsA("BasePart") then
+                                referencePart = part
+                                break
+                            end
+                        end
+
+                        if referencePart then
+                            local distance = Vector3.new(
+                                humanoidRootPart.Position.X - referencePart.Position.X,
+                                0,
+                                humanoidRootPart.Position.Z - referencePart.Position.Z
+                            ).Magnitude -- 2D distance (ignores Y axis)
+
+                            -- Check if within 10 studs range (circle)
+                            if distance < 7 and distance < closestDistance then
+                                closestDistance = distance
+                                closestModel = model
+                            end
+                        end
+                    end
+                end
+
+                if closestModel then
+                    -- Fix egg name formatting
+                    local eggType = closestModel.Name:gsub("EggCapsule", "Egg"):gsub("Capsule", "")
+                    local args = {
+                        [1] = "BuyEgg",
+                        [2] = eggType
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions")
+                        :WaitForChild("MainRemoteFunction"):InvokeServer(unpack(args))
+                end
+            end
+        end
+        task.wait(0.01)
+    end
+
+    -- Clean up visualization when disabled
+    updateRangeVisualization(nil, false)
+end)
+
+
+
+function CommonDeletus()
+    local petInventory = game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+    for _, v in pairs(petInventory:GetChildren()) do 
+        if v:IsA("ImageButton") and v:FindFirstChild("PetImage") then
+            for i = 1, #CommonIds do
+                if v.PetImage.Image == CommonIds[i] then
+					mre:FireServer("DeletePetInInventory", v.Name)
+                end
+            end
+        end
+    end
+end
+
+function UncommonDeletus()
+    local petInventory = game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+    for _, v in pairs(petInventory:GetChildren()) do 
+        if v:IsA("ImageButton") and v:FindFirstChild("PetImage") then
+            for i = 1, #UncommonIds do
+                if v.PetImage.Image == UncommonIds[i] then
+					mre:FireServer("DeletePetInInventory", v.Name)
+                end
+            end
+        end
+    end
+end
+
+function RareDeletus()
+    local petInventory = game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+    for _, v in pairs(petInventory:GetChildren()) do 
+        if v:IsA("ImageButton") and v:FindFirstChild("PetImage") then
+            for i = 1, #RareIds do
+                if v.PetImage.Image == RareIds[i] then
+					mre:FireServer("DeletePetInInventory", v.Name)
+                end
+            end
+        end
+    end
+end
+
+function EpicDeletus()
+    local petInventory = game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+    for _, v in pairs(petInventory:GetChildren()) do 
+        if v:IsA("ImageButton") and v:FindFirstChild("PetImage") then
+            for i = 1, #EpicIds do
+                if v.PetImage.Image == EpicIds[i] then
+					mre:FireServer("DeletePetInInventory", v.Name)
+                end
+            end
+        end
+    end
+end
+
+function LegendaryDeletus()
+    local petInventory = game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+    for _, v in pairs(petInventory:GetChildren()) do 
+        if v:IsA("ImageButton") and v:FindFirstChild("PetImage") then
+            for i = 1, #LegendaryIds do
+                if v.PetImage.Image == LegendaryIds[i] then
+					mre:FireServer("DeletePetInInventory", v.Name)
+                end
+            end
+        end
+    end
+end
+
+function EzLegendaryDeletus()
+    local petInventory = game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+    for _, v in pairs(petInventory:GetChildren()) do 
+        if v:IsA("ImageButton") and v:FindFirstChild("PetImage") then
+            for i = 1, #EzLegendaryIds do
+                if v.PetImage.Image == EzLegendaryIds[i] then
+					mre:FireServer("DeletePetInInventory", v.Name)
+                end
+            end
+        end
+    end
+end
+
+function CommonAuraDeletus()
 	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
 		if v:IsA("ImageButton") then
-			for i = 1,#ACommonIds do
-				if v.PetImage.Image == ACommonIds[i] then
+			for i = 1,#CommonAuraIds do
+				if v.PetImage.Image == CommonAuraIds[i] then
 					mre:FireServer("DeleteAuraInInventory", v.Name)
 				end
 			end
@@ -1027,11 +1140,11 @@ function ACommonDeletus()
 	end
 end
 
-function AUncommonDeletus()
+function UncommonAuraDeletus()
 	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
 		if v:IsA("ImageButton") then
-			for i = 1,#AUncommonIds do
-				if v.PetImage.Image == AUncommonIds[i] then
+			for i = 1,#UncommonAuraIds do
+				if v.PetImage.Image == UncommonAuraIds[i] then
 					mre:FireServer("DeleteAuraInInventory", v.Name)
 				end
 			end
@@ -1039,11 +1152,11 @@ function AUncommonDeletus()
 	end
 end
 
-function ARareDeletus()
+function RareAuraDeletus()
 	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
 		if v:IsA("ImageButton") then
-			for i = 1,#ARareIds do
-				if v.PetImage.Image == ARareIds[i] then
+			for i = 1,#RareAuraIds do
+				if v.PetImage.Image == RareAuraIds[i] then
 					mre:FireServer("DeleteAuraInInventory", v.Name)
 				end
 			end
@@ -1051,11 +1164,11 @@ function ARareDeletus()
 	end
 end
 
-function AEpicDeletus()
+function EpicAuraDeletus()
 	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
 		if v:IsA("ImageButton") then
-			for i = 1,#AEpicIds do
-				if v.PetImage.Image == AEpicIds[i] then
+			for i = 1,#EpicAuraIds do
+				if v.PetImage.Image == EpicAuraIds[i] then
 					mre:FireServer("DeleteAuraInInventory", v.Name)
 				end
 			end
@@ -1063,11 +1176,11 @@ function AEpicDeletus()
 	end
 end
 
-function ALegendaryDeletus()
+function LegendaryAuraDeletus()
 	for _,v in pairs(game.Players.LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.AuraInventoryScrollingFrame:GetChildren()) do 
 		if v:IsA("ImageButton") then
-			for i = 1,#ALegendaryIds do
-				if v.PetImage.Image == ALegendaryIds[i] then
+			for i = 1,#LegendaryAuraIds do
+				if v.PetImage.Image == LegendaryAuraIds[i] then
 					mre:FireServer("DeleteAuraInInventory", v.Name)
 				end
 			end
@@ -1077,7 +1190,6 @@ end
 
 Common.MouseButton1Click:connect(function()
     DeleteCommon = not DeleteCommon
-    print("DeleteCommon is now:", DeleteCommon)
     if DeleteCommon then 
         Common.BackgroundColor3 = Color3.new(0,1,0)
     else
@@ -1122,54 +1234,63 @@ Legendary.MouseButton1Click:connect(function()
 	end
 end)
 
-ACommon.MouseButton1Click:connect(function()
-	DeleteACommon = not DeleteACommon
-	if DeleteACommon then
-		ACommon.BackgroundColor3 = Color3.new(0,1,0)
+EzLegendary.MouseButton1Click:connect(function()
+	DeleteEzLegendary = not DeleteEzLegendary
+	if DeleteEzLegendary then
+		EzLegendary.BackgroundColor3 = Color3.new(0,1,0)
 	else
-		ACommon.BackgroundColor3 = Color3.new(1,0,0)
+		EzLegendary.BackgroundColor3 = Color3.new(1,0,0)
 	end
 end)
 
-AUncommon.MouseButton1Click:connect(function()
-	DeleteAUncommon = not DeleteAUncommon
-	if DeleteAUncommon then
-		AUncommon.BackgroundColor3 = Color3.new(0,1,0)
+CommonAura.MouseButton1Click:connect(function()
+	DeleteCommonAura = not DeleteCommonAura
+	if DeleteCommonAura then
+		CommonAura.BackgroundColor3 = Color3.new(0,1,0)
 	else
-		AUncommon.BackgroundColor3 = Color3.new(1,0,0)
+		CommonAura.BackgroundColor3 = Color3.new(1,0,0)
 	end
 end)
 
-ARare.MouseButton1Click:connect(function()
-	DeleteARare = not DeleteARare
-	if DeleteARare then
-		ARare.BackgroundColor3 = Color3.new(0,1,0)
+UncommonAura.MouseButton1Click:connect(function()
+	DeleteUncommonAura = not DeleteUncommonAura
+	if DeleteUncommonAura then
+		UncommonAura.BackgroundColor3 = Color3.new(0,1,0)
 	else
-		ARare.BackgroundColor3 = Color3.new(1,0,0)
+		UncommonAura.BackgroundColor3 = Color3.new(1,0,0)
 	end
 end)
 
-AEpic.MouseButton1Click:connect(function()
-	DeleteAEpic = not DeleteAEpic
-	if DeleteAEpic then
-		AEpic.BackgroundColor3 = Color3.new(0,1,0)
+RareAura.MouseButton1Click:connect(function()
+	DeleteRareAura = not DeleteRareAura
+	if DeleteRareAura then
+		RareAura.BackgroundColor3 = Color3.new(0,1,0)
 	else
-		AEpic.BackgroundColor3 = Color3.new(1,0,0)
+		RareAura.BackgroundColor3 = Color3.new(1,0,0)
 	end
 end)
 
-ALegendary.MouseButton1Click:connect(function()
-	DeleteALegendary = not ALegendary
-	if DeleteALegendary then
-		ALegendary.BackgroundColor3 = Color3.new(0,1,0)
+EpicAura.MouseButton1Click:connect(function()
+	DeleteEpicAura = not DeleteEpicAura
+	if DeleteEpicAura then
+		EpicAura.BackgroundColor3 = Color3.new(0,1,0)
 	else
-		ALegendary.BackgroundColor3 = Color3.new(1,0,0)
+		EpicAura.BackgroundColor3 = Color3.new(1,0,0)
+	end
+end)
+
+LegendaryAura.MouseButton1Click:connect(function()
+	DeleteLegendaryAura = not LegendaryAura
+	if DeleteLegendaryAura then
+		LegendaryAura.BackgroundColor3 = Color3.new(0,1,0)
+	else
+		LegendaryAura.BackgroundColor3 = Color3.new(1,0,0)
 	end
 end)
 
 
 while true do
-	wait(0.1)
+	wait(0.01)
 	if DeleteCommon then
 		CommonDeletus()
 	end
@@ -1185,20 +1306,59 @@ while true do
 	if DeleteLegendary then
 		LegendaryDeletus()
 	end
-	wait(0.1)
-	if DeleteACommon then
-		ACommonDeletus()
+    if DeleteLegendary then
+		EzLegendaryDeletus()
+	end
+	wait(0.01)
+	if DeleteCommonAura then
+		CommonAuraDeletus()
 	end
 	if DeleteUncommon then
-		AUncommonDeletus()
+		UncommonAuraDeletus()
 	end
-	if DeleteARare then
-		ARareDeletus()
+	if DeleteRareAura then
+		RareAuraDeletus()
 	end
-	if DeleteAEpic then
-		AEpicDeletus()
+	if DeleteEpicAura then
+		EpicAuraDeletus()
 	end
-	if DeleteALegendary then
-		ALegendaryDeletus()
+	if DeleteLegendaryAura then
+		LegendaryAuraDeletus()
 	end
+
+-- Billboard GUI size, distance, and transparency adjustment
+local function adjustBillboardGuis()
+    local bubbleGuis = game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("BubbleGuis")
+    for _, gui in pairs(bubbleGuis:GetChildren()) do
+        if gui:IsA("BillboardGui") then
+            gui.MaxDistance = 2000
+            
+            -- Adjust ImageButtons inside the BillboardGui
+            for _, child in pairs(gui:GetDescendants()) do
+                if child:IsA("ImageButton") then
+                    child.ImageTransparency = 0
+                end
+            end
+        end
+    end
+end
+
+-- Run initial adjustment
+adjustBillboardGuis()
+
+-- Set up connection to handle new BillboardGuis
+game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("BubbleGuis").ChildAdded:Connect(function(child)
+    if child:IsA("BillboardGui") then
+        child.MaxDistance = 2000
+        
+        -- Adjust ImageButtons inside the new BillboardGui
+        for _, descendant in pairs(child:GetDescendants()) do
+            if descendant:IsA("ImageButton") then
+                descendant.ImageTransparency = 0
+            end
+        end
+    end
+end)
+
+
     end
