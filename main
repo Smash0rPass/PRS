@@ -1,6 +1,7 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local VirtualUser = game:GetService('VirtualUser')
+local TweenService = game:GetService("TweenService")
 game:GetService('Players').LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
     VirtualUser:ClickButton2(Vector2.new())
@@ -17,8 +18,11 @@ elseif statdisplay["Gamepass_2xCoins"].Value == true then
 end
 
 local PetRanchSimulator = Instance.new("ScreenGui")
+local WholeFrame = Instance.new("Frame")
 local MainFrame = Instance.new("Frame")
+local RebirthContainer = Instance.new("Frame")
 local RebirthFrame = Instance.new("Frame")
+local RebirthScroll = Instance.new("ScrollingFrame")
 local RebirthSettings = Instance.new("ImageButton")
 local PetScroll = Instance.new("ScrollingFrame")
 local AuraScroll = Instance.new("ScrollingFrame")
@@ -53,6 +57,22 @@ local Exit = Instance.new("TextButton")
 local Minimis = Instance.new("TextButton")
 local ScriptButton = Instance.new("ImageButton")
 
+local Rebirth1 = Instance.new("TextButton")
+local Rebirth2 = Instance.new("TextButton")
+local Rebirth3 = Instance.new("TextButton")
+local Rebirth4 = Instance.new("TextButton")
+local Rebirth5 = Instance.new("TextButton")
+local Rebirth6 = Instance.new("TextButton")
+local Rebirth7 = Instance.new("TextButton")
+local Rebirth8 = Instance.new("TextButton")
+local Rebirth9 = Instance.new("TextButton")
+local Rebirth10 = Instance.new("TextButton")
+local Rebirth11 = Instance.new("TextButton")
+local Rebirth12 = Instance.new("TextButton")
+local Rebirth13 = Instance.new("TextButton")
+local Rebirth14 = Instance.new("TextButton")
+local Rebirth15 = Instance.new("TextButton")
+
 local DeleteCommon = false
 local DeleteUncommon = false
 local DeleteRare = false
@@ -70,360 +90,86 @@ local isAutoHatching = false
 local isAutoEquip = false
 local isAutoUpgRanch = false
 local isAutoRebirth = false
+local isFrameExpanded = false
 local rangeVisualization = nil
 
 local mrf = game:GetService("ReplicatedStorage").RemoteFunctions.MainRemoteFunction
 local mre = game:GetService("ReplicatedStorage").RemoteEvents.MainRemoteEvent
 
+--Pets id goes here but i've removed them since it take too much text for you.
 
-local CommonIds = {
-	"rbxassetid://3321300808", --["Blue Butterfly"] // rarity = "Common"
-    "rbxassetid://3319895658", --["White Cat"] // rarity = "Common"
-    "rbxassetid://3324883683", --["Shiny Sweets Bat"] // rarity = "Common"
-    "rbxassetid://3321328407", --["Snow Fox"] // rarity = "Common"
-    "rbxassetid://3321301027", --["Shiny Blue Butterfly"] // rarity = "Common"
-    "rbxassetid://3319957680", --["Shiny White Cat"] // rarity = "Common"
-    "rbxassetid://3324884414", --["Sweets Bat"] // rarity = "Common"
-    "rbxassetid://3710867266", --["Shiny Red Butterfly"] // rarity = "Common"
-    "rbxassetid://3321273272", --["Shiny Wolf"] // rarity = "Common"
-    "rbxassetid://3321272769", --["Ice Cat"] // rarity = "Common"
-    "rbxassetid://3321273354", --["Wolf"] // rarity = "Common"
-    "rbxassetid://3321396991", --["Shiny Polar Bear"] // rarity = "Common"
-    "rbxassetid://3321301083", --["Shiny Brown Fox"] // rarity = "Common"
-    "rbxassetid://3321300887", --["Brown Fox"] // rarity = "Common"
-    "rbxassetid://3321273075", --["Shiny Ice Cat"] // rarity = "Common"
-    "rbxassetid://3321273024", --["Shiny Bat"] // rarity = "Common"
-    "rbxassetid://3319957578", --["Shiny Fox"] // rarity = "Common"
-    "rbxassetid://3321328346", --["Shiny Snow Fox"] // rarity = "Common"
-    "rbxassetid://3319895844", --["Fox"] // rarity = "Common"
-    "rbxassetid://3321396625", --["Polar Bear"] // rarity = "Common"
-    "rbxassetid://3319957475", --["Shiny Dog"] // rarity = "Common"
-    "rbxassetid://3319895754", --["Dog"] // rarity = "Common"
-    "rbxassetid://3324853749", --["Lucky Cat"] // rarity = "Common"
-    "rbxassetid://3321272690", --["Bat"] // rarity = "Common"
-    "rbxassetid://3321327915", --["Red Butterfly"] // rarity = "Common"
-}
-local UncommonIds = {
-    "rbxassetid://3321470334", --["Shiny Tuxedo Cat"] // rarity = "Uncommon"
-    "rbxassetid://3319895561", --["Bunny"] // rarity = "Uncommon"
-    "rbxassetid://3321470447", --["Tuxedo Cat"] // rarity = "Uncommon"
-    "rbxassetid://3321273142", --["Shiny Ruby Bunny"] // rarity = "Uncommon"
-    "rbxassetid://3321469337", --["Slime"] // rarity = "Uncommon"
-    "rbxassetid://3324883581", --["Shiny Polka Dot Butterfly"] // rarity = "Uncommon"
-    "rbxassetid://3321328173", --["Shiny Midnight Cat"] // rarity = "Uncommon"
-    "rbxassetid://3321327798", --["Midnight Cat"] // rarity = "Uncommon"
-    "rbxassetid://3321468618", --["Deer"] // rarity = "Uncommon"
-    "rbxassetid://3324853925", --["Shamrock Fox"] // rarity = "Uncommon"
-    "rbxassetid://3326596100", --["Youtube Cat"] // rarity = "Uncommon"
-    "rbxassetid://3321468985", --["Shiny Deer"] // rarity = "Uncommon"
-    "rbxassetid://3321469262", --["Shiny Slime"] // rarity = "Uncommon"
-    "rbxassetid://3321272831", --["Ruby Bunny"] // rarity = "Uncommon"
-    "rbxassetid://3319957364", --["Shiny Bunny"] // rarity = "Uncommon"
-    "rbxassetid://3321396365", --["Brown Wolf"] // rarity = "Uncommon"
-    "rbxassetid://3324883483", --["Polka Dot Butterfly"] // rarity = "Uncommon"
-    "rbxassetid://3321396725", --["Shiny Brown Wolf"] // rarity = "Uncommon"
-    "rbxassetid://3321301205", --["Shiny Stone Dog"] // rarity = "Uncommon"
-    "rbxassetid://3321301417", --["Stone Dog"] // rarity = "Uncommon"
-}
-local RareIds = {
-    "rbxassetid://3652596139", --["Moonlight Sphinx"] // rarity = "Rare"
-    "rbxassetid://3321301540", --["Vampire Bat"] // rarity = "Rare"
-    "rbxassetid://3324821828", --["Shiny Dwarf"] // rarity = "Rare"
-    "rbxassetid://3324793842", --["Yeti"] // rarity = "Rare"
-    "rbxassetid://3321396923", --["Shiny Frozen Wolf"] // rarity = "Rare"
-    "rbxassetid://4147751076", --["Shiny Candy Corn Bat"] // rarity = "Rare"
-    "rbxassetid://3326474870", --["Golden Cat"] // rarity = "Rare"
-    "rbxassetid://3321470382", --["Squid"] // rarity = "Rare"
-    "rbxassetid://3326474965", --["Golden Dog"] // rarity = "Rare"
-    "rbxassetid://3324770144", --["Shiny Pegasus"] // rarity = "Rare"
-    "rbxassetid://3877247625", --["Shiny Jellyfish"] // rarity = "Rare"
-    "rbxassetid://3877248666", --["Turkey"] // rarity = "Rare"
-    "rbxassetid://3324793682", --["Shiny Yeti"] // rarity = "Rare"
-    "rbxassetid://3652596213", --["Mossy Golem"] // rarity = "Rare"
-    "rbxassetid://3877246998", --["Jellyfish"] // rarity = "Rare"
-    "rbxassetid://3324883891", --["Shiny Dogbun"] // rarity = "Rare"
-    "rbxassetid://3321468858", --["Robot"] // rarity = "Rare"
-    "rbxassetid://3326595568", --["6M Baby Phoenix"] // rarity = "Rare"
-    "rbxassetid://3321301348", --["Shiny Vampire Bat"] // rarity = "Rare"
-    "rbxassetid://3321471795", --["Shiny Horse"] // rarity = "Rare"
-    "rbxassetid://3324770240", --["Shiny Phoenix"] // rarity = "Rare"
-    "rbxassetid://3326595635", --["10M Party Angel"] // rarity = "Rare"
-    "rbxassetid://4147749952", --["Candy Corn Bat"] // rarity = "Rare"
-    "rbxassetid://3321471442", --["Horse"] // rarity = "Rare"
-    "rbxassetid://3324820925", --["Basilisk"] // rarity = "Rare"
-    "rbxassetid://3324769317", --["Demon Dragon"] // rarity = "Rare"
-    "rbxassetid://3324821534", --["Shiny Basilisk"] // rarity = "Rare"
-    "rbxassetid://3321470734", --["Shiny Lava Slime"] // rarity = "Rare"
-    "rbxassetid://3321328040", --["Shiny Flame Butterfly"] // rarity = "Rare"
-    "rbxassetid://3326595872", --["Promo Mouse"] // rarity = "Rare"
-    "rbxassetid://3326595985", --["Shiny Baby Serpent"] // rarity = "Rare"
-    "rbxassetid://3877248140", --["Shiny Turkey"] // rarity = "Rare"
-    "rbxassetid://3324770445", --["Pegasus"] // rarity = "Rare"
-    "rbxassetid://4147750685", --["Pumpkin"] // rarity = "Rare"
-    "rbxassetid://3321470797", --["Shiny Squid"] // rarity = "Rare"
-    "rbxassetid://3324793773", --["Troll"] // rarity = "Rare"
-    "rbxassetid://3321327655", --["Flame Butterfly"] // rarity = "Rare"
-    "rbxassetid://3324769842", --["Shiny Demon Dragon"] // rarity = "Rare"
-    "rbxassetid://3321469868", --["Lava Slime"] // rarity = "Rare"
-    "rbxassetid://3326595696", --["30M Mouse"] // rarity = "Rare"
-    "rbxassetid://3324854567", --["Spring Unicorn"] // rarity = "Rare"
-    "rbxassetid://3324882989", --["Dogbun"] // rarity = "Rare"
-    "rbxassetid://3324793579", --["Shiny Troll"] // rarity = "Rare"
-    "rbxassetid://3321469214", --["Shiny Robot"] // rarity = "Rare"
-    "rbxassetid://3324821169", --["Dwarf"] // rarity = "Rare"
-    "rbxassetid://3326595937", --["20M Demon"] // rarity = "Rare"
-    "rbxassetid://3321273211", --["Shiny Sapphire Bunny"] // rarity = "Rare"
-    "rbxassetid://3319957269", --["Shiny Awesome Dog"] // rarity = "Rare"
-    "rbxassetid://3471250118", --["Shiny Dalmation"] // rarity = "Rare"
-    "rbxassetid://3652596602", --["Shiny Mossy Golem"] // rarity = "Rare"
-    "rbxassetid://3324769540", --["Phoenix"] // rarity = "Rare"
-    "rbxassetid://3324792831", --["Griffin"] // rarity = "Rare"
-    "rbxassetid://3324793264", --["Shiny Griffin"] // rarity = "Rare"
-    "rbxassetid://3319895464", --["Awesome Dog"] // rarity = "Rare"
-    "rbxassetid://3652596501", --["Shiny Moonlight Sphinx"] // rarity = "Rare"
-    "rbxassetid://3471251013", --["Lightspeed Bee"] // rarity = "Rare"
-    "rbxassetid://3321472084", --["Shiny Turtle"] // rarity = "Rare"
-    "rbxassetid://3321272890", --["Sapphire Bunny"] // rarity = "Rare"
-    "rbxassetid://4147751762", --["Shiny Pumpkin"] // rarity = "Rare"
-    "rbxassetid://3471249515", --["Dalmation"] // rarity = "Rare"
-    "rbxassetid://3471250205", --["Shiny Lightspeed Bee"] // rarity = "Rare"
-    "rbxassetid://3321472257", --["Turtle"] // rarity = "Rare"
-    "rbxassetid://3321396571", --["Frozen Wolf"] // rarity = "Rare"
-    "rbxassetid://3326595503", --["1M Baby Serpent"] // rarity = "Rare"
-    "rbxassetid://3326569961", --["Shiny Party Fox"] // rarity = "Rare"
-    "rbxassetid://3326569235", --["Firework Mouse"] // rarity = "Rare"
-    "rbxassetid://3326569795", --["Shiny Firework Mouse"] // rarity = "Rare"
-    "rbxassetid://3326569354", --["Party Fox"] // rarity = "Rare"
-
-}
-local EpicIds = {
-    "rbxassetid://3324770049", --["Shiny Nova Fox"] // rarity = "Epic"
-    "rbxassetid://3471249879", --["Shiny Deep Sea Narwhal"] // rarity = "Epic"
-    "rbxassetid://3321301144", --["Shiny Midnight Bat"] // rarity = "Epic"
-    "rbxassetid://3326569102", --["Disco Robot"] // rarity = "Epic"
-    "rbxassetid://3324883798", --["Shiny Bunny Lord"] // rarity = "Epic"
-    "rbxassetid://3321272615", --["Angel Dog"] // rarity = "Epic"
-    "rbxassetid://4147751883", --["Shiny Scarecrow"] // rarity = "Epic"
-    "rbxassetid://3324882897", --["Bunny Lord"] // rarity = "Epic"
-    "rbxassetid://3324822172", --["Thunderbird"] // rarity = "Epic"
-    "rbxassetid://4147751353", --["Shiny Ghoul"] // rarity = "Epic"
-    "rbxassetid://3321328221", --["Shiny Panda"] // rarity = "Epic"
-    "rbxassetid://4147750803", --["Scarecrow"] // rarity = "Epic"
-    "rbxassetid://3324883391", --["Eggster Flock"] // rarity = "Epic"
-    "rbxassetid://4147750270", --["Ghoul"] // rarity = "Epic"
-    "rbxassetid://3321471682", --["Shiny Direwolf"] // rarity = "Epic"
-    "rbxassetid://3321396849", --["Shiny Dark Unicorn"] // rarity = "Epic"
-    "rbxassetid://3326569673", --["Shiny Disco Robot"] // rarity = "Epic"
-    "rbxassetid://3324822097", --["Shiny Thunderbird"] // rarity = "Epic"
-    "rbxassetid://3326595809", --["40M Light Leviathan"] // rarity = "Epic"
-    "rbxassetid://3324853584", --["Celtic Owl"] // rarity = "Epic"
-    "rbxassetid://3321327860", --["Panda"] // rarity = "Epic"
-    "rbxassetid://3321472023", --["Shiny Thieving Crows"] // rarity = "Epic"
-    "rbxassetid://3321470190", --["Shiny Monkey"] // rarity = "Epic"
-    "rbxassetid://3471250281", --["Shiny Nesting Eagles"] // rarity = "Epic"
-    "rbxassetid://3326568936", --["Cake"] // rarity = "Epic"
-    "rbxassetid://3321396499", --["Dark Unicorn"] // rarity = "Epic"
-    "rbxassetid://3321471266", --["Direwolf"] // rarity = "Epic"
-    "rbxassetid://3321396301", --["Black Bear"] // rarity = "Epic"
-    "rbxassetid://3321471568", --["Moonbear"] // rarity = "Epic"
-    "rbxassetid://3324793165", --["Shiny Fairy"] // rarity = "Epic"
-    "rbxassetid://3324792743", --["Fairy"] // rarity = "Epic"
-    "rbxassetid://3321396676", --["Shiny Black Bear"] // rarity = "Epic"
-    "rbxassetid://3471249956", --["Shiny Cherry Blossom Owl"] // rarity = "Epic"
-    "rbxassetid://3326570094", --["Shiny Wonderful Present"] // rarity = "Epic"
-    "rbxassetid://3321300956", --["Midnight Bat"] // rarity = "Epic"
-    "rbxassetid://3476136313", --["Cherry Blossom Owl"] // rarity = "Epic"
-    "rbxassetid://3321272961", --["Shiny Angel Dog"] // rarity = "Epic"
-    "rbxassetid://3321469162", --["Shiny Owl"] // rarity = "Epic"
-    "rbxassetid://3324884316", --["Shiny Eggster Flock"] // rarity = "Epic"
-    "rbxassetid://3324822013", --["Shiny Roc"] // rarity = "Epic"
-    "rbxassetid://3321472197", --["Thieving Crows"] // rarity = "Epic"
-    "rbxassetid://3877248536", --["Tropical Monkey"] // rarity = "Epic"
-    "rbxassetid://3324770888", --["Nova Fox"] // rarity = "Epic"
-    "rbxassetid://3877246745", --["Ember Mouse"] // rarity = "Epic"
-    "rbxassetid://3321469928", --["Monkey"] // rarity = "Epic"
-    "rbxassetid://3321468801", --["Owl"] // rarity = "Epic"
-    "rbxassetid://3652597250", --["Sprite Swarm"] // rarity = "Epic"
-    "rbxassetid://3652596829", --["Shiny Sprite Swarm"] // rarity = "Epic"
-    "rbxassetid://3321468736", --["Narwhal"] // rarity = "Epic"
-    "rbxassetid://3321469728", --["Bee"] // rarity = "Epic"
-    "rbxassetid://3554077778", --["Speckled Rabbit"] // rarity = "Epic"
-    "rbxassetid://3326493843", --["Galaxy Dragon"] // rarity = "Epic"
-    "rbxassetid://3321470062", --["Shiny Bee"] // rarity = "Epic"
-    "rbxassetid://3471249598", --["Deep Sea Narwhal"] // rarity = "Epic"
-    "rbxassetid://3471249738", --["Nesting Eagles"] // rarity = "Epic"
-    "rbxassetid://3324821342", --["Roc"] // rarity = "Epic"
-    "rbxassetid://3321471903", --["Shiny Moonbear"] // rarity = "Epic"
-    "rbxassetid://3877248031", --["Shiny Tropical Monkey"] // rarity = "Epic"
-    "rbxassetid://3321469102", --["Shiny Narwhal"] // rarity = "Epic"
-    "rbxassetid://3326569532", --["Shiny Cake"] // rarity = "Epic"
-    "rbxassetid://3326570157", --["Wonderful Present"] // rarity = "Epic"
-    "rbxassetid://3554077156", --["Calico Cat"] // rarity = "Epic"
-    "rbxassetid://3877247400", --["Shiny Ember Mouse"] // rarity = "Epic"
-}
-local LegendaryIds = {
-    "rbxassetid://3554077323", --["Grim Demonlord"] // rarity = "Legendary"
-    "rbxassetid://3971551900", --["80M DJ Eagle"] // rarity = "Legendary"
-    "rbxassetid://3321471512", --["Inferno Serpent"] // rarity = "Legendary"
-    "rbxassetid://3877247741", --["Shiny Lightning Satyr"] // rarity = "Legendary"
-    "rbxassetid://3652596913", --["Shiny Warped Wraith"] // rarity = "Legendary"
-    "rbxassetid://3324822252", --["Wisp"] // rarity = "Legendary"
-    "rbxassetid://3324884225", --["Shiny Eggiverse"] // rarity = "Legendary"
-    "rbxassetid://3321468917", --["Shiny Angel"] // rarity = "Legendary"
-    "rbxassetid://3971551745", --["80M Golden Sun Eagle"] // rarity = "Legendary"
-    "rbxassetid://3326475264", --["Satyr"] // rarity = "Legendary"
-    "rbxassetid://3471250459", --["Shiny Snow Elemental"] // rarity = "Legendary"
-    "rbxassetid://3877247131", --["Lightning Satyr"] // rarity = "Legendary"
-    "rbxassetid://3699317740", --["70M Overcharged Alicorn"] // rarity = "Legendary"
-    "rbxassetid://3321397110", --["Vampire Dragon"] // rarity = "Legendary"
-    "rbxassetid://3326474675", --["Alicorn"] // rarity = "Legendary"
-    "rbxassetid://3321397063", --["Shiny Vampire Dragon"] // rarity = "Legendary"
-    "rbxassetid://3321301489", --["Unicorn"] // rarity = "Legendary"
-    "rbxassetid://4315140017", --["90M Phoenix Flock"] // rarity = "Legendary"
-    "rbxassetid://3326475188", --["Luminous Fox"] // rarity = "Legendary"
-    "rbxassetid://3471249272", --["60M Chaotic Thunderbird"] // rarity = "Legendary"
-    "rbxassetid://3321327577", --["Android Dragon"] // rarity = "Legendary"
-    "rbxassetid://3326569423", --["Phantom Cerberus"] // rarity = "Legendary"
-    "rbxassetid://3472078786", --["60M Digital Thunderbird"] // rarity = "Legendary"
-    "rbxassetid://3324821610", --["Shiny Cthulhu"] // rarity = "Legendary"
-    "rbxassetid://4147751493", --["Shiny Horror Serpent"] // rarity = "Legendary"
-    "rbxassetid://3554077394", --["Grotto Butterfly"] // rarity = "Legendary"
-    "rbxassetid://3326595761", --["50M Albatross King"] // rarity = "Legendary"
-    "rbxassetid://3652596423", --["100K Likes Glacial Serpent"] // rarity = "Legendary"
-    "rbxassetid://3319625280", --["50M Albatross God"] // rarity = "Legendary"
-    "rbxassetid://3326596048", --["Shiny Baby Sowopent"] // rarity = "Legendary"
-    "rbxassetid://3324769459", --["Monster Fox"] // rarity = "Legendary"
-    "rbxassetid://3326569181", --["Emperor"] // rarity = "Legendary"
-    "rbxassetid://3652597389", --["Warped Wraith"] // rarity = "Legendary"
-    "rbxassetid://3554077588", --["Radioactive Monster Fox"] // rarity = "Legendary"
-    "rbxassetid://3471249433", --["Corrosive Phoenix"] // rarity = "Legendary"
-    "rbxassetid://3321328105", --["Shiny Flame Fox"] // rarity = "Legendary"
-    "rbxassetid://3321396441", --["Cerberus"] // rarity = "Legendary"
-    "rbxassetid://3321469672", --["Alien"] // rarity = "Legendary"
-    "rbxassetid://3321471848", --["Shiny Inferno Serpent"] // rarity = "Legendary"
-    "rbxassetid://3877247269", --["Shiny Ancient Earth Dragon"] // rarity = "Legendary"
-    "rbxassetid://3324792629", --["Chimera"] // rarity = "Legendary"
-    "rbxassetid://3321327975", --["Shiny Android Dragon"] // rarity = "Legendary"
-    "rbxassetid://4315302022", --["90M Blackhole Phoenix"] // rarity = "Legendary"
-    "rbxassetid://3877246877", --["Guardian Angel"] // rarity = "Legendary"
-    "rbxassetid://3321472311", --["Void Gazer"] // rarity = "Legendary"
-    "rbxassetid://3324769635", --["Ruler"] // rarity = "Legendary"
-    "rbxassetid://3471249810", --["Radiance"] // rarity = "Legendary"
-    "rbxassetid://3652596674", --["Shiny Rift Observer"] // rarity = "Legendary"
-    "rbxassetid://3321470132", --["Shiny Ice Phoenix"] // rarity = "Legendary"
-    "rbxassetid://3324821754", --["Shiny Duality"] // rarity = "Legendary"
-    "rbxassetid://3321469058", --["Shiny Demon"] // rarity = "Legendary"
-    "rbxassetid://3324769191", --["Dark Serpent"] // rarity = "Legendary"
-    "rbxassetid://3326570020", --["Shiny Phantom Cerberus"] // rarity = "Legendary"
-    "rbxassetid://3326569738", --["Shiny Emperor"] // rarity = "Legendary"
-    "rbxassetid://3652596742", --["Shiny Singularity"] // rarity = "Legendary"
-    "rbxassetid://3321471739", --["Shiny Flare Alicorn"] // rarity = "Legendary"
-    "rbxassetid://4147749761", --["Alchemist"] // rarity = "Legendary"
-    "rbxassetid://3324769737", --["Shiny Dark Serpent"] // rarity = "Legendary"
-    "rbxassetid://4147750409", --["Horror Serpent"] // rarity = "Legendary"
-    "rbxassetid://3321471318", --["Flare Alicorn"] // rarity = "Legendary"
-    "rbxassetid://3471250372", --["Shiny Radiance"] // rarity = "Legendary"
-    "rbxassetid://3324883194", --["Easter Serpent"] // rarity = "Legendary"
-    "rbxassetid://3326474785", --["Dark Phoenix"] // rarity = "Legendary"
-    "rbxassetid://3471250034", --["Shiny Corrosive Phoenix"] // rarity = "Legendary"
-    "rbxassetid://3471250541", --["Snow Elemental"] // rarity = "Legendary"
-    "rbxassetid://3326475334", --["Sphinx"] // rarity = "Legendary"
-    "rbxassetid://3321396783", --["Shiny Cerberus"] // rarity = "Legendary"
-    "rbxassetid://3554077680", --["Sky Unicorn"] // rarity = "Legendary"
-    "rbxassetid://3321469803", --["Ice Phoenix"] // rarity = "Legendary"
-    "rbxassetid://3324769949", --["Shiny Monster Fox"] // rarity = "Legendary"
-    "rbxassetid://3321468679", --["Demon"] // rarity = "Legendary"
-    "rbxassetid://3699317919", --["70M Soundwave Alicorn"] // rarity = "Legendary"
-    "rbxassetid://3324854479", --["Leprechaun"] // rarity = "Legendary"
-    "rbxassetid://3877247516", --["Shiny Guardian Angel"] // rarity = "Legendary"
-    "rbxassetid://3324793394", --["Shiny Leviathan"] // rarity = "Legendary"
-    "rbxassetid://3324883284", --["Eggiverse"] // rarity = "Legendary"
-    "rbxassetid://3324853833", --["Rainbow Elementals"] // rarity = "Legendary"
-    "rbxassetid://3652597129", --["Singularity"] // rarity = "Legendary"
-    "rbxassetid://3324884140", --["Shiny Easter Serpent"] // rarity = "Legendary"
-    "rbxassetid://3656843464", --["Rift Observer"] // rarity = "Legendary"
-    "rbxassetid://3321468526", --["Angel"] // rarity = "Legendary"
-    "rbxassetid://3324770355", --["Shiny Ruler"] // rarity = "Legendary"
-    "rbxassetid://3554077482", --["Omega Gazer"] // rarity = "Legendary"
-    "rbxassetid://3326475117", --["Imp"] // rarity = "Legendary"
-    "rbxassetid://3324793074", --["Shiny Chimera"] // rarity = "Legendary"
-    "rbxassetid://3554077246", --["Elemental Chimera"] // rarity = "Legendary"
-    "rbxassetid://3324821000", --["Cthulhu"] // rarity = "Legendary"
-    "rbxassetid://3321301272", --["Shiny Unicorn"] // rarity = "Legendary"
-    "rbxassetid://3554077861", --["Zeta Alien"] // rarity = "Legendary"
-    "rbxassetid://3324821447", --["Shiny Wisp"] // rarity = "Legendary"
-    "rbxassetid://4147750931", --["Shiny Alchemist"] // rarity = "Legendary"
-    "rbxassetid://3321469993", --["Shiny Alien"] // rarity = "Legendary"
-    "rbxassetid://3321472138", --["Shiny Void Gazer"] // rarity = "Legendary"
-    "rbxassetid://3321327717", --["Flame Fox"] // rarity = "Legendary"
-    "rbxassetid://3326475396", --["Gargoyle"] // rarity = "Legendary"
-    "rbxassetid://3324792977", --["Leviathan"] // rarity = "Legendary"
-    "rbxassetid://3877246549", --["Ancient Earth Dragon"] // rarity = "Legendary"
-    "rbxassetid://3324821083", --["Duality"] // rarity = "Legendary"
-
-}
-local EzLegendaryIds = {
-    "rbxassetid://2867903124", --["Unicorn"] // rarity = "Legendary"
-	"rbxassetid://2867899126", --["Android Dragon"] // rarity = "Legendary"
-	"rbxassetid://2867901873", --["Flame Fox"] // rarity = "Legendary"
-	"rbxassetid://2867903314", --["Vampire Dragon"] // rarity = "Legendary"
-	"rbxassetid://2867902389", --["Monster Fox"] // rarity = "Legendary"
-	"rbxassetid://2868554099", --["Dark Serpent"] // rarity = "Legendary"
-	"rbxassetid://2912788391", --["Dark Phoenix"] // rarity = "Legendary"
-	"rbxassetid://2911048050", --["Luminous Fox"] // rarity = "Legendary"
-	"rbxassetid://1249021641", --["Phowoenix"] // rarity = "Legendary"
-	"rbxassetid://3877246877", --["Guardian Angel"] // rarity = "Legendary"
-	"rbxassetid://3656843464", --["Rift Observer"] // rarity = "Legendary"
-	"rbxassetid://3652596674", --["Shiny Rift Observer"] // rarity = "Legendary"
-	"rbxassetid://3652597129", --["Singularity"] // rarity = "Legendary"
-	"rbxassetid://3652597389", --["Warped Wraith"] // rarity = "Legendary"
-}
-local CommonAuraIds = {
-	"rbxassetid://", --["Feathered Aura"] // rarity = "Common"
-
-}
-local UncommonAuraIds = {
-	"rbxassetid://2867901021", --["Bunny"] // rarity = "Uncommon"
-
-}
-local RareAuraIds = {
-	"rbxassetid://4013448900", --["Feathered Aura"] // rarity = "Rare"
-	"rbxassetid://4013449018", --["Goo Aura"] // rarity = "Rare"
-
-}
-local EpicAuraIds = {
-	"rbxassetid://4013449146", --["Heart Aura"] // rarity = "Epic"
-	"rbxassetid://4013449484", --["Musical Aura"] // rarity = "Epic"
-
-}
-local LegendaryAuraIds = {
-	"rbxassetid://2867903124", --["Unicorn"] // rarity = "Legendary"
-
-}
-
---Properties:
+--|================================================ GUI : ===================================================================|
 PetRanchSimulator.Name = "PetRanchSimulator"
 PetRanchSimulator.Parent = game.CoreGui
 
+WholeFrame.Name = "WholeFrame"
+WholeFrame.Parent = PetRanchSimulator
+WholeFrame.BackgroundColor3 = Color3.new(0.490196, 0.490196, 0.490196)
+WholeFrame.BackgroundTransparency = 1
+WholeFrame.Position = UDim2.new(0.00625485647, 0, 0.517282486, 0)
+WholeFrame.Size = UDim2.new(0, 450, 0, 325)
+WholeFrame.Active = true
+WholeFrame.Draggable = true
+
 MainFrame.Name = "MainFrame"
-MainFrame.Parent = PetRanchSimulator
+MainFrame.Parent = WholeFrame
 MainFrame.BackgroundColor3 = Color3.new(0.490196, 0.490196, 0.490196)
 MainFrame.BorderColor3 = Color3.new(1, 1, 1)
 MainFrame.BorderSizePixel = 2
-MainFrame.Position = UDim2.new(0.00625485647, 0, 0.517282486, 0)
+MainFrame.Position = UDim2.new(0, 0, 0, 0)
 MainFrame.Size = UDim2.new(0, 450, 0, 325)
-MainFrame.Active = true
-MainFrame.Draggable = true
+
+Title.Name = "Script Title"
+Title.Parent = MainFrame
+Title.BackgroundColor3 = Color3.new(1, 1, 1)
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0.332534194, 0, -0.000711294299, 0)
+Title.Size = UDim2.new(0, 150, 0, 30)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "🐾 Pet Ranch Simulator GUI"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.TextScaled = true
+Title.TextSize = 14
+
+--|================================================ Rebirth Related : ===========================================================|
 
 RebirthFrame.Name = "RebirthFrame"
-RebirthFrame.Parent = MainFrame
-RebirthFrame.BackgroundColor3 = Color3.new(125, 125, 125)
+RebirthFrame.Parent = WholeFrame
+RebirthFrame.BackgroundColor3 = Color3.new(0.490196, 0.490196, 0.490196)
 RebirthFrame.BorderSizePixel = 2
-RebirthFrame.Position = UDim2.new(0, 237, 0, 516)
+RebirthFrame.Position = UDim2.new(0, 230, 0, 0)
 RebirthFrame.Size = UDim2.new(0, 225, 0, 325)
 RebirthFrame.Visible = false
+RebirthFrame.ZIndex = 0
 RebirthFrame.Active = true
-RebirthFrame.Draggable = false
+
+--|================================================|
+
+RebirthContainer.Name = "RebirthContainer"
+RebirthContainer.Parent = RebirthFrame
+RebirthContainer.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+RebirthContainer.BorderSizePixel = 2
+RebirthContainer.Position = UDim2.new(0, 7, 0, 8)
+RebirthContainer.Size = UDim2.new(0, 210, 0, 310)
+RebirthContainer.Visible = true
+RebirthContainer.ZIndex = 0
+RebirthContainer.Active = true
+
+--|================================================|
+
+RebirthScroll.Name = "RebirthScroll"
+RebirthScroll.Parent = RebirthContainer
+RebirthScroll.BackgroundTransparency = 1
+RebirthScroll.ScrollBarImageTransparency = 1
+RebirthScroll.ScrollBarThickness = 0
+RebirthScroll.Position = UDim2.new(0, 0, 0, 0)
+RebirthScroll.Size = UDim2.new(0, 210, 0, 310)
+RebirthScroll.CanvasSize = UDim2.new(0, 0, 1.22, 0)
+RebirthScroll.Visible = true
+RebirthScroll.ZIndex = 0
+RebirthScroll.Active = true
+
+--|================================================|
 
 RebirthSettings.Name = "RebirthSettings"
 RebirthSettings.Parent = MainFrame
@@ -433,109 +179,232 @@ RebirthSettings.Position = UDim2.new(0, 195, 0, 78)
 RebirthSettings.Size = UDim2.new(0, 25, 0, 24)
 RebirthSettings.Image = "rbxassetid://85338445899943"
 
-PetsDelete.Name = "PetsDelete"
-PetsDelete.Parent = MainFrame
-PetsDelete.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
-PetsDelete.BorderColor3 = Color3.new(1, 1, 1)
-PetsDelete.BorderSizePixel = 2
-PetsDelete.Position = UDim2.new(0, 10, 0, 140)
-PetsDelete.Size = UDim2.new(0, 200, 0, 180)
+--|================================================|
 
-PetsTitleFrame.Name = "PetsTitleFrame"
-PetsTitleFrame.Position = UDim2.new(0, 55, 0, 110)
-PetsTitleFrame.Size = UDim2.new(0, 105, 0, 25)
-PetsTitleFrame.Parent = MainFrame
+Rebirth1.Name = "Rebirth1"
+Rebirth1.Parent = RebirthScroll
+Rebirth1.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth1.LayoutOrder = 1
+Rebirth1.Position = UDim2.new(0, 5, 0, 5)
+Rebirth1.Size = UDim2.new(0, 200, 0, 20)
+Rebirth1.Font = Enum.Font.GothamBold
+Rebirth1.Text = "+1 Rebirth"
+Rebirth1.TextColor3 = Color3.new(1, 1, 1)
+Rebirth1.TextScaled = true
+Rebirth1.ZIndex = 0
+Rebirth1.TextSize = 16
 
-PetScroll.Name = "PetsContainer"
-PetScroll.Parent = PetsDelete
-PetScroll.BackgroundTransparency = 1
-PetScroll.ScrollBarImageTransparency = 1
-PetScroll.Size = UDim2.new(0, 200, 0, 160)
-PetScroll.CanvasSize = UDim2.new(0, 0, 1, 0)
+--|================================================|
 
-Common.Name = "Common Pets"
-Common.Parent = PetScroll
-Common.BackgroundColor3 = Color3.new(1, 0, 0)
-Common.BorderColor3 = Color3.new(1, 1, 1)
-Common.BorderSizePixel = 2
-Common.LayoutOrder = 1
-Common.Position = UDim2.new(0, 10, 0, 0)
-Common.Size = UDim2.new(0, 175, 0, 25)
-Common.Font = Enum.Font.GothamBold
-Common.Text = "Common Pets"
-Common.TextColor3 = Color3.new(1, 1, 1)
-Common.TextSize = 14
+Rebirth2.Name = "Rebirth2"
+Rebirth2.Parent = RebirthScroll
+Rebirth2.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth2.LayoutOrder = 1
+Rebirth2.Position = UDim2.new(0, 5, 0, 30)
+Rebirth2.Size = UDim2.new(0, 200, 0, 20)
+Rebirth2.Font = Enum.Font.GothamBold
+Rebirth2.Text = "+3 Rebirth"
+Rebirth2.TextColor3 = Color3.new(1, 1, 1)
+Rebirth2.TextScaled = true
+Rebirth2.ZIndex = 0
+Rebirth2.TextSize = 16
 
-Uncommon.Name = "Uncommon Pets"
-Uncommon.Parent = PetScroll
-Uncommon.BackgroundColor3 = Color3.new(1, 0, 0)
-Uncommon.BorderColor3 = Color3.new(1, 1, 1)
-Uncommon.BorderSizePixel = 2
-Uncommon.LayoutOrder = 2
-Uncommon.Position = UDim2.new(0, 10, 0, 30)
-Uncommon.Size = UDim2.new(0, 175, 0, 25)
-Uncommon.Font = Enum.Font.GothamBold
-Uncommon.Text = "Uncommon Pets"
-Uncommon.TextColor3 = Color3.new(1, 1, 1)
-Uncommon.TextSize = 14
+--|================================================|
 
-Rare.Name = "Rare Pets"
-Rare.Parent = PetScroll
-Rare.BackgroundColor3 = Color3.new(1, 0, 0)
-Rare.BorderColor3 = Color3.new(1, 1, 1)
-Rare.BorderSizePixel = 2
-Rare.LayoutOrder = 3
-Rare.Position = UDim2.new(0, 10, 0, 60)
-Rare.Size = UDim2.new(0, 175, 0, 25)
-Rare.Font = Enum.Font.GothamBold
-Rare.Text = "Rare Pets"
-Rare.TextColor3 = Color3.new(1, 1, 1)
-Rare.TextSize = 14
+Rebirth3.Name = "Rebirth3"
+Rebirth3.Parent = RebirthScroll
+Rebirth3.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth3.LayoutOrder = 1
+Rebirth3.Position = UDim2.new(0, 5, 0, 55)
+Rebirth3.Size = UDim2.new(0, 200, 0, 20)
+Rebirth3.Font = Enum.Font.GothamBold
+Rebirth3.Text = "+5 Rebirth"
+Rebirth3.TextColor3 = Color3.new(1, 1, 1)
+Rebirth3.TextScaled = true
+Rebirth3.ZIndex = 0
+Rebirth3.TextSize = 16
 
-Epic.Name = "Epic Pets"
-Epic.Parent = PetScroll
-Epic.BackgroundColor3 = Color3.new(1, 0, 0)
-Epic.BorderColor3 = Color3.new(1, 1, 1)
-Epic.BorderSizePixel = 2
-Epic.LayoutOrder = 4
-Epic.Position = UDim2.new(0, 10, 0, 90)
-Epic.Size = UDim2.new(0, 175, 0, 25)
-Epic.Font = Enum.Font.GothamBold
-Epic.Text = "Epic Pets"
-Epic.TextColor3 = Color3.new(1, 1, 1)
-Epic.TextSize = 14
+--|================================================|
 
-Legendary.Name = "All Legendary Pets"
-Legendary.Parent = PetScroll
-Legendary.BackgroundColor3 = Color3.new(1, 0, 0)
-Legendary.BorderColor3 = Color3.new(1, 1, 1)
-Legendary.BorderSizePixel = 2
-Legendary.LayoutOrder = 5
-Legendary.Position = UDim2.new(0, 10, 0, 120)
-Legendary.Size = UDim2.new(0, 175, 0, 25)
-Legendary.Font = Enum.Font.GothamBold
-Legendary.Text = "All Legendary Pets"
-Legendary.TextColor3 = Color3.new(1, 1, 1)
-Legendary.TextSize = 14
+Rebirth4.Name = "Rebirth4"
+Rebirth4.Parent = RebirthScroll
+Rebirth4.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth4.LayoutOrder = 1
+Rebirth4.Position = UDim2.new(0, 5, 0, 80)
+Rebirth4.Size = UDim2.new(0, 200, 0, 20)
+Rebirth4.Font = Enum.Font.GothamBold
+Rebirth4.Text = "+10 Rebirth"
+Rebirth4.TextColor3 = Color3.new(1, 1, 1)
+Rebirth4.TextScaled = true
+Rebirth4.ZIndex = 0
+Rebirth4.TextSize = 16
 
-EzLegendary.Name = "Easy Legendary Pets"
-EzLegendary.Parent = PetScroll
-EzLegendary.BackgroundColor3 = Color3.new(1, 0, 0)
-EzLegendary.BorderColor3 = Color3.new(1, 1, 1)
-EzLegendary.BorderSizePixel = 2
-EzLegendary.LayoutOrder = 5
-EzLegendary.Position = UDim2.new(0, 10, 0, 150)
-EzLegendary.Size = UDim2.new(0, 175, 0, 25)
-EzLegendary.Font = Enum.Font.GothamBold
-EzLegendary.Text = "Easy Legendary Pets"
-EzLegendary.TextColor3 = Color3.new(1, 1, 1)
-EzLegendary.TextSize = 14
+--|================================================|
 
-UIListLayout.Parent = PetsDelete
-UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
-UIListLayout.Padding = UDim.new(0.0500000007, 0)
+Rebirth5.Name = "Rebirth5"
+Rebirth5.Parent = RebirthScroll
+Rebirth5.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth5.LayoutOrder = 1
+Rebirth5.Position = UDim2.new(0, 5, 0, 105)
+Rebirth5.Size = UDim2.new(0, 200, 0, 20)
+Rebirth5.Font = Enum.Font.GothamBold
+Rebirth5.Text = "+20 Rebirth"
+Rebirth5.TextColor3 = Color3.new(1, 1, 1)
+Rebirth5.TextScaled = true
+Rebirth5.ZIndex = 0
+Rebirth5.TextSize = 16
+
+--|================================================|
+
+Rebirth6.Name = "Rebirth6"
+Rebirth6.Parent = RebirthScroll
+Rebirth6.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth6.LayoutOrder = 1
+Rebirth6.Position = UDim2.new(0, 5, 0, 130)
+Rebirth6.Size = UDim2.new(0, 200, 0, 20)
+Rebirth6.Font = Enum.Font.GothamBold
+Rebirth6.Text = "+50 Rebirth"
+Rebirth6.TextColor3 = Color3.new(1, 1, 1)
+Rebirth6.TextScaled = true
+Rebirth6.ZIndex = 0
+Rebirth6.TextSize = 16
+
+--|================================================|
+
+Rebirth7.Name = "Rebirth7"
+Rebirth7.Parent = RebirthScroll
+Rebirth7.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth7.LayoutOrder = 1
+Rebirth7.Position = UDim2.new(0, 5, 0, 155)
+Rebirth7.Size = UDim2.new(0, 200, 0, 20)
+Rebirth7.Font = Enum.Font.GothamBold
+Rebirth7.Text = "+150 Rebirth"
+Rebirth7.TextColor3 = Color3.new(1, 1, 1)
+Rebirth7.TextScaled = true
+Rebirth7.ZIndex = 0
+Rebirth7.TextSize = 16
+
+--|================================================|
+
+Rebirth8.Name = "Rebirth8"
+Rebirth8.Parent = RebirthScroll
+Rebirth8.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth8.LayoutOrder = 1
+Rebirth8.Position = UDim2.new(0, 5, 0, 180)
+Rebirth8.Size = UDim2.new(0, 200, 0, 20)
+Rebirth8.Font = Enum.Font.GothamBold
+Rebirth8.Text = "+300 Rebirth"
+Rebirth8.TextColor3 = Color3.new(1, 1, 1)
+Rebirth8.TextScaled = true
+Rebirth8.ZIndex = 0
+Rebirth8.TextSize = 16
+
+--|================================================|
+
+Rebirth9.Name = "Rebirth9"
+Rebirth9.Parent = RebirthScroll
+Rebirth9.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth9.LayoutOrder = 1
+Rebirth9.Position = UDim2.new(0, 5, 0, 205)
+Rebirth9.Size = UDim2.new(0, 200, 0, 20)
+Rebirth9.Font = Enum.Font.GothamBold
+Rebirth9.Text = "+600 Rebirth"
+Rebirth9.TextColor3 = Color3.new(1, 1, 1)
+Rebirth9.TextScaled = true
+Rebirth9.ZIndex = 0
+Rebirth9.TextSize = 16
+
+--|================================================|
+
+Rebirth10.Name = "Rebirth10"
+Rebirth10.Parent = RebirthScroll
+Rebirth10.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth10.LayoutOrder = 1
+Rebirth10.Position = UDim2.new(0, 5, 0, 230)
+Rebirth10.Size = UDim2.new(0, 200, 0, 20)
+Rebirth10.Font = Enum.Font.GothamBold
+Rebirth10.Text = "+1K Rebirth"
+Rebirth10.TextColor3 = Color3.new(1, 1, 1)
+Rebirth10.TextScaled = true
+Rebirth10.ZIndex = 0
+Rebirth10.TextSize = 16
+
+--|================================================|
+
+Rebirth11.Name = "Rebirth11"
+Rebirth11.Parent = RebirthScroll
+Rebirth11.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth11.LayoutOrder = 1
+Rebirth11.Position = UDim2.new(0, 5, 0, 255)
+Rebirth11.Size = UDim2.new(0, 200, 0, 20)
+Rebirth11.Font = Enum.Font.GothamBold
+Rebirth11.Text = "+2.5K Rebirth"
+Rebirth11.TextColor3 = Color3.new(1, 1, 1)
+Rebirth11.TextScaled = true
+Rebirth11.ZIndex = 0
+Rebirth11.TextSize = 16
+
+--|================================================|
+
+Rebirth12.Name = "Rebirth12"
+Rebirth12.Parent = RebirthScroll
+Rebirth12.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth12.LayoutOrder = 1
+Rebirth12.Position = UDim2.new(0, 5, 0, 280)
+Rebirth12.Size = UDim2.new(0, 200, 0, 20)
+Rebirth12.Font = Enum.Font.GothamBold
+Rebirth12.Text = "+5K Rebirth"
+Rebirth12.TextColor3 = Color3.new(1, 1, 1)
+Rebirth12.TextScaled = true
+Rebirth12.ZIndex = 0
+Rebirth12.TextSize = 16
+
+--|================================================|
+
+Rebirth13.Name = "Rebirth13"
+Rebirth13.Parent = RebirthScroll
+Rebirth13.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth13.LayoutOrder = 1
+Rebirth13.Position = UDim2.new(0, 5, 0, 305)
+Rebirth13.Size = UDim2.new(0, 200, 0, 20)
+Rebirth13.Font = Enum.Font.GothamBold
+Rebirth13.Text = "+15K Rebirth"
+Rebirth13.TextColor3 = Color3.new(1, 1, 1)
+Rebirth13.TextScaled = true
+Rebirth13.ZIndex = 0
+Rebirth13.TextSize = 16
+
+--|================================================|
+
+Rebirth14.Name = "Rebirth14"
+Rebirth14.Parent = RebirthScroll
+Rebirth14.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth14.LayoutOrder = 1
+Rebirth14.Position = UDim2.new(0, 5, 0, 330)
+Rebirth14.Size = UDim2.new(0, 200, 0, 20)
+Rebirth14.Font = Enum.Font.GothamBold
+Rebirth14.Text = "+50K Rebirth"
+Rebirth14.TextColor3 = Color3.new(1, 1, 1)
+Rebirth14.TextScaled = true
+Rebirth14.ZIndex = 0
+Rebirth14.TextSize = 16
+
+--|================================================|
+
+Rebirth15.Name = "Rebirth15"
+Rebirth15.Parent = RebirthScroll
+Rebirth15.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rebirth15.LayoutOrder = 1
+Rebirth15.Position = UDim2.new(0, 5, 0, 355)
+Rebirth15.Size = UDim2.new(0, 200, 0, 20)
+Rebirth15.Font = Enum.Font.GothamBold
+Rebirth15.Text = "+200K Rebirth"
+Rebirth15.TextColor3 = Color3.new(1, 1, 1)
+Rebirth15.TextScaled = true
+Rebirth15.ZIndex = 0
+Rebirth15.TextSize = 16
+
+--|================================================ Buttons : ===================================================================|
 
 Equip.Name = "Equip"
 Equip.Parent = MainFrame
@@ -550,9 +419,24 @@ Equip.TextScaled = true
 Equip.TextColor3 = Color3.new(1, 1, 1)
 Equip.TextSize = 14
 
+--|================================================|
+
+RedeemAllCodes.Name = "Redeem All Codes"
+RedeemAllCodes.Parent = MainFrame
+RedeemAllCodes.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+RedeemAllCodes.Position = UDim2.new(0, 10, 0.112683572, 0)
+RedeemAllCodes.Size = UDim2.new(0, 100, 0, 30)
+RedeemAllCodes.Font = Enum.Font.GothamBold
+RedeemAllCodes.Text = "Redeem All Codes"
+RedeemAllCodes.TextColor3 = Color3.new(1, 1, 1)
+RedeemAllCodes.TextScaled = true
+RedeemAllCodes.TextSize = 12
+
+--|================================================ Toggles : ===================================================================|
+
 AutoEquip.Name = "AutoEquip"
 AutoEquip.Parent = MainFrame
-AutoEquip.BackgroundColor3 = Color3.new(255, 0, 0)
+AutoEquip.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 AutoEquip.BorderSizePixel = 2
 AutoEquip.Position = UDim2.new(0, 340, 0, 75)
 AutoEquip.Size = UDim2.new(0, 100, 0, 30)
@@ -562,108 +446,79 @@ AutoEquip.TextColor3 = Color3.new(1, 1, 1)
 AutoEquip.TextScaled = true
 AutoEquip.TextSize = 14
 
-AuraDelete.Name = "AuraDelete"
-AuraDelete.Parent = MainFrame
-AuraDelete.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
-AuraDelete.BorderColor3 = Color3.new(1, 1, 1)
-AuraDelete.BorderSizePixel = 2
-AuraDelete.Position = UDim2.new(0, 230, 0, 140)
-AuraDelete.Size = UDim2.new(0, 200, 0, 180)
+--|================================================|
 
-UIListLayout_2.Parent = AuraDelete
-UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
-UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout_2.VerticalAlignment = Enum.VerticalAlignment.Center
-UIListLayout_2.Padding = UDim.new(0.0500000007, 0)
+AutoCollectToggle.Name = "Auto Collect"
+AutoCollectToggle.Parent = MainFrame
+AutoCollectToggle.Size = UDim2.new(0, 100, 0, 30)
+AutoCollectToggle.Position = UDim2.new(0, 230, 0, 35)
+AutoCollectToggle.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+AutoCollectToggle.Font = Enum.Font.GothamBold
+AutoCollectToggle.Text = "Auto Collect"
+AutoCollectToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoCollectToggle.TextSize = 16.000
+AutoCollectToggle.TextScaled = true
+AutoCollectToggle.Parent = RedeemAllCodes.Parent
 
-AuraScroll.Name = "AurasContainer"
-AuraScroll.Parent = AuraDelete
-AuraScroll.BackgroundTransparency = 1
-AuraScroll.ScrollBarImageTransparency = 1
-AuraScroll.Size = UDim2.new(0, 200, 0, 160)
-AuraScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+--|================================================|
 
-AurasTitleFrame.Name = "AurasTitleFrame"
-AurasTitleFrame.Position = UDim2.new(0, 280, 0, 110)
-AurasTitleFrame.Size = UDim2.new(0, 105, 0, 25)
-AurasTitleFrame.Parent = MainFrame
+AutoUpgRanch.Name = "Auto Upgrade Ranch"
+AutoUpgRanch.Parent = MainFrame
+AutoUpgRanch.Size = UDim2.new(0, 100, 0, 30)
+AutoUpgRanch.Position = UDim2.new(0, 230, 0, 75)
+AutoUpgRanch.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+AutoUpgRanch.Font = Enum.Font.GothamBold
+AutoUpgRanch.Text = "Auto Upgrade Ranch"
+AutoUpgRanch.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoUpgRanch.TextSize = 16.000
+AutoUpgRanch.TextScaled = true
+AutoUpgRanch.Parent = RedeemAllCodes.Parent
 
-CommonAura.Name = "Common Auras"
-CommonAura.Parent = AuraScroll
-CommonAura.BackgroundColor3 = Color3.new(1, 0, 0)
-CommonAura.BorderColor3 = Color3.new(1, 1, 1)
-CommonAura.BorderSizePixel = 2
-CommonAura.LayoutOrder = 1
-CommonAura.Position = UDim2.new(0, 13, 0, 0)
-CommonAura.Size = UDim2.new(0, 175, 0, 25)
-CommonAura.Font = Enum.Font.GothamBold
-CommonAura.Text = "Common Auras"
-CommonAura.TextColor3 = Color3.new(1, 1, 1)
-CommonAura.TextSize = 14
+--|================================================|
 
-UncommonAura.Name = "Uncommon Auras"
-UncommonAura.Parent = AuraScroll
-UncommonAura.BackgroundColor3 = Color3.new(1, 0, 0)
-UncommonAura.BorderColor3 = Color3.new(1, 1, 1)
-UncommonAura.BorderSizePixel = 2
-UncommonAura.LayoutOrder = 2
-UncommonAura.Position = UDim2.new(0, 13, 0, 30)
-UncommonAura.Size = UDim2.new(0, 175, 0, 25)
-UncommonAura.Font = Enum.Font.GothamBold
-UncommonAura.Text = "uncommon Auras"
-UncommonAura.TextColor3 = Color3.new(1, 1, 1)
-UncommonAura.TextSize = 14
+AutoHatch.Name = "Auto Hatch"
+AutoHatch.Parent = MainFrame
+AutoHatch.Size = UDim2.new(0, 100, 0, 30)
+AutoHatch.Position = UDim2.new(0, 340, 0, 35)
+AutoHatch.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+AutoHatch.Font = Enum.Font.GothamBold
+AutoHatch.Text = "Auto Hatch"
+AutoHatch.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoHatch.TextScaled = true
+AutoHatch.TextSize = 16.000
 
-RareAura.Name = "Rare Auras"
-RareAura.Parent = AuraScroll
-RareAura.BackgroundColor3 = Color3.new(1, 0, 0)
-RareAura.BorderColor3 = Color3.new(1, 1, 1)
-RareAura.BorderSizePixel = 2
-RareAura.LayoutOrder = 3
-RareAura.Position = UDim2.new(0, 13, 0, 60)
-RareAura.Size = UDim2.new(0, 175, 0, 25)
-RareAura.Font = Enum.Font.GothamBold
-RareAura.Text = "Rare Auras"
-RareAura.TextColor3 = Color3.new(1, 1, 1)
-RareAura.TextSize = 14
+--|================================================|
 
-EpicAura.Name = "Epic Auras"
-EpicAura.Parent = AuraScroll
-EpicAura.BackgroundColor3 = Color3.new(1, 0, 0)
-EpicAura.BorderColor3 = Color3.new(1, 1, 1)
-EpicAura.BorderSizePixel = 2
-EpicAura.LayoutOrder = 4
-EpicAura.Position = UDim2.new(0, 13, 0, 90)
-EpicAura.Size = UDim2.new(0, 175, 0, 25)
-EpicAura.Font = Enum.Font.GothamBold
-EpicAura.Text = "Epic Auras"
-EpicAura.TextColor3 = Color3.new(1, 1, 1)
-EpicAura.TextSize = 14
+AutoRebirth.Name = "Auto Rebirth"
+AutoRebirth.Parent = MainFrame
+AutoRebirth.Size = UDim2.new(0, 70, 0, 30)
+AutoRebirth.Position = UDim2.new(0, 120, 0, 75)
+AutoRebirth.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+AutoRebirth.Font = Enum.Font.GothamBold
+AutoRebirth.Text = "Auto Rebirth"
+AutoRebirth.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoRebirth.TextSize = 16.000
+AutoRebirth.TextScaled = true
+AutoRebirth.Parent = RedeemAllCodes.Parent
 
-LegendaryAura.Name = "Legendary Auras"
-LegendaryAura.Parent = AuraScroll
-LegendaryAura.BackgroundColor3 = Color3.new(1, 0, 0)
-LegendaryAura.BorderColor3 = Color3.new(1, 1, 1)
-LegendaryAura.BorderSizePixel = 2
-LegendaryAura.LayoutOrder = 5
-LegendaryAura.Position = UDim2.new(0, 13, 0, 120)
-LegendaryAura.Size = UDim2.new(0, 175, 0, 25)
-LegendaryAura.Font = Enum.Font.GothamBold
-LegendaryAura.Text = "Legendary Auras"
-LegendaryAura.TextColor3 = Color3.new(1, 1, 1)
-LegendaryAura.TextSize = 14
+--|================================================ Pets Related : ==============================================================|
 
-Title.Name = "Script Title"
-Title.Parent = MainFrame
-Title.BackgroundColor3 = Color3.new(1, 1, 1)
-Title.BackgroundTransparency = 1
-Title.Position = UDim2.new(0.332534194, 0, -0.000711294299, 0)
-Title.Size = UDim2.new(0, 150, 0, 30)
-Title.Font = Enum.Font.GothamBold
-Title.Text = "🐾 Pet Ranch Simulator GUI"
-Title.TextColor3 = Color3.new(1, 1, 1)
-Title.TextScaled = true
-Title.TextSize = 14
+PetsDelete.Name = "PetsDelete"
+PetsDelete.Parent = MainFrame
+PetsDelete.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+PetsDelete.BorderColor3 = Color3.new(1, 1, 1)
+PetsDelete.BorderSizePixel = 2
+PetsDelete.Position = UDim2.new(0, 10, 0, 140)
+PetsDelete.Size = UDim2.new(0, 200, 0, 180)
+
+--|================================================|
+
+PetsTitleFrame.Name = "PetsTitleFrame"
+PetsTitleFrame.Position = UDim2.new(0, 55, 0, 110)
+PetsTitleFrame.Size = UDim2.new(0, 105, 0, 25)
+PetsTitleFrame.Parent = MainFrame
+
+--|================================================|
 
 Title_2.Name = "PetsTitle"
 Title_2.Parent = PetsTitleFrame
@@ -677,6 +532,224 @@ Title_2.TextColor3 = Color3.new(1, 1, 1)
 Title_2.TextScaled = true
 Title_2.TextSize = 17
 
+--|================================================|
+
+PetScroll.Name = "PetsContainer"
+PetScroll.Parent = PetsDelete
+PetScroll.BackgroundTransparency = 1
+PetScroll.ScrollBarImageTransparency = 1
+PetScroll.Size = UDim2.new(0, 200, 0, 160)
+PetScroll.CanvasSize = UDim2.new(0, 0, 1, 0)
+
+--|================================================|
+
+Common.Name = "Common Pets"
+Common.Parent = PetScroll
+Common.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Common.BorderColor3 = Color3.new(1, 1, 1)
+Common.BorderSizePixel = 2
+Common.LayoutOrder = 1
+Common.Position = UDim2.new(0, 10, 0, 0)
+Common.Size = UDim2.new(0, 175, 0, 25)
+Common.Font = Enum.Font.GothamBold
+Common.Text = "Common Pets"
+Common.TextColor3 = Color3.new(1, 1, 1)
+Common.TextSize = 14
+
+--|================================================|
+
+Uncommon.Name = "Uncommon Pets"
+Uncommon.Parent = PetScroll
+Uncommon.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Uncommon.BorderColor3 = Color3.new(1, 1, 1)
+Uncommon.BorderSizePixel = 2
+Uncommon.LayoutOrder = 2
+Uncommon.Position = UDim2.new(0, 10, 0, 30)
+Uncommon.Size = UDim2.new(0, 175, 0, 25)
+Uncommon.Font = Enum.Font.GothamBold
+Uncommon.Text = "Uncommon Pets"
+Uncommon.TextColor3 = Color3.new(1, 1, 1)
+Uncommon.TextSize = 14
+
+--|================================================|
+
+Rare.Name = "Rare Pets"
+Rare.Parent = PetScroll
+Rare.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Rare.BorderColor3 = Color3.new(1, 1, 1)
+Rare.BorderSizePixel = 2
+Rare.LayoutOrder = 3
+Rare.Position = UDim2.new(0, 10, 0, 60)
+Rare.Size = UDim2.new(0, 175, 0, 25)
+Rare.Font = Enum.Font.GothamBold
+Rare.Text = "Rare Pets"
+Rare.TextColor3 = Color3.new(1, 1, 1)
+Rare.TextSize = 14
+
+--|================================================|
+
+Epic.Name = "Epic Pets"
+Epic.Parent = PetScroll
+Epic.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Epic.BorderColor3 = Color3.new(1, 1, 1)
+Epic.BorderSizePixel = 2
+Epic.LayoutOrder = 4
+Epic.Position = UDim2.new(0, 10, 0, 90)
+Epic.Size = UDim2.new(0, 175, 0, 25)
+Epic.Font = Enum.Font.GothamBold
+Epic.Text = "Epic Pets"
+Epic.TextColor3 = Color3.new(1, 1, 1)
+Epic.TextSize = 14
+
+--|================================================|
+
+Legendary.Name = "All Legendary Pets"
+Legendary.Parent = PetScroll
+Legendary.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+Legendary.BorderColor3 = Color3.new(1, 1, 1)
+Legendary.BorderSizePixel = 2
+Legendary.LayoutOrder = 5
+Legendary.Position = UDim2.new(0, 10, 0, 120)
+Legendary.Size = UDim2.new(0, 175, 0, 25)
+Legendary.Font = Enum.Font.GothamBold
+Legendary.Text = "All Legendary Pets"
+Legendary.TextColor3 = Color3.new(1, 1, 1)
+Legendary.TextSize = 14
+
+--|================================================|
+
+EzLegendary.Name = "Easy Legendary Pets"
+EzLegendary.Parent = PetScroll
+EzLegendary.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+EzLegendary.BorderColor3 = Color3.new(1, 1, 1)
+EzLegendary.BorderSizePixel = 2
+EzLegendary.LayoutOrder = 5
+EzLegendary.Position = UDim2.new(0, 10, 0, 150)
+EzLegendary.Size = UDim2.new(0, 175, 0, 25)
+EzLegendary.Font = Enum.Font.GothamBold
+EzLegendary.Text = "Easy Legendary Pets"
+EzLegendary.TextColor3 = Color3.new(1, 1, 1)
+EzLegendary.TextSize = 14
+
+--|================================================|
+
+UIListLayout.Parent = PetsDelete
+UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+UIListLayout.Padding = UDim.new(0.0500000007, 0)
+
+--|================================================ Auras Related : =============================================================|
+
+AuraDelete.Name = "AuraDelete"
+AuraDelete.Parent = MainFrame
+AuraDelete.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
+AuraDelete.BorderColor3 = Color3.new(1, 1, 1)
+AuraDelete.BorderSizePixel = 2
+AuraDelete.Position = UDim2.new(0, 230, 0, 140)
+AuraDelete.Size = UDim2.new(0, 200, 0, 180)
+
+--|================================================|
+
+UIListLayout_2.Parent = AuraDelete
+UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout_2.VerticalAlignment = Enum.VerticalAlignment.Center
+UIListLayout_2.Padding = UDim.new(0.0500000007, 0)
+
+--|================================================|
+
+AuraScroll.Name = "AurasContainer"
+AuraScroll.Parent = AuraDelete
+AuraScroll.BackgroundTransparency = 1
+AuraScroll.ScrollBarImageTransparency = 1
+AuraScroll.Size = UDim2.new(0, 200, 0, 160)
+AuraScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+--|================================================|
+
+AurasTitleFrame.Name = "AurasTitleFrame"
+AurasTitleFrame.Position = UDim2.new(0, 280, 0, 110)
+AurasTitleFrame.Size = UDim2.new(0, 105, 0, 25)
+AurasTitleFrame.Parent = MainFrame
+
+--|================================================|
+
+CommonAura.Name = "Common Auras"
+CommonAura.Parent = AuraScroll
+CommonAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+CommonAura.BorderColor3 = Color3.new(1, 1, 1)
+CommonAura.BorderSizePixel = 2
+CommonAura.LayoutOrder = 1
+CommonAura.Position = UDim2.new(0, 13, 0, 0)
+CommonAura.Size = UDim2.new(0, 175, 0, 25)
+CommonAura.Font = Enum.Font.GothamBold
+CommonAura.Text = "Common Auras"
+CommonAura.TextColor3 = Color3.new(1, 1, 1)
+CommonAura.TextSize = 14
+
+--|================================================|
+
+UncommonAura.Name = "Uncommon Auras"
+UncommonAura.Parent = AuraScroll
+UncommonAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+UncommonAura.BorderColor3 = Color3.new(1, 1, 1)
+UncommonAura.BorderSizePixel = 2
+UncommonAura.LayoutOrder = 2
+UncommonAura.Position = UDim2.new(0, 13, 0, 30)
+UncommonAura.Size = UDim2.new(0, 175, 0, 25)
+UncommonAura.Font = Enum.Font.GothamBold
+UncommonAura.Text = "uncommon Auras"
+UncommonAura.TextColor3 = Color3.new(1, 1, 1)
+UncommonAura.TextSize = 14
+
+--|================================================|
+
+RareAura.Name = "Rare Auras"
+RareAura.Parent = AuraScroll
+RareAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+RareAura.BorderColor3 = Color3.new(1, 1, 1)
+RareAura.BorderSizePixel = 2
+RareAura.LayoutOrder = 3
+RareAura.Position = UDim2.new(0, 13, 0, 60)
+RareAura.Size = UDim2.new(0, 175, 0, 25)
+RareAura.Font = Enum.Font.GothamBold
+RareAura.Text = "Rare Auras"
+RareAura.TextColor3 = Color3.new(1, 1, 1)
+RareAura.TextSize = 14
+
+--|================================================|
+
+EpicAura.Name = "Epic Auras"
+EpicAura.Parent = AuraScroll
+EpicAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+EpicAura.BorderColor3 = Color3.new(1, 1, 1)
+EpicAura.BorderSizePixel = 2
+EpicAura.LayoutOrder = 4
+EpicAura.Position = UDim2.new(0, 13, 0, 90)
+EpicAura.Size = UDim2.new(0, 175, 0, 25)
+EpicAura.Font = Enum.Font.GothamBold
+EpicAura.Text = "Epic Auras"
+EpicAura.TextColor3 = Color3.new(1, 1, 1)
+EpicAura.TextSize = 14
+
+--|================================================|
+
+LegendaryAura.Name = "Legendary Auras"
+LegendaryAura.Parent = AuraScroll
+LegendaryAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
+LegendaryAura.BorderColor3 = Color3.new(1, 1, 1)
+LegendaryAura.BorderSizePixel = 2
+LegendaryAura.LayoutOrder = 5
+LegendaryAura.Position = UDim2.new(0, 13, 0, 120)
+LegendaryAura.Size = UDim2.new(0, 175, 0, 25)
+LegendaryAura.Font = Enum.Font.GothamBold
+LegendaryAura.Text = "Legendary Auras"
+LegendaryAura.TextColor3 = Color3.new(1, 1, 1)
+LegendaryAura.TextSize = 14
+
+--|================================================|
+
 Title_3.Name = "Aura Title"
 Title_3.Parent = AurasTitleFrame
 Title_3.BackgroundColor3 = Color3.new(0, 0, 0)
@@ -689,67 +762,20 @@ Title_3.TextColor3 = Color3.new(1, 1, 1)
 Title_3.TextScaled = true
 Title_3.TextSize = 16
 
-RedeemAllCodes.Name = "Redeem All Codes"
-RedeemAllCodes.Parent = MainFrame
-RedeemAllCodes.BackgroundColor3 = Color3.new(0.392157, 0.392157, 0.392157)
-RedeemAllCodes.Position = UDim2.new(0, 10, 0.112683572, 0)
-RedeemAllCodes.Size = UDim2.new(0, 100, 0, 30)
-RedeemAllCodes.Font = Enum.Font.GothamBold
-RedeemAllCodes.Text = "Redeem All Codes"
-RedeemAllCodes.TextColor3 = Color3.new(1, 1, 1)
-RedeemAllCodes.TextScaled = true
-RedeemAllCodes.TextSize = 12
+--================================================ Open/Close/Exit Gui : =============================================================
 
-AutoCollectToggle.Name = "Auto Collect"
-AutoCollectToggle.Parent = MainFrame
-AutoCollectToggle.Size = UDim2.new(0, 100, 0, 30)
-AutoCollectToggle.Position = UDim2.new(0, 230, 0, 35)
-AutoCollectToggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-AutoCollectToggle.Font = Enum.Font.GothamBold
-AutoCollectToggle.Text = "Auto Collect"
-AutoCollectToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-AutoCollectToggle.TextSize = 16.000
-AutoCollectToggle.TextScaled = true
-AutoCollectToggle.Parent = RedeemAllCodes.Parent
+ScriptButton.Parent = PetRanchSimulator
+ScriptButton.Image = "rbxassetid://80392558596740"
+ScriptButton.BackgroundTransparency = 1
+ScriptButton.Position = UDim2.new(0.946, 0, 0.686, 0)
+ScriptButton.Size = UDim2.new(0.0546, 0, 0.106042214, 0)
+ScriptButton.Visible = true
 
-AutoUpgRanch.Name = "Auto Upgrade Ranch"
-AutoUpgRanch.Parent = MainFrame
-AutoUpgRanch.Size = UDim2.new(0, 100, 0, 30)
-AutoUpgRanch.Position = UDim2.new(0, 230, 0, 75)
-AutoUpgRanch.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-AutoUpgRanch.Font = Enum.Font.GothamBold
-AutoUpgRanch.Text = "Auto Upgrade Ranch"
-AutoUpgRanch.TextColor3 = Color3.fromRGB(255, 255, 255)
-AutoUpgRanch.TextSize = 16.000
-AutoUpgRanch.TextScaled = true
-AutoUpgRanch.Parent = RedeemAllCodes.Parent
-
-AutoHatch.Name = "Auto Hatch"
-AutoHatch.Parent = MainFrame
-AutoHatch.Size = UDim2.new(0, 100, 0, 30)
-AutoHatch.Position = UDim2.new(0, 340, 0, 35)
-AutoHatch.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-AutoHatch.Font = Enum.Font.GothamBold
-AutoHatch.Text = "Auto Hatch"
-AutoHatch.TextColor3 = Color3.fromRGB(255, 255, 255)
-AutoHatch.TextScaled = true
-AutoHatch.TextSize = 16.000
-
-AutoRebirth.Name = "Auto Rebirth"
-AutoRebirth.Parent = MainFrame
-AutoRebirth.Size = UDim2.new(0, 70, 0, 30)
-AutoRebirth.Position = UDim2.new(0, 120, 0, 75)
-AutoRebirth.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-AutoRebirth.Font = Enum.Font.GothamBold
-AutoRebirth.Text = "Auto Rebirth"
-AutoRebirth.TextColor3 = Color3.fromRGB(255, 255, 255)
-AutoRebirth.TextSize = 16.000
-AutoRebirth.TextScaled = true
-AutoRebirth.Parent = RedeemAllCodes.Parent
+--|================================================|
 
 Exit.Name = "Exit"
 Exit.Parent = MainFrame
-Exit.BackgroundColor3 = Color3.new(255, 0, 0)
+Exit.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 Exit.BorderColor3 = Color3.new(1, 1, 1)
 Exit.BorderSizePixel = 2
 Exit.Position = UDim2.new(0, 420, 0, 5)
@@ -759,60 +785,115 @@ Exit.Text = "X"
 Exit.TextColor3 = Color3.new(1, 1, 1)
 Exit.TextSize = 25
 
-ScriptButton.Parent = PetRanchSimulator
-ScriptButton.Image = "rbxassetid://80392558596740"
-ScriptButton.BackgroundTransparency = 1
-ScriptButton.Position = UDim2.new(0.946, 0, 0.686, 0)
-ScriptButton.Size = UDim2.new(0.0546, 0, 0.106042214, 0)
-ScriptButton.Visible = true
+--================================================ Rounded Corners Func : ========================================================
 
---Function for roundedCorners
+--Function for Rounded Corners
 local function addRoundedCorners(instance, radius, radius2)
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(radius, radius2)
     corner.Parent = instance
 end
 
+--|================================================|
+
 -- Frames with radius 0.05
 addRoundedCorners(MainFrame, 0.05)
 addRoundedCorners(RebirthFrame, 0.05)
+addRoundedCorners(RebirthContainer, 0.05)
 addRoundedCorners(PetsDelete, 0.05)
 addRoundedCorners(AuraDelete, 0.05)
 addRoundedCorners(PetsTitleFrame, 0, 6)
 addRoundedCorners(AurasTitleFrame, 0, 6)
 
+--|================================================|
 
--- Exit button with radius 2
 addRoundedCorners(Exit, 2)
 
+--|================================================|
+
 -- All other buttons with radius 0.3
+addRoundedCorners(Equip, 0.3)
 addRoundedCorners(AutoEquip, 0.3)
 addRoundedCorners(AutoRebirth, 0.3)
 addRoundedCorners(AutoHatch, 0.3)
-addRoundedCorners(EzLegendary, 0.3)
-addRoundedCorners(Legendary, 0.3)
-addRoundedCorners(Epic, 0.3)
+addRoundedCorners(AutoCollectToggle, 0.3)
+addRoundedCorners(AutoUpgRanch, 0.3)
+addRoundedCorners(RedeemAllCodes, 0.3)
+
+--|================================================|
+
 addRoundedCorners(Common, 0.3)
 addRoundedCorners(Uncommon, 0.3)
 addRoundedCorners(Rare, 0.3)
-addRoundedCorners(Equip, 0.3)
-addRoundedCorners(LegendaryAura, 0.3)
-addRoundedCorners(EpicAura, 0.3)
+addRoundedCorners(Epic, 0.3)
+addRoundedCorners(Legendary, 0.3)
+addRoundedCorners(EzLegendary, 0.3)
+
+--|================================================|
+
 addRoundedCorners(CommonAura, 0.3)
 addRoundedCorners(UncommonAura, 0.3)
 addRoundedCorners(RareAura, 0.3)
-addRoundedCorners(TextButton, 0.3)
-addRoundedCorners(RedeemAllCodes, 0.3)
-addRoundedCorners(AutoCollectToggle, 0.3)
-addRoundedCorners(AutoUpgRanch, 0.3)
+addRoundedCorners(EpicAura, 0.3)
+addRoundedCorners(LegendaryAura, 0.3)
 
--- Scripts:
+--|================================================|
+
+addRoundedCorners(Rebirth1, 0.3)
+addRoundedCorners(Rebirth2, 0.3)
+addRoundedCorners(Rebirth3, 0.3)
+addRoundedCorners(Rebirth4, 0.3)
+addRoundedCorners(Rebirth5, 0.3)
+addRoundedCorners(Rebirth6, 0.3)
+addRoundedCorners(Rebirth7, 0.3)
+addRoundedCorners(Rebirth8, 0.3)
+addRoundedCorners(Rebirth9, 0.3)
+addRoundedCorners(Rebirth10, 0.3)
+addRoundedCorners(Rebirth11, 0.3)
+addRoundedCorners(Rebirth12, 0.3)
+addRoundedCorners(Rebirth13, 0.3)
+addRoundedCorners(Rebirth14, 0.3)
+addRoundedCorners(Rebirth15, 0.3)
+
+--|=============================================== Scripts : ==========================================================================|
+
+local tweenInfo = TweenInfo.new(
+    0.5, -- Duration
+    Enum.EasingStyle.Quad,
+    Enum.EasingDirection.Out
+)
+
+RebirthSettings.MouseButton1Click:Connect(function()
+    if not isFrameExpanded then
+        -- Show and expand the frame
+        RebirthFrame.Visible = true
+        local expandTween = TweenService:Create(RebirthFrame, tweenInfo, {
+            Position = UDim2.new(0, 460, 0, 0)
+        })
+        expandTween:Play()
+        isFrameExpanded = true
+    else
+        -- Collapse and hide the frame
+        local collapseTween = TweenService:Create(RebirthFrame, tweenInfo, {
+            Position = UDim2.new(0, 230, 0, 0)
+        })
+        collapseTween:Play()
+        
+        -- Wait for tween to complete before hiding
+        collapseTween.Completed:Connect(function()
+            RebirthFrame.Visible = false
+        end)
+        isFrameExpanded = false
+    end
+end)
+
+
 Exit.MouseButton1Click:connect(function()
 	PetRanchSimulator:Destroy()
 end)
 
 ScriptButton.MouseButton1Click:connect(function()
-    MainFrame.Visible = not MainFrame.Visible
+    WholeFrame.Visible = not WholeFrame.Visible
 end)
 
 Equip.MouseButton1Click:Connect(function()
@@ -850,7 +931,7 @@ end)
 
 AutoEquip.MouseButton1Click:Connect(function()
     isAutoEquip = not isAutoEquip
-    AutoEquip.BackgroundColor3 = isAutoEquip and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    AutoEquip.BackgroundColor3 = isAutoEquip and Color3.fromRGB(100, 178, 115) or Color3.fromRGB(160, 55, 55)
     
     while isAutoEquip do
         local equipArgs = {
@@ -863,7 +944,7 @@ end)
 
 AutoUpgRanch.MouseButton1Click:Connect(function()
     isAutoUpgRanch = not isAutoUpgRanch
-    AutoUpgRanch.BackgroundColor3 = isAutoUpgRanch and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    AutoUpgRanch.BackgroundColor3 = isAutoUpgRanch and Color3.fromRGB(100, 178, 115) or Color3.fromRGB(160, 55, 55)
     
     while isAutoUpgRanch do
         local args = {
@@ -940,7 +1021,7 @@ end
 
 AutoCollectToggle.MouseButton1Click:Connect(function()
     isRunning = not isRunning
-    AutoCollectToggle.BackgroundColor3 = isRunning and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    AutoCollectToggle.BackgroundColor3 = isRunning and Color3.fromRGB(100, 178, 115) or Color3.fromRGB(160, 55, 55)
     
     while isRunning do
         clickBubbleButtons()
@@ -977,7 +1058,7 @@ end
 
 AutoHatch.MouseButton1Click:Connect(function()
     isAutoHatching = not isAutoHatching
-    AutoHatch.BackgroundColor3 = isAutoHatching and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+    AutoHatch.BackgroundColor3 = isAutoHatching and Color3.fromRGB(100, 178, 115) or Color3.fromRGB(160, 55, 55)
 
     while isAutoHatching do
         local targetModels = {
@@ -1046,6 +1127,12 @@ AutoHatch.MouseButton1Click:Connect(function()
 
     -- Clean up visualization when disabled
     updateRangeVisualization(nil, false)
+end)
+
+
+AutoRebirth.MouseButton1Click:Connect(function()
+    isAutoRebirth = not isAutoRebirth
+    AutoRebirth.BackgroundColor3 = isAutoRebirth and Color3.fromRGB(100, 178, 115) or Color3.fromRGB(160, 55, 55)
 end)
 
 
@@ -1191,9 +1278,9 @@ end
 Common.MouseButton1Click:connect(function()
     DeleteCommon = not DeleteCommon
     if DeleteCommon then 
-        Common.BackgroundColor3 = Color3.new(0,1,0)
+        Common.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
     else
-        Common.BackgroundColor3 = Color3.new(1,0,0)
+        Common.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
     end
 end)
 
@@ -1201,90 +1288,90 @@ end)
 Uncommon.MouseButton1Click:connect(function()
 	DeleteUncommon = not DeleteUncommon
 	if DeleteUncommon then
-		Uncommon.BackgroundColor3 = Color3.new(0,1,0)
+		Uncommon.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		Uncommon.BackgroundColor3 = Color3.new(1,0,0)
+		Uncommon.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
 Rare.MouseButton1Click:connect(function()
 	DeleteRare = not DeleteRare
 	if DeleteRare then
-		Rare.BackgroundColor3 = Color3.new(0,1,0)
+		Rare.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		Rare.BackgroundColor3 = Color3.new(1,0,0)
+		Rare.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
 Epic.MouseButton1Click:connect(function()
 	DeleteEpic = not DeleteEpic
 	if DeleteEpic then
-		Epic.BackgroundColor3 = Color3.new(0,1,0)
+		Epic.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		Epic.BackgroundColor3 = Color3.new(1,0,0)
+		Epic.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
 Legendary.MouseButton1Click:connect(function()
 	DeleteLegendary = not DeleteLegendary
 	if DeleteLegendary then
-		Legendary.BackgroundColor3 = Color3.new(0,1,0)
+		Legendary.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		Legendary.BackgroundColor3 = Color3.new(1,0,0)
+		Legendary.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
 EzLegendary.MouseButton1Click:connect(function()
 	DeleteEzLegendary = not DeleteEzLegendary
 	if DeleteEzLegendary then
-		EzLegendary.BackgroundColor3 = Color3.new(0,1,0)
+		EzLegendary.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		EzLegendary.BackgroundColor3 = Color3.new(1,0,0)
+		EzLegendary.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
 CommonAura.MouseButton1Click:connect(function()
 	DeleteCommonAura = not DeleteCommonAura
 	if DeleteCommonAura then
-		CommonAura.BackgroundColor3 = Color3.new(0,1,0)
+		CommonAura.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		CommonAura.BackgroundColor3 = Color3.new(1,0,0)
+		CommonAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
 UncommonAura.MouseButton1Click:connect(function()
 	DeleteUncommonAura = not DeleteUncommonAura
 	if DeleteUncommonAura then
-		UncommonAura.BackgroundColor3 = Color3.new(0,1,0)
+		UncommonAura.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		UncommonAura.BackgroundColor3 = Color3.new(1,0,0)
+		UncommonAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
 RareAura.MouseButton1Click:connect(function()
 	DeleteRareAura = not DeleteRareAura
 	if DeleteRareAura then
-		RareAura.BackgroundColor3 = Color3.new(0,1,0)
+		RareAura.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		RareAura.BackgroundColor3 = Color3.new(1,0,0)
+		RareAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
 EpicAura.MouseButton1Click:connect(function()
 	DeleteEpicAura = not DeleteEpicAura
 	if DeleteEpicAura then
-		EpicAura.BackgroundColor3 = Color3.new(0,1,0)
+		EpicAura.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		EpicAura.BackgroundColor3 = Color3.new(1,0,0)
+		EpicAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
 LegendaryAura.MouseButton1Click:connect(function()
 	DeleteLegendaryAura = not LegendaryAura
 	if DeleteLegendaryAura then
-		LegendaryAura.BackgroundColor3 = Color3.new(0,1,0)
+		LegendaryAura.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
-		LegendaryAura.BackgroundColor3 = Color3.new(1,0,0)
+		LegendaryAura.BackgroundColor3 = Color3.fromRGB(160, 55, 55)
 	end
 end)
 
