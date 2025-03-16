@@ -1,0 +1,2013 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local PetInv = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory
+local PetInner = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame
+local PetScroll = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+local MaxPetEquipped = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.MaxPetEquipped
+local PetEquipped = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetEquipped
+local PetOwnedSeparator = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetOwnedSeperator
+local MassDelete = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.MassDeleteButton
+local EquipTopPets = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.EquipTopPets
+local PetInvOver =game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryOverlay
+local TweenService = game:GetService("TweenService")
+local button = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightUIFrame.PetInventoryOpen
+
+button.Position = UDim2.new(0, 0, 0, 900)
+button.Size = UDim2.new(0.4, 0, 0.15, 0)
+button.AnchorPoint = Vector2.new(0.5, 0.5)
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "PetInv"
+ScreenGui.Parent = PetInv
+
+
+local ScreenGui2 = Instance.new("ScreenGui")
+ScreenGui2.Name = "NewGui"
+ScreenGui2.Parent = PetInner
+
+
+local MainFrame1 = Instance.new("Frame")
+MainFrame1.Name = "MainFrame1"
+MainFrame1.Size = UDim2.new(0, 1000, 0, 500)
+MainFrame1.Position = UDim2.new(0, 455, 0, 250)
+MainFrame1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame1.Parent = ScreenGui
+
+
+local MainFrame2 = Instance.new("Frame")
+MainFrame2.Name = "MainFrame2"
+MainFrame2.BackgroundTransparency = 1
+MainFrame2.Size = UDim2.new(0, 1000, 0, 500)
+MainFrame2.Position = UDim2.new(0, 455, 0, 250)
+MainFrame2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MainFrame2.Parent = ScreenGui2
+
+
+local MainCorner = Instance.new("UICorner")
+MainCorner.CornerRadius = UDim.new(0, 25)
+MainCorner.Parent = MainFrame1
+
+local MainStroke = Instance.new("UIStroke")
+MainStroke.Color = Color3.fromRGB(46, 46, 53)
+MainStroke.Thickness = 5
+MainStroke.Parent = MainFrame1
+
+local SpecialFrame = Instance.new("Frame")
+SpecialFrame.Name = "SpecialBttns"
+SpecialFrame.Size = UDim2.new(0, 300, 0, 50)
+SpecialFrame.Position = UDim2.new(0, 650, 0, -25)
+SpecialFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SpecialFrame.Parent = MainFrame2
+
+MassDelete.Size = UDim2.new(0, 40, 0, 40)
+MassDelete.Position = UDim2.new(0, 145, 0, 4)
+MassDelete.Image = "rbxassetid://96632271030514"
+MassDelete.ImageColor3 = Color3.fromRGB(46, 46, 53)
+MassDelete.Parent = SpecialFrame
+
+EquipTopPets.Size = UDim2.new(0, 40, 0, 40)
+EquipTopPets.Position = UDim2.new(0, 60, 0, 4)
+EquipTopPets.Image = "rbxassetid://133453817967093"
+EquipTopPets.ImageColor3 = Color3.fromRGB(46, 46, 53)
+EquipTopPets.Parent = SpecialFrame
+
+local UnequipAll = Instance.new("ImageButton")
+UnequipAll.Name = "UnequipAll"
+UnequipAll.BackgroundTransparency = 1
+UnequipAll.Size = UDim2.new(0, 37, 0, 37)
+UnequipAll.Position = UDim2.new(0, 105, 0, 7)
+UnequipAll.ImageColor3 = Color3.fromRGB(46, 46, 53)
+UnequipAll.Image = "rbxassetid://136457455671765"
+UnequipAll.Parent = SpecialFrame
+
+EquipTopPets.EquipBestPetsText:Destroy()
+
+local ShrinkCorner = Instance.new("UICorner")
+ShrinkCorner.CornerRadius = UDim.new(0, 50)
+ShrinkCorner.Parent = SpecialFrame
+
+
+local ShrinkStroke = Instance.new("UIStroke")
+ShrinkStroke.Color = Color3.fromRGB(46, 46, 53)
+ShrinkStroke.Thickness = 5
+ShrinkStroke.Parent = SpecialFrame
+
+local ShrinkButton = Instance.new("ImageButton")
+ShrinkButton.Name = "ShrinkButton"
+ShrinkButton.Size = UDim2.new(0.4, 0, 0.9, 0)
+ShrinkButton.Position = UDim2.new(0, 10, 0, 2)
+ShrinkButton.BackgroundTransparency = 1
+ShrinkButton.Image = "rbxassetid://13654931441"
+ShrinkButton.ImageColor3 = Color3.fromRGB(46, 46, 53)
+ShrinkButton.Parent = SpecialFrame
+
+local ShrinkBttnUiAspect = Instance.new("UIAspectRatioConstraint")
+ShrinkBttnUiAspect.Parent = ShrinkButton
+
+
+local EquippedFrame = Instance.new("Frame")
+EquippedFrame.Name = "EquippedFrame"
+EquippedFrame.Size = UDim2.new(0, 600, 0, 50)
+EquippedFrame.Position = UDim2.new(0, 200, 0, 40)
+EquippedFrame.BackgroundTransparency = 1
+EquippedFrame.Parent = MainFrame2
+
+
+local RGradient = Instance.new("Frame")
+RGradient.Name = "RGradient"
+RGradient.Size = UDim2.new(0, 250, 0, 3)
+RGradient.Position = UDim2.new(0, 450, 0, 25)
+RGradient.BorderSizePixel = 0
+RGradient.Parent = EquippedFrame
+
+
+local LGradient = Instance.new("Frame")
+LGradient.Name = "LGradient"
+LGradient.Size = UDim2.new(0, 250, 0, 3)
+LGradient.Position = UDim2.new(0, -100, 0, 25)
+LGradient.BorderSizePixel = 0
+LGradient.Parent = EquippedFrame
+
+
+local RGradient2 = Instance.new("UIGradient")
+RGradient2.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 1),
+NumberSequenceKeypoint.new(0.5, 0.5),
+NumberSequenceKeypoint.new(1, 1)
+})
+RGradient2.Parent = RGradient
+
+
+local LGradient2 = Instance.new("UIGradient")
+LGradient2.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 1),
+NumberSequenceKeypoint.new(0.5, 0.5),
+NumberSequenceKeypoint.new(1, 1)
+})
+LGradient2.Parent = LGradient
+
+
+local PetEquippedLabel = Instance.new("TextLabel")
+PetEquippedLabel.Name = "Equipped"
+PetEquippedLabel.BackgroundTransparency = 1
+PetEquippedLabel.Position = UDim2.new(0, 100, 0, 13)
+PetEquippedLabel.Size = UDim2.new(0, 300, 0, 25)
+PetEquippedLabel.Font = Enum.Font.FredokaOne
+PetEquippedLabel.Text = "Pets Equipped :"
+PetEquippedLabel.TextSize = 30
+PetEquippedLabel.TextColor3 = Color3.fromRGB(27, 42, 53)
+PetEquippedLabel.Parent = EquippedFrame
+
+
+MaxPetEquipped.Position = UDim2.new(0, 410, 0, 5)
+MaxPetEquipped.Size = UDim2.new(0, 40, 0, 40)
+MaxPetEquipped.TextColor3 = Color3.fromRGB(0, 166, 242)
+MaxPetEquipped.TextXAlignment = Enum.TextXAlignment.Right
+MaxPetEquipped.TextStrokeTransparency = 1
+MaxPetEquipped.Parent = EquippedFrame
+
+
+PetEquipped.Position = UDim2.new(0, 355, 0, 5)
+PetEquipped.Size = UDim2.new(0, 38, 0, 38)
+PetEquipped.TextColor3 = Color3.fromRGB(0, 166, 242)
+PetEquipped.TextStrokeTransparency = 1
+MaxPetEquipped.TextXAlignment = Enum.TextXAlignment.Right
+PetEquipped.Parent = EquippedFrame
+
+
+PetOwnedSeparator.Parent = EquippedFrame
+PetOwnedSeparator.Position = UDim2.new(0, 380, 0, 5)
+PetOwnedSeparator.Size = UDim2.new(0, 40, 0, 40)
+PetOwnedSeparator.TextColor3 = Color3.fromRGB(0, 166, 242)
+PetOwnedSeparator.TextStrokeTransparency = 1
+
+
+local Pets = Instance.new("ScrollingFrame")
+Pets.Name = "Pets"
+Pets.BackgroundTransparency = 1
+Pets.CanvasSize = UDim2.new(0, 0, 3, 0)
+Pets.Position = UDim2.new(0, 0, 0, 90)
+Pets.AutomaticSize = Enum.AutomaticSize.XY
+Pets.BorderSizePixel = 0
+Pets.Size = UDim2.new(0, 1000, 0, 400)
+Pets.Parent = MainFrame2
+
+
+local PetsUIAspect = Instance.new("UIAspectRatioConstraint")
+PetsUIAspect.Name = "PetsUIAspect"
+PetsUIAspect.AspectRatio = 2.5
+PetsUIAspect.Parent = Pets
+
+
+local PetsUIPadding = Instance.new("UIPadding")
+PetsUIPadding.Name = "PetsUIPadding"
+PetsUIPadding.PaddingBottom = UDim.new(0, 20)
+PetsUIPadding.PaddingBottom = UDim.new(0.005, 5)
+PetsUIPadding.PaddingBottom = UDim.new(0, 5)
+PetsUIPadding.PaddingBottom = UDim.new(0, 30)
+PetsUIPadding.Parent = Pets
+
+
+local PetsUIList = Instance.new("UIListLayout")
+PetsUIList.Name = "PetsUIList"
+PetsUIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+PetsUIList.Padding = UDim.new(0, 25)
+PetsUIList.Parent = Pets
+
+
+local EquippedPets = Instance.new("Frame")
+EquippedPets.Name = "EquippedPets"
+EquippedPets.AutomaticSize = Enum.AutomaticSize.Y
+EquippedPets.BackgroundTransparency = 1
+EquippedPets.Position = UDim2.new(0, 0, 0, 0)
+EquippedPets.Size = UDim2.new(1,0, 0, 0)
+EquippedPets.Parent = Pets
+
+
+local EquippedPetsGridLayout = Instance.new("UIGridLayout")
+EquippedPetsGridLayout.CellPadding = UDim2.new(0, 5, 0, 5)
+EquippedPetsGridLayout.CellSize = UDim2.new(0, 90, 0, 90)
+EquippedPetsGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+EquippedPetsGridLayout.Parent = EquippedPets
+
+
+local Div = Instance.new("Frame")
+Div.Name = "ODiv"
+Div.BackgroundTransparency = 1
+Div.Size = UDim2.new(0, 900, 0, 3)
+Div.Parent = Pets
+
+
+local DivAspectRatio = Instance.new("UIAspectRatioConstraint")
+DivAspectRatio.Name = "DivAspectRatio"
+DivAspectRatio.AspectRatio = 300
+DivAspectRatio.Parent = Div
+
+
+local DivGradientFrame = Instance.new("Frame")
+DivGradientFrame.BackgroundTransparency = 0
+DivGradientFrame.Name = "DivGradientFrame"
+DivGradientFrame.BorderSizePixel = 0
+DivGradientFrame.Position = UDim2.new(0, 0, 0, 0)
+DivGradientFrame.Size = UDim2.new(0, 900, 0, 3)
+DivGradientFrame.Parent = Div
+
+
+local DivGradient = Instance.new("UIGradient")
+DivGradient.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 2.5),
+NumberSequenceKeypoint.new(0.5, 0.7),
+NumberSequenceKeypoint.new(1, 2.5)
+})
+DivGradient.Parent = DivGradientFrame
+
+
+PetScroll.Size = UDim2.new(0, 900, 0, 400)
+PetScroll.AutomaticSize = Enum.AutomaticSize.XY
+PetScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+PetScroll.Position = UDim2.new(0, 50, 0, 90)
+PetScroll.UIGridLayout.CellSize = UDim2.new(0, 90, 0, 90)
+PetScroll.UIGridLayout.CellPadding = UDim2.new(0, 10, 0, 10)
+PetScroll.UIGridLayout.FillDirectionMaxCells = 100
+PetScroll.BorderSizePixel = 0
+PetScroll.ScrollBarImageTransparency = 1
+PetScroll.Parent = Pets
+
+
+local PetScrollPadding = Instance.new("UIPadding")
+PetScrollPadding.PaddingRight = UDim.new(0, -10)
+PetScrollPadding.Parent = PetScroll
+
+local PetScrollUIAspect = Instance.new("UIAspectRatioConstraint")
+PetScrollUIAspect.Name = "PetScrollUIAspect"
+PetScrollUIAspect.AspectRatio = 3.51
+PetScrollUIAspect.Parent = PetScroll
+
+
+PetInvOver.Position = UDim2.new(0, 1025, 0, 0)
+PetInvOver.BackgroundTransparency = 1
+PetInvOver.ImageTransparency = 1
+PetInvOver.Parent = MainFrame2
+
+local PetInvOverFrame = Instance.new("Frame")
+PetInvOverFrame.Size = UDim2.new(0, 350, 0, 500)
+PetInvOverFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+PetInvOverFrame.Parent = PetInvOver
+
+local PetInvOverUiCor = Instance.new("UICorner")
+PetInvOverUiCor. CornerRadius = UDim.new(0, 25)
+PetInvOverUiCor.Parent = PetInvOverFrame
+
+local PetInvOverUiStroke = Instance.new("UIStroke")
+PetInvOverUiStroke.Color = Color3.fromRGB(46, 46, 53)
+PetInvOverUiStroke.Thickness = 5
+PetInvOverUiStroke.Parent = PetInvOverFrame
+
+------------------------------------------------------
+
+local UIStroke1 = Instance.new("UIStroke")
+UIStroke1.Color = Color3.fromRGB(46, 46, 53)
+UIStroke1.Thickness = 3
+UIStroke1.Parent = PetInvOver.Upgrade5Frame.Upgrade5Box
+
+local UIStroke2 = Instance.new("UIStroke")
+UIStroke2.Color = Color3.fromRGB(46, 46, 53)
+UIStroke2.Thickness = 3
+UIStroke2.Parent = PetInvOver.ItemName
+
+PetInvOver.ItemName.TextColor3 = Color3.fromRGB(255, 255, 255)
+PetInvOver.Upgrade5Frame.Upgrade5Text.TextScaled = false
+PetInvOver.Upgrade5Frame.Upgrade5Text.TextWrapped = false
+PetInvOver.Upgrade5Frame.Upgrade5Text.Text = "Upgrade : 5X"
+PetInvOver.Upgrade5Frame.BorderSizePixel = 0
+PetInvOver.Upgrade5Frame.Upgrade5Text.Position = UDim2.new(0, 90, 0, 0)
+PetInvOver.Upgrade5Frame.Upgrade5Text.TextColor3 = Color3.fromRGB(0, 170, 255)
+PetInvOver.Upgrade5Frame.Upgrade5Box.Image = "rbxassetid://75147311088478"
+PetInvOver.Upgrade5Frame.Upgrade5Box.Size = UDim2.new(0, 45, 0, 40)
+PetInvOver.Upgrade5Frame.Upgrade5Text.TextSize = 40
+
+local UICorner1 = Instance.new("UICorner")
+UICorner1.CornerRadius = UDim.new(0, 5)
+UICorner1.Parent = PetInvOver.OverlayShinyButton
+
+local UICorner2 = Instance.new("UICorner")
+UICorner2.CornerRadius = UDim.new(0, 5)
+UICorner2.Parent = PetInvOver.OverlayUnequipButton
+
+local UICorner3 = Instance.new("UICorner")
+UICorner3.CornerRadius = UDim.new(0, 5)
+UICorner3.Parent = PetInvOver.OverlayUpgradeButton
+
+local UICorner4 = Instance.new("UICorner")
+UICorner4.CornerRadius = UDim.new(0, 5)
+UICorner4.Parent = PetInvOver.OverlayDeleteButton
+
+------------------------------------------------------
+
+PetInvOver.OverlayCancelButton.Position = UDim2.new(0, 315, -0.061, 0)
+PetInvOver.OverlayCancelButton.Size = UDim2.new(0, 100, 0, 100)
+PetInvOver.OverlayCancelButton.ImageTransparency = 1
+PetInvOver.OverlayCancelButton.Rotation = 0
+
+local OverlayCloseButton = Instance.new("ImageButton")
+OverlayCloseButton.Name = "OverlayCloseButton"
+OverlayCloseButton.Size = UDim2.new(0, 100, 0, 75)
+OverlayCloseButton.Position = UDim2.new(0, 0, 0, 0)
+OverlayCloseButton.BackgroundTransparency = 1
+OverlayCloseButton.Image = "rbxassetid://14423621163"
+OverlayCloseButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
+OverlayCloseButton.ZIndex = 4
+OverlayCloseButton.Parent = PetInvOver.OverlayCancelButton
+
+-- Connect the click event
+OverlayCloseButton.MouseButton1Click:Connect(function()
+    -- Store the original position
+    local originalPosition = PetInvOver.Position
+    
+    -- Create a tween to slide to the left
+    local tweenInfo = TweenInfo.new(
+        0.1,                -- Duration (0.5 seconds)
+        Enum.EasingStyle.Quad,  -- Easing style
+        Enum.EasingDirection.Out -- Easing direction
+    )
+    
+    -- Calculate the target position (move left by the width of the frame plus a bit extra)
+    local targetPosition = UDim2.new(
+        originalPosition.X.Scale - 0.02,  -- Move left by 100% of screen width
+        originalPosition.X.Offset,
+        originalPosition.Y.Scale,
+        originalPosition.Y.Offset
+    )
+    
+    -- Create the tween
+    local tween = TweenService:Create(
+        PetInvOver,
+        tweenInfo,
+        {Position = targetPosition}
+    )
+    
+    -- Play the tween and set visibility to false when it completes
+    tween:Play()
+    tween.Completed:Connect(function()
+        PetInvOver.Visible = false
+        -- Reset position for next time it's shown
+        PetInvOver.Position = originalPosition
+    end)
+end)
+
+local OverlayCloseAspectRatio = Instance.new("UIAspectRatioConstraint")
+OverlayCloseAspectRatio.Name = "CloseAspectRatio"
+OverlayCloseAspectRatio.Parent = OverlayCloseButton
+
+
+local OverlayCloseGradient = Instance.new("UIGradient")
+OverlayCloseGradient.Rotation = -90
+OverlayCloseGradient.Color = ColorSequence.new({
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 2, 61)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 39, 125))
+})
+OverlayCloseGradient.Parent = OverlayCloseButton
+
+
+local OverlayCloseUiScale = Instance.new("UIScale")
+OverlayCloseUiScale.Scale = 1
+OverlayCloseUiScale.Parent = OverlayCloseButton
+
+
+local OverlayCloseShadow = Instance.new("ImageLabel")
+OverlayCloseShadow.Name = "Shadow"
+OverlayCloseShadow.Size = UDim2.new(1, 0, 1.1, 0)
+OverlayCloseShadow.ImageTransparency = 0.5
+OverlayCloseShadow.Position = UDim2.new(0, 0, 0, 0)
+OverlayCloseShadow.BackgroundTransparency = 1
+OverlayCloseShadow.Image = "rbxassetid://14001321443"
+OverlayCloseShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+OverlayCloseShadow.ZIndex = 0
+OverlayCloseShadow.Parent = OverlayCloseButton
+
+
+local OverlayCloseTextLabel = Instance.new("TextLabel")
+OverlayCloseTextLabel.Name = "X"
+OverlayCloseTextLabel.Size = UDim2.new(0.9, 0, 0.6, 0)
+OverlayCloseTextLabel.Position = UDim2.new(0.06, 0, 0.2, 0)
+OverlayCloseTextLabel.BackgroundTransparency = 1
+OverlayCloseTextLabel.Text = "X"
+OverlayCloseTextLabel.TextSize = 18
+OverlayCloseTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+OverlayCloseTextLabel.TextScaled = true
+OverlayCloseTextLabel.Font = Enum.Font.FredokaOne
+OverlayCloseTextLabel.Parent = OverlayCloseButton
+OverlayCloseTextLabel.ZIndex = 4
+
+
+local OverlayTextLabelStroke = Instance.new("UIStroke")
+OverlayTextLabelStroke.Thickness = 3
+OverlayTextLabelStroke.Color = Color3.fromRGB(0, 0, 0)
+OverlayTextLabelStroke.Parent = OverlayCloseTextLabel
+
+
+
+local CloseButton = Instance.new("ImageButton")
+CloseButton.Name = "CloseButton"
+CloseButton.Size = UDim2.new(1, 0, 0.06, 45)
+CloseButton.Position = UDim2.new(0, 960, 0, -25)
+CloseButton.BackgroundTransparency = 1
+CloseButton.Image = "rbxassetid://14423621163"
+CloseButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Parent = MainFrame2
+
+
+local CloseAspectRatio = Instance.new("UIAspectRatioConstraint")
+CloseAspectRatio.Name = "CloseAspectRatio"
+CloseAspectRatio.Parent = CloseButton
+
+
+local CloseGradient = Instance.new("UIGradient")
+CloseGradient.Rotation = -90
+CloseGradient.Color = ColorSequence.new({
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 2, 61)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 39, 125))
+})
+CloseGradient.Parent = CloseButton
+
+
+local CloseUiScale = Instance.new("UIScale")
+CloseUiScale.Scale = 1
+CloseUiScale.Parent = CloseButton
+
+
+local CloseShadow = Instance.new("ImageLabel")
+CloseShadow.Name = "Shadow"
+CloseShadow.Size = UDim2.new(1, 0, 1.1, 0)
+CloseShadow.ImageTransparency = 0.5
+CloseShadow.Position = UDim2.new(0, 0, 0, 0)
+CloseShadow.BackgroundTransparency = 1
+CloseShadow.Image = "rbxassetid://14001321443"
+CloseShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+CloseShadow.ZIndex = 0
+CloseShadow.Parent = CloseButton
+
+
+local CloseTextLabel = Instance.new("TextLabel")
+CloseTextLabel.Name = "X"
+CloseTextLabel.Size = UDim2.new(0.9, 0, 0.6, 0)
+CloseTextLabel.Position = UDim2.new(0.06, 0, 0.2, 0)
+CloseTextLabel.BackgroundTransparency = 1
+CloseTextLabel.Text = "X"
+CloseTextLabel.TextSize = 18
+CloseTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseTextLabel.TextScaled = true
+CloseTextLabel.Font = Enum.Font.FredokaOne
+CloseTextLabel.Parent = CloseButton
+
+
+local TextLabelStroke1 = Instance.new("UIStroke")
+TextLabelStroke1.Thickness = 3
+TextLabelStroke1.Color = Color3.fromRGB(0, 0, 0)
+TextLabelStroke1.Parent = CloseTextLabel
+
+
+local Background = Instance.new("ImageLabel")
+Background.Name = "Background"
+Background.Size = UDim2.new(1, 0, 1, 0)
+Background.BackgroundTransparency = 1
+Background.Image = "rbxassetid://13581793331"
+Background.ImageColor3 = Color3.fromRGB(20, 58, 67)
+Background.ImageTransparency = 0.95
+Background.ScaleType = Enum.ScaleType.Tile
+Background.TileSize = UDim2.new(0, 171, 0, 135)
+Background.Parent = MainFrame1
+
+
+local BackgroundCorner = Instance.new("UICorner")
+BackgroundCorner.CornerRadius = UDim.new(0, 20)
+BackgroundCorner.Parent = Background
+
+
+local BackgroundGradient = Instance.new("UIGradient")
+BackgroundGradient.Rotation = -90
+BackgroundGradient.Color = ColorSequence.new({
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+})
+BackgroundGradient.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 0),
+NumberSequenceKeypoint.new(0.31, 0.58),
+NumberSequenceKeypoint.new(0.507, 0.757),
+NumberSequenceKeypoint.new(0.756, 0.994),
+NumberSequenceKeypoint.new(1, 1.29)
+})
+BackgroundGradient.Parent = Background
+
+
+local ShadowFrame1 = Instance.new("ImageLabel")
+ShadowFrame1.Name = "Shadow"
+ShadowFrame1.ZIndex = 0
+ShadowFrame1.BackgroundTransparency = 1
+ShadowFrame1.Image = "rbxassetid://14001321443"
+ShadowFrame1.ImageColor3 = Color3.fromRGB(0, 0, 0)
+ShadowFrame1.ImageTransparency = 0.6
+ShadowFrame1.Size = UDim2.new(1, 35, 1, 35)
+ShadowFrame1.Parent = MainFrame1
+
+
+local PetLabel = Instance.new("TextLabel")
+PetLabel.Name = "PetLabel"
+PetLabel.BackgroundTransparency = 1
+PetLabel.Size = UDim2.new(0, 300, 0, 100)
+PetLabel.Position = UDim2.new(0, 0, 0, -50)
+PetLabel.Text = "Pets"
+PetLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+PetLabel.TextSize = 100
+PetLabel.Font = Enum.Font.FredokaOne
+PetLabel.Parent = MainFrame2
+
+
+local PetLabelStroke = Instance.new("UIStroke")
+PetLabelStroke.Color = Color3.fromRGB(46, 46, 53)
+PetLabelStroke.Thickness = 5
+PetLabelStroke.Parent = PetLabel
+
+----------------------------------------------------------------
+
+-- Add the click functionality
+UnequipAll.MouseButton1Click:Connect(function()
+    -- Get the path to the equipped pets
+    local player = game:GetService("Players").LocalPlayer
+    local equippedPetsFrame = player.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.EquippedPets
+    
+    -- Get all ImageButtons (pets) in the EquippedPets frame
+    local equippedPets = {}
+    for _, child in pairs(equippedPetsFrame:GetChildren()) do
+        if child:IsA("ImageButton") then
+            table.insert(equippedPets, child)
+        end
+    end
+    
+    -- Remote function reference
+    local remoteFunction = game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction")
+    
+    -- Unequip each pet
+    for _, pet in ipairs(equippedPets) do
+        local args = {
+            [1] = "DestroyPet",
+            [2] = pet.Name
+        }
+        
+        -- Fire the remote for each pet
+        remoteFunction:InvokeServer(unpack(args))
+        
+        -- Optional: Add a small delay to prevent server overload
+        task.wait(0.01)
+    end
+end)
+
+----------------------------------------------------------------
+
+
+local petInventoryUIGridLayout = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.PetInventoryScrollingFrame.UIGridLayout
+
+-- Track the current state (false = normal size, true = shrunk)
+local isShrunk = false
+local isTransitioning = false
+local isHovering = false
+
+-- Faster transition durations
+local MAIN_TRANSITION_DURATION = 0.1
+local HOVER_TRANSITION_DURATION = 0.1
+
+-- Store the base colors for each state
+local NORMAL_COLOR = Color3.fromRGB(46, 46, 53)
+local SHRUNK_COLOR = Color3.fromRGB(0, 166, 242)
+local NORMAL_HOVER_COLOR = Color3.fromRGB(76, 76, 83)
+local SHRUNK_HOVER_COLOR = Color3.fromRGB(30, 196, 255)
+
+-- Function to get the current base color based on state
+local function getCurrentBaseColor()
+    return isShrunk and SHRUNK_COLOR or NORMAL_COLOR
+end
+
+-- Function to get the current hover color based on state
+local function getCurrentHoverColor()
+    return isShrunk and SHRUNK_HOVER_COLOR or NORMAL_HOVER_COLOR
+end
+
+-- Function to get the target color based on current state
+local function getTargetColor()
+    if isHovering then
+        return getCurrentHoverColor()
+    else
+        return getCurrentBaseColor()
+    end
+end
+
+-- Improved color transition function with cancellation support
+local currentColorTween = nil
+local function fadeColor(targetColor, duration)
+    -- Cancel any existing tween
+    if currentColorTween then
+        currentColorTween:Cancel()
+        currentColorTween = nil
+    end
+    
+    local startColor = ShrinkButton.ImageColor3
+    local startTime = tick()
+    local runService = game:GetService("RunService")
+    
+    isTransitioning = true
+    
+    local connection
+    connection = runService.RenderStepped:Connect(function()
+        local elapsed = tick() - startTime
+        local alpha = math.min(elapsed / duration, 1)
+        
+        -- Smooth easing function (ease in-out)
+        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
+        
+        -- Interpolate between colors
+        local currentR = startColor.R + (targetColor.R - startColor.R) * alpha
+        local currentG = startColor.G + (targetColor.G - startColor.G) * alpha
+        local currentB = startColor.B + (targetColor.B - startColor.B) * alpha
+        
+        ShrinkButton.ImageColor3 = Color3.new(currentR, currentG, currentB)
+        
+        if alpha >= 1 then
+            connection:Disconnect()
+            currentColorTween = nil
+            isTransitioning = false
+            
+            -- Check if state changed during transition
+            if ShrinkButton.ImageColor3 ~= getTargetColor() then
+                fadeColor(getTargetColor(), HOVER_TRANSITION_DURATION)
+            end
+        end
+    end)
+    
+    currentColorTween = {
+        Cancel = function()
+            if connection then
+                connection:Disconnect()
+                isTransitioning = false
+            end
+        end
+    }
+end
+
+-- Function to smoothly transition UIGridLayout properties
+local function transitionGridLayout(startSize, endSize, startCells, endCells, duration)
+    local startTime = tick()
+    local runService = game:GetService("RunService")
+    
+    local connection
+    connection = runService.RenderStepped:Connect(function()
+        local elapsed = tick() - startTime
+        local alpha = math.min(elapsed / duration, 1)
+        
+        -- Smooth easing function
+        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
+        
+        -- Interpolate size
+        local currentWidth = startSize.X.Offset + (endSize.X.Offset - startSize.X.Offset) * alpha
+        local currentHeight = startSize.Y.Offset + (endSize.Y.Offset - startSize.Y.Offset) * alpha
+        
+        petInventoryUIGridLayout.CellSize = UDim2.new(0, currentWidth, 0, currentHeight)
+        
+        -- When we reach halfway through the transition, update the cell count
+        if alpha >= 0.5 and petInventoryUIGridLayout.FillDirectionMaxCells ~= endCells then
+            petInventoryUIGridLayout.FillDirectionMaxCells = endCells
+        end
+        
+        if alpha >= 1 then
+            connection:Disconnect()
+        end
+    end)
+end
+
+-- Connect the click event to the ShrinkButton
+ShrinkButton.MouseButton1Click:Connect(function()
+    if isTransitioning then return end
+    
+    if not isShrunk then
+        -- Change to shrunk state
+        isShrunk = true
+        fadeColor(getTargetColor(), MAIN_TRANSITION_DURATION)
+        transitionGridLayout(
+            UDim2.new(0, 90, 0, 90), -- Changed from 100 to 90
+            UDim2.new(0, 70, 0, 70), -- Changed from 80 to 70
+            9,
+            11,
+            MAIN_TRANSITION_DURATION
+        )
+    else
+        -- Change back to normal state
+        isShrunk = false
+        fadeColor(getTargetColor(), MAIN_TRANSITION_DURATION)
+        transitionGridLayout(
+            UDim2.new(0, 70, 0, 70), -- Changed from 80 to 70
+            UDim2.new(0, 90, 0, 90), -- Changed from 100 to 90
+            11,
+            9,
+            MAIN_TRANSITION_DURATION
+        )
+    end
+end)
+
+-- Hover effects with improved tracking
+ShrinkButton.MouseEnter:Connect(function()
+    isHovering = true
+    fadeColor(getCurrentHoverColor(), HOVER_TRANSITION_DURATION)
+end)
+
+ShrinkButton.MouseLeave:Connect(function()
+    isHovering = false
+    fadeColor(getCurrentBaseColor(), HOVER_TRANSITION_DURATION)
+end)
+
+-- Set initial state
+petInventoryUIGridLayout.CellSize = UDim2.new(0, 90, 0, 90)
+ShrinkButton.ImageColor3 = NORMAL_COLOR
+
+
+----------------------------------------------------------------
+
+-- Add this code at the end of your existing script
+
+-- Constants for the CloseButton hover effect
+local CLOSE_BUTTON_HOVER_DURATION = 0.1
+local CLOSE_BUTTON_SCALE_NORMAL = 1
+local CLOSE_BUTTON_SCALE_HOVER = 1.05
+local CLOSE_BUTTON_ROTATION_NORMAL = 0
+local CLOSE_BUTTON_ROTATION_HOVER = 5
+
+-- Function to smoothly transition the CloseButton properties
+local function transitionCloseButton(startScale, endScale, startRotation, endRotation, duration)
+    local startTime = tick()
+    local runService = game:GetService("RunService")
+    
+    -- Store the original position to maintain centering during scaling
+    local originalPosition = CloseButton.Position
+    
+    local connection
+    connection = runService.RenderStepped:Connect(function()
+        local elapsed = tick() - startTime
+        local alpha = math.min(elapsed / duration, 1)
+        
+        -- Smooth easing function (ease in-out)
+        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
+        
+        -- Interpolate scale
+        local currentScale = startScale + (endScale - startScale) * alpha
+        CloseUiScale.Scale = currentScale
+        
+        -- Interpolate rotation
+        local currentRotation = startRotation + (endRotation - startRotation) * alpha
+        CloseButton.Rotation = currentRotation
+        
+        if alpha >= 1 then
+            connection:Disconnect()
+        end
+    end)
+end
+
+-- Connect hover events to the CloseButton
+CloseButton.MouseEnter:Connect(function()
+    transitionCloseButton(
+        CLOSE_BUTTON_SCALE_NORMAL,
+        CLOSE_BUTTON_SCALE_HOVER,
+        CLOSE_BUTTON_ROTATION_NORMAL,
+        CLOSE_BUTTON_ROTATION_HOVER,
+        CLOSE_BUTTON_HOVER_DURATION
+    )
+end)
+
+CloseButton.MouseLeave:Connect(function()
+    transitionCloseButton(
+        CLOSE_BUTTON_SCALE_HOVER,
+        CLOSE_BUTTON_SCALE_NORMAL,
+        CLOSE_BUTTON_ROTATION_HOVER,
+        CLOSE_BUTTON_ROTATION_NORMAL,
+        CLOSE_BUTTON_HOVER_DURATION
+    )
+end)
+
+
+----------------------------------------------------------------
+
+-- Constants for the CloseButton hover effect
+local CLOSE_OVERLAY_BUTTON_HOVER_DURATION = 0.1
+local CLOSE_OVERLAY_BUTTON_SCALE_NORMAL = 1
+local CLOSE_OVERLAY_BUTTON_SCALE_HOVER = 1.05
+local CLOSE_OVERLAY_BUTTON_ROTATION_NORMAL = 0
+local CLOSE_OVERLAY_BUTTON_ROTATION_HOVER = 5
+
+-- Function to smoothly transition the CloseButton properties
+local function transitionOverlayCloseButton(startScale, endScale, startRotation, endRotation, duration)
+    local startTime = tick()
+    local runService = game:GetService("RunService")
+    
+    -- Store the original position to maintain centering during scaling
+    local originalPosition = OverlayCloseButton.Position
+    
+    local connection
+    connection = runService.RenderStepped:Connect(function()
+        local elapsed = tick() - startTime
+        local alpha = math.min(elapsed / duration, 1)
+        
+        -- Smooth easing function (ease in-out)
+        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
+        
+        -- Interpolate scale
+        local currentScale = startScale + (endScale - startScale) * alpha
+        OverlayCloseUiScale.Scale = currentScale
+        
+        -- Interpolate rotation
+        local currentRotation = startRotation + (endRotation - startRotation) * alpha
+        OverlayCloseButton.Rotation = currentRotation
+        
+        if alpha >= 1 then
+            connection:Disconnect()
+        end
+    end)
+end
+
+-- Connect hover events to the CloseButton
+OverlayCloseButton.MouseEnter:Connect(function()
+    transitionOverlayCloseButton(
+        CLOSE_OVERLAY_BUTTON_SCALE_NORMAL,
+        CLOSE_OVERLAY_BUTTON_SCALE_HOVER,
+        CLOSE_OVERLAY_BUTTON_ROTATION_NORMAL,
+        CLOSE_OVERLAY_BUTTON_ROTATION_HOVER,
+        CLOSE_OVERLAY_BUTTON_HOVER_DURATION
+    )
+end)
+
+OverlayCloseButton.MouseLeave:Connect(function()
+    transitionOverlayCloseButton(
+        CLOSE_OVERLAY_BUTTON_SCALE_HOVER,
+        CLOSE_OVERLAY_BUTTON_SCALE_NORMAL,
+        CLOSE_OVERLAY_BUTTON_ROTATION_HOVER,
+        CLOSE_OVERLAY_BUTTON_ROTATION_NORMAL,
+        CLOSE_OVERLAY_BUTTON_HOVER_DURATION
+    )
+end)
+
+----------------------------------------------------------------
+
+-- Constants for the MassDelete button hover effect
+local MASS_DELETE_HOVER_DURATION = 0.1
+local MASS_DELETE_SCALE_NORMAL = 1
+local MASS_DELETE_SCALE_HOVER = 1.05
+local MASS_DELETE_ROTATION_NORMAL = 0
+local MASS_DELETE_ROTATION_HOVER = 0
+
+-- Create UIScale for the MassDelete button if it doesn't exist
+local MassDeleteUiScale = MassDelete:FindFirstChild("UIScale")
+if not MassDeleteUiScale then
+    MassDeleteUiScale = Instance.new("UIScale")
+    MassDeleteUiScale.Scale = MASS_DELETE_SCALE_NORMAL
+    MassDeleteUiScale.Parent = MassDelete
+end
+
+-- Function to smoothly transition the MassDelete button properties
+local function transitionMassDeleteButton(startScale, endScale, startRotation, endRotation, duration)
+    local startTime = tick()
+    local runService = game:GetService("RunService")
+    
+    -- Store the original position to maintain centering during scaling
+    local originalPosition = MassDelete.Position
+    
+    local connection
+    connection = runService.RenderStepped:Connect(function()
+        local elapsed = tick() - startTime
+        local alpha = math.min(elapsed / duration, 1)
+        
+        -- Smooth easing function (ease in-out)
+        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
+        
+        -- Interpolate scale
+        local currentScale = startScale + (endScale - startScale) * alpha
+        MassDeleteUiScale.Scale = currentScale
+        
+        -- Interpolate rotation
+        local currentRotation = startRotation + (endRotation - startRotation) * alpha
+        MassDelete.Rotation = currentRotation
+        
+        if alpha >= 1 then
+            connection:Disconnect()
+        end
+    end)
+end
+
+-- Connect hover events to the MassDelete button
+MassDelete.MouseEnter:Connect(function()
+    transitionMassDeleteButton(
+        MASS_DELETE_SCALE_NORMAL,
+        MASS_DELETE_SCALE_HOVER,
+        MASS_DELETE_ROTATION_NORMAL,
+        MASS_DELETE_ROTATION_HOVER,
+        MASS_DELETE_HOVER_DURATION
+    )
+end)
+
+MassDelete.MouseLeave:Connect(function()
+    transitionMassDeleteButton(
+        MASS_DELETE_SCALE_HOVER,
+        MASS_DELETE_SCALE_NORMAL,
+        MASS_DELETE_ROTATION_HOVER,
+        MASS_DELETE_ROTATION_NORMAL,
+        MASS_DELETE_HOVER_DURATION
+    )
+end)
+
+----------------------------------------------------------------
+
+-- Set initial positions and visibility
+local originalPosition = UDim2.new(0, 455, 0, 250)
+local offscreenPosition = UDim2.new(0, 455, 0, 350)
+
+-- Disconnect existing connections on the button
+for _, connection in pairs(getconnections(button.MouseButton1Click)) do
+    connection:Disable()
+end
+
+-- Also disconnect the close button connections
+for _, connection in pairs(getconnections(CloseButton.MouseButton1Click)) do
+    connection:Disable()
+end
+
+-- Initialize frames
+MainFrame1.Position = offscreenPosition
+MainFrame2.Position = offscreenPosition
+MainFrame1.Visible = false
+MainFrame2.Visible = false
+
+-- Create animations
+local hoverInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local popUpInfo = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+local popDownInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+
+-- Define properties
+local hoverProperties = {Size = UDim2.new(0.44, 0, 0.165, 0)}
+local originalProperties = {Size = UDim2.new(0.4, 0, 0.15, 0)}
+local popUpProperties = {Position = originalPosition}
+local popDownProperties = {Position = offscreenPosition}
+
+-- Create tweens
+local hoverTween = TweenService:Create(button, hoverInfo, hoverProperties)
+local unhoverTween = TweenService:Create(button, hoverInfo, originalProperties)
+local popUpTween1 = TweenService:Create(MainFrame1, popUpInfo, popUpProperties)
+local popUpTween2 = TweenService:Create(MainFrame2, popUpInfo, popUpProperties)
+local popDownTween1 = TweenService:Create(MainFrame1, popDownInfo, popDownProperties)
+local popDownTween2 = TweenService:Create(MainFrame2, popDownInfo, popDownProperties)
+
+-- Track inventory state
+local isInventoryOpen = false
+
+-- Connect new event handlers
+button.MouseEnter:Connect(function()
+    hoverTween:Play()
+end)
+
+button.MouseLeave:Connect(function()
+    unhoverTween:Play()
+end)
+
+-- Add our custom click handler
+button.MouseButton1Click:Connect(function()
+    if isInventoryOpen then
+        popDownTween1:Play()
+        popDownTween2:Play()
+        
+        task.wait(0.1)
+        
+        MainFrame1.Visible = false
+        MainFrame2.Visible = false
+    else
+        MainFrame1.Position = offscreenPosition
+        MainFrame2.Position = offscreenPosition
+        
+        MainFrame1.Visible = true
+        MainFrame2.Visible = true
+        
+        popUpTween1:Play()
+        popUpTween2:Play()
+    end
+    
+    isInventoryOpen = not isInventoryOpen
+    
+    -- Keep monitoring PetInv to force it to stay hidden if needed
+    end)
+
+-- Connect close button
+CloseButton.MouseButton1Click:Connect(function()
+    if isInventoryOpen then
+        popDownTween1:Play()
+        popDownTween2:Play()
+        
+        task.wait(0.1)
+        
+        MainFrame1.Visible = false
+        MainFrame2.Visible = false
+        
+        isInventoryOpen = false
+    end
+end)
+
+----------------------------------------------------------------
+
+-- Configuration
+local CONFIG = {
+    checkInterval = 0.5, -- How often to check for images (in seconds)
+    originalImageId = "rbxassetid://3319539600", -- The image ID to search for
+    replacementImageId = "rbxassetid://111266790123938", -- The image ID to replace with
+    paths = {
+        -- Paths to check for ImageButtons
+        game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.EquippedPets,
+        game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.PetInventoryScrollingFrame
+    },
+    colors = {
+        Common = Color3.fromRGB(148, 148, 148),
+        Uncommon = Color3.fromRGB(126, 255, 173),
+        Rare = Color3.fromRGB(5, 138, 255),
+        Epic = Color3.fromRGB(255, 0, 201)
+    },
+    colorCycleSpeed = 2 -- Higher = faster color cycling
+}
+
+local CommonIds = {
+	"rbxassetid://3321300808", --["Blue Butterfly"] // rarity = "Common"
+    "rbxassetid://3319895658", --["White Cat"] // rarity = "Common"
+    "rbxassetid://3324883683", --["Shiny Sweets Bat"] // rarity = "Common"
+    "rbxassetid://3321328407", --["Snow Fox"] // rarity = "Common"
+    "rbxassetid://3321301027", --["Shiny Blue Butterfly"] // rarity = "Common"
+    "rbxassetid://3319957680", --["Shiny White Cat"] // rarity = "Common"
+    "rbxassetid://3324884414", --["Sweets Bat"] // rarity = "Common"
+    "rbxassetid://3710867266", --["Shiny Red Butterfly"] // rarity = "Common"
+    "rbxassetid://3321273272", --["Shiny Wolf"] // rarity = "Common"
+    "rbxassetid://3321272769", --["Ice Cat"] // rarity = "Common"
+    "rbxassetid://3321273354", --["Wolf"] // rarity = "Common"
+    "rbxassetid://3321396991", --["Shiny Polar Bear"] // rarity = "Common"
+    "rbxassetid://3321301083", --["Shiny Brown Fox"] // rarity = "Common"
+    "rbxassetid://3321300887", --["Brown Fox"] // rarity = "Common"
+    "rbxassetid://3321273075", --["Shiny Ice Cat"] // rarity = "Common"
+    "rbxassetid://3321273024", --["Shiny Bat"] // rarity = "Common"
+    "rbxassetid://3319957578", --["Shiny Fox"] // rarity = "Common"
+    "rbxassetid://3321328346", --["Shiny Snow Fox"] // rarity = "Common"
+    "rbxassetid://3319895844", --["Fox"] // rarity = "Common"
+    "rbxassetid://3321396625", --["Polar Bear"] // rarity = "Common"
+    "rbxassetid://3319957475", --["Shiny Dog"] // rarity = "Common"
+    "rbxassetid://3319895754", --["Dog"] // rarity = "Common"
+    "rbxassetid://3324853749", --["Lucky Cat"] // rarity = "Common"
+    "rbxassetid://3321272690", --["Bat"] // rarity = "Common"
+    "rbxassetid://3321327915", --["Red Butterfly"] // rarity = "Common"
+}
+local UncommonIds = {
+    "rbxassetid://3321470334", --["Shiny Tuxedo Cat"] // rarity = "Uncommon"
+    "rbxassetid://3319895561", --["Bunny"] // rarity = "Uncommon"
+    "rbxassetid://3321470447", --["Tuxedo Cat"] // rarity = "Uncommon"
+    "rbxassetid://3321273142", --["Shiny Ruby Bunny"] // rarity = "Uncommon"
+    "rbxassetid://3321469337", --["Slime"] // rarity = "Uncommon"
+    "rbxassetid://3324883581", --["Shiny Polka Dot Butterfly"] // rarity = "Uncommon"
+    "rbxassetid://3321328173", --["Shiny Midnight Cat"] // rarity = "Uncommon"
+    "rbxassetid://3321327798", --["Midnight Cat"] // rarity = "Uncommon"
+    "rbxassetid://3321468618", --["Deer"] // rarity = "Uncommon"
+    "rbxassetid://3324853925", --["Shamrock Fox"] // rarity = "Uncommon"
+    "rbxassetid://3326596100", --["Youtube Cat"] // rarity = "Uncommon"
+    "rbxassetid://3321468985", --["Shiny Deer"] // rarity = "Uncommon"
+    "rbxassetid://3321469262", --["Shiny Slime"] // rarity = "Uncommon"
+    "rbxassetid://3321272831", --["Ruby Bunny"] // rarity = "Uncommon"
+    "rbxassetid://3319957364", --["Shiny Bunny"] // rarity = "Uncommon"
+    "rbxassetid://3321396365", --["Brown Wolf"] // rarity = "Uncommon"
+    "rbxassetid://3324883483", --["Polka Dot Butterfly"] // rarity = "Uncommon"
+    "rbxassetid://3321396725", --["Shiny Brown Wolf"] // rarity = "Uncommon"
+    "rbxassetid://3321301205", --["Shiny Stone Dog"] // rarity = "Uncommon"
+    "rbxassetid://3321301417", --["Stone Dog"] // rarity = "Uncommon"
+}
+local RareIds = {
+    "rbxassetid://3652596139", --["Moonlight Sphinx"] // rarity = "Rare"
+    "rbxassetid://3321301540", --["Vampire Bat"] // rarity = "Rare"
+    "rbxassetid://3324821828", --["Shiny Dwarf"] // rarity = "Rare"
+    "rbxassetid://3324793842", --["Yeti"] // rarity = "Rare"
+    "rbxassetid://3321396923", --["Shiny Frozen Wolf"] // rarity = "Rare"
+    "rbxassetid://4147751076", --["Shiny Candy Corn Bat"] // rarity = "Rare"
+    "rbxassetid://3326474870", --["Golden Cat"] // rarity = "Rare"
+    "rbxassetid://3321470382", --["Squid"] // rarity = "Rare"
+    "rbxassetid://3326474965", --["Golden Dog"] // rarity = "Rare"
+    "rbxassetid://3324770144", --["Shiny Pegasus"] // rarity = "Rare"
+    "rbxassetid://3877247625", --["Shiny Jellyfish"] // rarity = "Rare"
+    "rbxassetid://3877248666", --["Turkey"] // rarity = "Rare"
+    "rbxassetid://3324793682", --["Shiny Yeti"] // rarity = "Rare"
+    "rbxassetid://3652596213", --["Mossy Golem"] // rarity = "Rare"
+    "rbxassetid://3877246998", --["Jellyfish"] // rarity = "Rare"
+    "rbxassetid://3324883891", --["Shiny Dogbun"] // rarity = "Rare"
+    "rbxassetid://3321468858", --["Robot"] // rarity = "Rare"
+    "rbxassetid://3326595568", --["6M Baby Phoenix"] // rarity = "Rare"
+    "rbxassetid://3321301348", --["Shiny Vampire Bat"] // rarity = "Rare"
+    "rbxassetid://3321471795", --["Shiny Horse"] // rarity = "Rare"
+    "rbxassetid://3324770240", --["Shiny Phoenix"] // rarity = "Rare"
+    "rbxassetid://3326595635", --["10M Party Angel"] // rarity = "Rare"
+    "rbxassetid://4147749952", --["Candy Corn Bat"] // rarity = "Rare"
+    "rbxassetid://3321471442", --["Horse"] // rarity = "Rare"
+    "rbxassetid://3324820925", --["Basilisk"] // rarity = "Rare"
+    "rbxassetid://3324769317", --["Demon Dragon"] // rarity = "Rare"
+    "rbxassetid://3324821534", --["Shiny Basilisk"] // rarity = "Rare"
+    "rbxassetid://3321470734", --["Shiny Lava Slime"] // rarity = "Rare"
+    "rbxassetid://3321328040", --["Shiny Flame Butterfly"] // rarity = "Rare"
+    "rbxassetid://3326595872", --["Promo Mouse"] // rarity = "Rare"
+    "rbxassetid://3326595985", --["Shiny Baby Serpent"] // rarity = "Rare"
+    "rbxassetid://3877248140", --["Shiny Turkey"] // rarity = "Rare"
+    "rbxassetid://3324770445", --["Pegasus"] // rarity = "Rare"
+    "rbxassetid://4147750685", --["Pumpkin"] // rarity = "Rare"
+    "rbxassetid://3321470797", --["Shiny Squid"] // rarity = "Rare"
+    "rbxassetid://3324793773", --["Troll"] // rarity = "Rare"
+    "rbxassetid://3321327655", --["Flame Butterfly"] // rarity = "Rare"
+    "rbxassetid://3324769842", --["Shiny Demon Dragon"] // rarity = "Rare"
+    "rbxassetid://3321469868", --["Lava Slime"] // rarity = "Rare"
+    "rbxassetid://3326595696", --["30M Mouse"] // rarity = "Rare"
+    "rbxassetid://3324854567", --["Spring Unicorn"] // rarity = "Rare"
+    "rbxassetid://3324882989", --["Dogbun"] // rarity = "Rare"
+    "rbxassetid://3324793579", --["Shiny Troll"] // rarity = "Rare"
+    "rbxassetid://3321469214", --["Shiny Robot"] // rarity = "Rare"
+    "rbxassetid://3324821169", --["Dwarf"] // rarity = "Rare"
+    "rbxassetid://3326595937", --["20M Demon"] // rarity = "Rare"
+    "rbxassetid://3321273211", --["Shiny Sapphire Bunny"] // rarity = "Rare"
+    "rbxassetid://3319957269", --["Shiny Awesome Dog"] // rarity = "Rare"
+    "rbxassetid://3471250118", --["Shiny Dalmation"] // rarity = "Rare"
+    "rbxassetid://3652596602", --["Shiny Mossy Golem"] // rarity = "Rare"
+    "rbxassetid://3324769540", --["Phoenix"] // rarity = "Rare"
+    "rbxassetid://3324792831", --["Griffin"] // rarity = "Rare"
+    "rbxassetid://3324793264", --["Shiny Griffin"] // rarity = "Rare"
+    "rbxassetid://3319895464", --["Awesome Dog"] // rarity = "Rare"
+    "rbxassetid://3652596501", --["Shiny Moonlight Sphinx"] // rarity = "Rare"
+    "rbxassetid://3471251013", --["Lightspeed Bee"] // rarity = "Rare"
+    "rbxassetid://3321472084", --["Shiny Turtle"] // rarity = "Rare"
+    "rbxassetid://3321272890", --["Sapphire Bunny"] // rarity = "Rare"
+    "rbxassetid://4147751762", --["Shiny Pumpkin"] // rarity = "Rare"
+    "rbxassetid://3471249515", --["Dalmation"] // rarity = "Rare"
+    "rbxassetid://3471250205", --["Shiny Lightspeed Bee"] // rarity = "Rare"
+    "rbxassetid://3321472257", --["Turtle"] // rarity = "Rare"
+    "rbxassetid://3321396571", --["Frozen Wolf"] // rarity = "Rare"
+    "rbxassetid://3326595503", --["1M Baby Serpent"] // rarity = "Rare"
+    "rbxassetid://3326569961", --["Shiny Party Fox"] // rarity = "Rare"
+    "rbxassetid://3326569235", --["Firework Mouse"] // rarity = "Rare"
+    "rbxassetid://3326569795", --["Shiny Firework Mouse"] // rarity = "Rare"
+    "rbxassetid://3326569354", --["Party Fox"] // rarity = "Rare"
+
+}
+local EpicIds = {
+    "rbxassetid://3324770049", --["Shiny Nova Fox"] // rarity = "Epic"
+    "rbxassetid://3471249879", --["Shiny Deep Sea Narwhal"] // rarity = "Epic"
+    "rbxassetid://3321301144", --["Shiny Midnight Bat"] // rarity = "Epic"
+    "rbxassetid://3326569102", --["Disco Robot"] // rarity = "Epic"
+    "rbxassetid://3324883798", --["Shiny Bunny Lord"] // rarity = "Epic"
+    "rbxassetid://3321272615", --["Angel Dog"] // rarity = "Epic"
+    "rbxassetid://4147751883", --["Shiny Scarecrow"] // rarity = "Epic"
+    "rbxassetid://3324882897", --["Bunny Lord"] // rarity = "Epic"
+    "rbxassetid://3324822172", --["Thunderbird"] // rarity = "Epic"
+    "rbxassetid://4147751353", --["Shiny Ghoul"] // rarity = "Epic"
+    "rbxassetid://3321328221", --["Shiny Panda"] // rarity = "Epic"
+    "rbxassetid://4147750803", --["Scarecrow"] // rarity = "Epic"
+    "rbxassetid://3324883391", --["Eggster Flock"] // rarity = "Epic"
+    "rbxassetid://4147750270", --["Ghoul"] // rarity = "Epic"
+    "rbxassetid://3321471682", --["Shiny Direwolf"] // rarity = "Epic"
+    "rbxassetid://3321396849", --["Shiny Dark Unicorn"] // rarity = "Epic"
+    "rbxassetid://3326569673", --["Shiny Disco Robot"] // rarity = "Epic"
+    "rbxassetid://3324822097", --["Shiny Thunderbird"] // rarity = "Epic"
+    "rbxassetid://3326595809", --["40M Light Leviathan"] // rarity = "Epic"
+    "rbxassetid://3324853584", --["Celtic Owl"] // rarity = "Epic"
+    "rbxassetid://3321327860", --["Panda"] // rarity = "Epic"
+    "rbxassetid://3321472023", --["Shiny Thieving Crows"] // rarity = "Epic"
+    "rbxassetid://3321470190", --["Shiny Monkey"] // rarity = "Epic"
+    "rbxassetid://3471250281", --["Shiny Nesting Eagles"] // rarity = "Epic"
+    "rbxassetid://3326568936", --["Cake"] // rarity = "Epic"
+    "rbxassetid://3321396499", --["Dark Unicorn"] // rarity = "Epic"
+    "rbxassetid://3321471266", --["Direwolf"] // rarity = "Epic"
+    "rbxassetid://3321396301", --["Black Bear"] // rarity = "Epic"
+    "rbxassetid://3321471568", --["Moonbear"] // rarity = "Epic"
+    "rbxassetid://3324793165", --["Shiny Fairy"] // rarity = "Epic"
+    "rbxassetid://3324792743", --["Fairy"] // rarity = "Epic"
+    "rbxassetid://3321396676", --["Shiny Black Bear"] // rarity = "Epic"
+    "rbxassetid://3471249956", --["Shiny Cherry Blossom Owl"] // rarity = "Epic"
+    "rbxassetid://3326570094", --["Shiny Wonderful Present"] // rarity = "Epic"
+    "rbxassetid://3321300956", --["Midnight Bat"] // rarity = "Epic"
+    "rbxassetid://3476136313", --["Cherry Blossom Owl"] // rarity = "Epic"
+    "rbxassetid://3321272961", --["Shiny Angel Dog"] // rarity = "Epic"
+    "rbxassetid://3321469162", --["Shiny Owl"] // rarity = "Epic"
+    "rbxassetid://3324884316", --["Shiny Eggster Flock"] // rarity = "Epic"
+    "rbxassetid://3324822013", --["Shiny Roc"] // rarity = "Epic"
+    "rbxassetid://3321472197", --["Thieving Crows"] // rarity = "Epic"
+    "rbxassetid://3877248536", --["Tropical Monkey"] // rarity = "Epic"
+    "rbxassetid://3324770888", --["Nova Fox"] // rarity = "Epic"
+    "rbxassetid://3877246745", --["Ember Mouse"] // rarity = "Epic"
+    "rbxassetid://3321469928", --["Monkey"] // rarity = "Epic"
+    "rbxassetid://3321468801", --["Owl"] // rarity = "Epic"
+    "rbxassetid://3652597250", --["Sprite Swarm"] // rarity = "Epic"
+    "rbxassetid://3652596829", --["Shiny Sprite Swarm"] // rarity = "Epic"
+    "rbxassetid://3321468736", --["Narwhal"] // rarity = "Epic"
+    "rbxassetid://3321469728", --["Bee"] // rarity = "Epic"
+    "rbxassetid://3554077778", --["Speckled Rabbit"] // rarity = "Epic"
+    "rbxassetid://3326493843", --["Galaxy Dragon"] // rarity = "Epic"
+    "rbxassetid://3321470062", --["Shiny Bee"] // rarity = "Epic"
+    "rbxassetid://3471249598", --["Deep Sea Narwhal"] // rarity = "Epic"
+    "rbxassetid://3471249738", --["Nesting Eagles"] // rarity = "Epic"
+    "rbxassetid://3324821342", --["Roc"] // rarity = "Epic"
+    "rbxassetid://3321471903", --["Shiny Moonbear"] // rarity = "Epic"
+    "rbxassetid://3877248031", --["Shiny Tropical Monkey"] // rarity = "Epic"
+    "rbxassetid://3321469102", --["Shiny Narwhal"] // rarity = "Epic"
+    "rbxassetid://3326569532", --["Shiny Cake"] // rarity = "Epic"
+    "rbxassetid://3326570157", --["Wonderful Present"] // rarity = "Epic"
+    "rbxassetid://3554077156", --["Calico Cat"] // rarity = "Epic"
+    "rbxassetid://3877247400", --["Shiny Ember Mouse"] // rarity = "Epic"
+}
+local LegendaryIds = {
+    "rbxassetid://3554077323", --["Grim Demonlord"] // rarity = "Legendary"
+    "rbxassetid://3971551900", --["80M DJ Eagle"] // rarity = "Legendary"
+    "rbxassetid://3321471512", --["Inferno Serpent"] // rarity = "Legendary"
+    "rbxassetid://3877247741", --["Shiny Lightning Satyr"] // rarity = "Legendary"
+    "rbxassetid://3652596913", --["Shiny Warped Wraith"] // rarity = "Legendary"
+    "rbxassetid://3324822252", --["Wisp"] // rarity = "Legendary"
+    "rbxassetid://3324884225", --["Shiny Eggiverse"] // rarity = "Legendary"
+    "rbxassetid://3321468917", --["Shiny Angel"] // rarity = "Legendary"
+    "rbxassetid://3971551745", --["80M Golden Sun Eagle"] // rarity = "Legendary"
+    "rbxassetid://3326475264", --["Satyr"] // rarity = "Legendary"
+    "rbxassetid://3471250459", --["Shiny Snow Elemental"] // rarity = "Legendary"
+    "rbxassetid://3877247131", --["Lightning Satyr"] // rarity = "Legendary"
+    "rbxassetid://3699317740", --["70M Overcharged Alicorn"] // rarity = "Legendary"
+    "rbxassetid://3321397110", --["Vampire Dragon"] // rarity = "Legendary"
+    "rbxassetid://3326474675", --["Alicorn"] // rarity = "Legendary"
+    "rbxassetid://3321397063", --["Shiny Vampire Dragon"] // rarity = "Legendary"
+    "rbxassetid://3321301489", --["Unicorn"] // rarity = "Legendary"
+    "rbxassetid://4315140017", --["90M Phoenix Flock"] // rarity = "Legendary"
+    "rbxassetid://3326475188", --["Luminous Fox"] // rarity = "Legendary"
+    "rbxassetid://3471249272", --["60M Chaotic Thunderbird"] // rarity = "Legendary"
+    "rbxassetid://3321327577", --["Android Dragon"] // rarity = "Legendary"
+    "rbxassetid://3326569423", --["Phantom Cerberus"] // rarity = "Legendary"
+    "rbxassetid://3472078786", --["60M Digital Thunderbird"] // rarity = "Legendary"
+    "rbxassetid://3324821610", --["Shiny Cthulhu"] // rarity = "Legendary"
+    "rbxassetid://4147751493", --["Shiny Horror Serpent"] // rarity = "Legendary"
+    "rbxassetid://3554077394", --["Grotto Butterfly"] // rarity = "Legendary"
+    "rbxassetid://3326595761", --["50M Albatross King"] // rarity = "Legendary"
+    "rbxassetid://3652596423", --["100K Likes Glacial Serpent"] // rarity = "Legendary"
+    "rbxassetid://3319625280", --["50M Albatross God"] // rarity = "Legendary"
+    "rbxassetid://3326596048", --["Shiny Baby Sowopent"] // rarity = "Legendary"
+    "rbxassetid://3324769459", --["Monster Fox"] // rarity = "Legendary"
+    "rbxassetid://3326569181", --["Emperor"] // rarity = "Legendary"
+    "rbxassetid://3652597389", --["Warped Wraith"] // rarity = "Legendary"
+    "rbxassetid://3554077588", --["Radioactive Monster Fox"] // rarity = "Legendary"
+    "rbxassetid://3471249433", --["Corrosive Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3321328105", --["Shiny Flame Fox"] // rarity = "Legendary"
+    "rbxassetid://3321396441", --["Cerberus"] // rarity = "Legendary"
+    "rbxassetid://3321469672", --["Alien"] // rarity = "Legendary"
+    "rbxassetid://3321471848", --["Shiny Inferno Serpent"] // rarity = "Legendary"
+    "rbxassetid://3877247269", --["Shiny Ancient Earth Dragon"] // rarity = "Legendary"
+    "rbxassetid://3324792629", --["Chimera"] // rarity = "Legendary"
+    "rbxassetid://3321327975", --["Shiny Android Dragon"] // rarity = "Legendary"
+    "rbxassetid://4315302022", --["90M Blackhole Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3877246877", --["Guardian Angel"] // rarity = "Legendary"
+    "rbxassetid://3321472311", --["Void Gazer"] // rarity = "Legendary"
+    "rbxassetid://3324769635", --["Ruler"] // rarity = "Legendary"
+    "rbxassetid://3471249810", --["Radiance"] // rarity = "Legendary"
+    "rbxassetid://3652596674", --["Shiny Rift Observer"] // rarity = "Legendary"
+    "rbxassetid://3321470132", --["Shiny Ice Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3324821754", --["Shiny Duality"] // rarity = "Legendary"
+    "rbxassetid://3321469058", --["Shiny Demon"] // rarity = "Legendary"
+    "rbxassetid://3324769191", --["Dark Serpent"] // rarity = "Legendary"
+    "rbxassetid://3326570020", --["Shiny Phantom Cerberus"] // rarity = "Legendary"
+    "rbxassetid://3326569738", --["Shiny Emperor"] // rarity = "Legendary"
+    "rbxassetid://3652596742", --["Shiny Singularity"] // rarity = "Legendary"
+    "rbxassetid://3321471739", --["Shiny Flare Alicorn"] // rarity = "Legendary"
+    "rbxassetid://4147749761", --["Alchemist"] // rarity = "Legendary"
+    "rbxassetid://3324769737", --["Shiny Dark Serpent"] // rarity = "Legendary"
+    "rbxassetid://4147750409", --["Horror Serpent"] // rarity = "Legendary"
+    "rbxassetid://3321471318", --["Flare Alicorn"] // rarity = "Legendary"
+    "rbxassetid://3471250372", --["Shiny Radiance"] // rarity = "Legendary"
+    "rbxassetid://3324883194", --["Easter Serpent"] // rarity = "Legendary"
+    "rbxassetid://3326474785", --["Dark Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3471250034", --["Shiny Corrosive Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3471250541", --["Snow Elemental"] // rarity = "Legendary"
+    "rbxassetid://3326475334", --["Sphinx"] // rarity = "Legendary"
+    "rbxassetid://3321396783", --["Shiny Cerberus"] // rarity = "Legendary"
+    "rbxassetid://3554077680", --["Sky Unicorn"] // rarity = "Legendary"
+    "rbxassetid://3321469803", --["Ice Phoenix"] // rarity = "Legendary"
+    "rbxassetid://3324769949", --["Shiny Monster Fox"] // rarity = "Legendary"
+    "rbxassetid://3321468679", --["Demon"] // rarity = "Legendary"
+    "rbxassetid://3699317919", --["70M Soundwave Alicorn"] // rarity = "Legendary"
+    "rbxassetid://3324854479", --["Leprechaun"] // rarity = "Legendary"
+    "rbxassetid://3877247516", --["Shiny Guardian Angel"] // rarity = "Legendary"
+    "rbxassetid://3324793394", --["Shiny Leviathan"] // rarity = "Legendary"
+    "rbxassetid://3324883284", --["Eggiverse"] // rarity = "Legendary"
+    "rbxassetid://3324853833", --["Rainbow Elementals"] // rarity = "Legendary"
+    "rbxassetid://3652597129", --["Singularity"] // rarity = "Legendary"
+    "rbxassetid://3324884140", --["Shiny Easter Serpent"] // rarity = "Legendary"
+    "rbxassetid://3656843464", --["Rift Observer"] // rarity = "Legendary"
+    "rbxassetid://3321468526", --["Angel"] // rarity = "Legendary"
+    "rbxassetid://3324770355", --["Shiny Ruler"] // rarity = "Legendary"
+    "rbxassetid://3554077482", --["Omega Gazer"] // rarity = "Legendary"
+    "rbxassetid://3326475117", --["Imp"] // rarity = "Legendary"
+    "rbxassetid://3324793074", --["Shiny Chimera"] // rarity = "Legendary"
+    "rbxassetid://3554077246", --["Elemental Chimera"] // rarity = "Legendary"
+    "rbxassetid://3324821000", --["Cthulhu"] // rarity = "Legendary"
+    "rbxassetid://3321301272", --["Shiny Unicorn"] // rarity = "Legendary"
+    "rbxassetid://3554077861", --["Zeta Alien"] // rarity = "Legendary"
+    "rbxassetid://3324821447", --["Shiny Wisp"] // rarity = "Legendary"
+    "rbxassetid://4147750931", --["Shiny Alchemist"] // rarity = "Legendary"
+    "rbxassetid://3321469993", --["Shiny Alien"] // rarity = "Legendary"
+    "rbxassetid://3321472138", --["Shiny Void Gazer"] // rarity = "Legendary"
+    "rbxassetid://3321327717", --["Flame Fox"] // rarity = "Legendary"
+    "rbxassetid://3326475396", --["Gargoyle"] // rarity = "Legendary"
+    "rbxassetid://3324792977", --["Leviathan"] // rarity = "Legendary"
+    "rbxassetid://3877246549", --["Ancient Earth Dragon"] // rarity = "Legendary"
+    "rbxassetid://3324821083", --["Duality"] // rarity = "Legendary"
+
+}
+local EzLegendaryIds = {
+    "rbxassetid://2867903124", --["Unicorn"] // rarity = "Legendary"
+	"rbxassetid://2867899126", --["Android Dragon"] // rarity = "Legendary"
+	"rbxassetid://2867901873", --["Flame Fox"] // rarity = "Legendary"
+	"rbxassetid://2867903314", --["Vampire Dragon"] // rarity = "Legendary"
+	"rbxassetid://2867902389", --["Monster Fox"] // rarity = "Legendary"
+	"rbxassetid://2868554099", --["Dark Serpent"] // rarity = "Legendary"
+	"rbxassetid://2912788391", --["Dark Phoenix"] // rarity = "Legendary"
+	"rbxassetid://2911048050", --["Luminous Fox"] // rarity = "Legendary"
+	"rbxassetid://1249021641", --["Phowoenix"] // rarity = "Legendary"
+	"rbxassetid://3877246877", --["Guardian Angel"] // rarity = "Legendary"
+	"rbxassetid://3656843464", --["Rift Observer"] // rarity = "Legendary"
+	"rbxassetid://3652596674", --["Shiny Rift Observer"] // rarity = "Legendary"
+	"rbxassetid://3652597129", --["Singularity"] // rarity = "Legendary"
+	"rbxassetid://3652597389", --["Warped Wraith"] // rarity = "Legendary"
+    "rbxassetid://3319539600", --["Shiny Ancient Earth Dragon"] // rarity = "Legendary"
+    "rbxassetid://3319539600", --["Shiny Singularity"] // rarity = "Legendary"
+    "rbxassetid://3319539600", --["Shiny Lightning Satyr"] // rarity = "Legendary"
+}
+
+-- Combine all legendary IDs
+for _, id in ipairs(EzLegendaryIds) do
+    table.insert(LegendaryIds, id)
+end
+
+-- Keep track of buttons we've already processed
+local processedButtons = {}
+local colorCycleConnections = {}
+
+-- Function to determine pet rarity based on image ID
+local function getPetRarity(imageId)
+    -- Check each rarity table
+    for _, id in ipairs(CommonIds) do
+        if id == imageId then return "Common" end
+    end
+    
+    for _, id in ipairs(UncommonIds) do
+        if id == imageId then return "Uncommon" end
+    end
+    
+    for _, id in ipairs(RareIds) do
+        if id == imageId then return "Rare" end
+    end
+    
+    for _, id in ipairs(EpicIds) do
+        if id == imageId then return "Epic" end
+    end
+    
+    for _, id in ipairs(LegendaryIds) do
+        if id == imageId then return "Legendary" end
+    end
+    
+    return "Common" -- Default to Common if not found
+end
+
+-- Function to check if a button has the target image
+local function hasTargetImage(button)
+    return button.Image == CONFIG.originalImageId
+end
+
+-- Function to create a UIGradient with a single color
+local function createSolidGradient(button, color)
+    -- Check if button already has a UIGradient
+    local existingGradient = button:FindFirstChild("ColorGradient")
+    if not existingGradient then
+        -- Create a new UIGradient
+        local gradient = Instance.new("UIGradient")
+        gradient.Name = "ColorGradient"
+        gradient.Parent = button
+        existingGradient = gradient
+    end
+    
+    -- Set solid color
+    existingGradient.Color = ColorSequence.new(color)
+    
+    return existingGradient
+end
+
+-- Function to apply a smooth RGB color cycle for legendary pets
+local function applyLegendaryCycle(button)
+    -- Create or get the gradient
+    local gradient = createSolidGradient(button, Color3.fromRGB(255, 0, 0))
+    
+    -- Remove any existing connection
+    if colorCycleConnections[button] then
+        colorCycleConnections[button]:Disconnect()
+        colorCycleConnections[button] = nil
+    end
+    
+    -- Set up the color cycle
+    local r, g, b = 255, 0, 0
+    local phase = 0
+    -- Phases: 0 = R->255, G->0->255, B->0
+    --         1 = R->255->0, G->255, B->0
+    --         2 = R->0, G->255, B->0->255
+    --         3 = R->0, G->255->0, B->255
+    --         4 = R->0->255, G->0, B->255
+    --         5 = R->255, G->0, B->255->0
+    
+    local connection = game:GetService("RunService").Heartbeat:Connect(function()
+        if not gradient or not gradient.Parent then
+            if colorCycleConnections[button] then
+                colorCycleConnections[button]:Disconnect()
+                colorCycleConnections[button] = nil
+            end
+            return
+        end
+        
+        -- Update color based on current phase
+        local step = CONFIG.colorCycleSpeed
+        
+        if phase == 0 then
+            -- R=255, G increasing, B=0
+            g = g + step
+            if g >= 255 then
+                g = 255
+                phase = 1
+            end
+        elseif phase == 1 then
+            -- G=255, R decreasing, B=0
+            r = r - step
+            if r <= 0 then
+                r = 0
+                phase = 2
+            end
+        elseif phase == 2 then
+            -- R=0, G=255, B increasing
+            b = b + step
+            if b >= 255 then
+                b = 255
+                phase = 3
+            end
+        elseif phase == 3 then
+            -- R=0, B=255, G decreasing
+            g = g - step
+            if g <= 0 then
+                g = 0
+                phase = 4
+            end
+        elseif phase == 4 then
+            -- R increasing, G=0, B=255
+            r = r + step
+            if r >= 255 then
+                r = 255
+                phase = 5
+            end
+        elseif phase == 5 then
+            -- R=255, G=0, B decreasing
+            b = b - step
+            if b <= 0 then
+                b = 0
+                phase = 0
+            end
+        end
+        
+        -- Clamp values to valid range
+        r = math.clamp(r, 0, 255)
+        g = math.clamp(g, 0, 255)
+        b = math.clamp(b, 0, 255)
+        
+        -- Apply the new color
+        gradient.Color = ColorSequence.new(Color3.fromRGB(r, g, b))
+    end)
+    
+    colorCycleConnections[button] = connection
+end
+
+-- Function to apply the appropriate color based on rarity
+local function applyRarityColor(button, rarity)
+    if rarity == "Legendary" then
+        applyLegendaryCycle(button)
+    else
+        -- For non-legendary pets, create a solid gradient with the rarity color
+        createSolidGradient(button, CONFIG.colors[rarity])
+        
+        -- Remove any existing color cycle connection
+        if colorCycleConnections[button] then
+            colorCycleConnections[button]:Disconnect()
+            colorCycleConnections[button] = nil
+        end
+    end
+end
+
+-- Function to process a button
+local function processButton(button)
+    if processedButtons[button] then return end
+    
+    -- Replace the main button image
+    button.Image = CONFIG.replacementImageId
+    
+    -- Look for PetImage child
+    local petImage = button:FindFirstChild("PetImage")
+    if petImage and petImage:IsA("ImageButton") then
+        local rarity = getPetRarity(petImage.Image)
+        
+        -- Apply color based on rarity
+        applyRarityColor(button, rarity)
+        
+        print("Processed button with", rarity, "pet:", button:GetFullName())
+    else
+        -- Default to Common if no pet image found
+        createSolidGradient(button, CONFIG.colors.Common)
+        print("Processed button with default Common rarity:", button:GetFullName())
+    end
+    
+    processedButtons[button] = true
+end
+
+-- Function to scan a container for ImageButtons
+local function scanContainer(container)
+    for _, child in pairs(container:GetChildren()) do
+        if child:IsA("ImageButton") and hasTargetImage(child) then
+            processButton(child)
+        end
+        
+        -- Also check any descendants that might be ImageButtons
+        for _, descendant in pairs(child:GetDescendants()) do
+            if descendant:IsA("ImageButton") and hasTargetImage(descendant) then
+                processButton(descendant)
+            end
+        end
+    end
+end
+
+-- Function to handle when new children are added to a container
+local function setupChildAddedListener(container)
+    container.ChildAdded:Connect(function(child)
+        -- Check if the new child is an ImageButton
+        if child:IsA("ImageButton") and hasTargetImage(child) then
+            processButton(child)
+        end
+        
+        -- Also set up listeners for any descendants
+        child.DescendantAdded:Connect(function(descendant)
+            if descendant:IsA("ImageButton") and hasTargetImage(descendant) then
+                processButton(descendant)
+            end
+        end)
+    end)
+end
+
+-- Function to clean up connections when objects are removed
+local function setupRemovalListeners()
+    game:GetService("Players").LocalPlayer.PlayerGui.DescendantRemoving:Connect(function(instance)
+        if colorCycleConnections[instance] then
+            colorCycleConnections[instance]:Disconnect()
+            colorCycleConnections[instance] = nil
+        end
+        
+        if processedButtons[instance] then
+            processedButtons[instance] = nil
+        end
+    end)
+end
+
+-- Main function
+local function startImageReplacer()
+    -- Set up cleanup for color cycle effects
+    setupRemovalListeners()
+    
+    -- Initial scan of all containers
+    for _, container in ipairs(CONFIG.paths) do
+        scanContainer(container)
+        setupChildAddedListener(container)
+    end
+    
+    -- Set up a loop to periodically check for new buttons
+    while true do
+        wait(CONFIG.checkInterval)
+        
+        for _, container in ipairs(CONFIG.paths) do
+            scanContainer(container)
+        end
+    end
+end
+
+-- Start the image replacer
+spawn(startImageReplacer)
+
+print("Pet Image Replacer started - looking for images to replace...")
+
+----------------------------------------------------------------
+
+-- Pet Sorting Script
+-- This script sorts pets by rarity in both inventory and equipped sections
+
+local LocalPlayer = game:GetService("Players").LocalPlayer
+
+-- Path to the inventory frame containing ImageButtons
+local inventoryPath = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.PetInventoryScrollingFrame
+
+-- Path to the equipped pets frame
+local equippedPath = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.EquippedPets
+
+-- Rarity identification tables (shortened for example)
+local CommonIds = {
+    "rbxassetid://3321300808", -- Blue Butterfly
+    "rbxassetid://3319895658", -- White Cat
+    "rbxassetid://3324883683"  -- Shiny Sweets Bat
+}
+
+local UncommonIds = {
+    "rbxassetid://3321470334", -- Shiny Tuxedo Cat
+    "rbxassetid://3319895561", -- Bunny
+    "rbxassetid://3321470447"  -- Tuxedo Cat
+}
+
+local RareIds = {
+    "rbxassetid://3652596139", -- Moonlight Sphinx
+    "rbxassetid://3321301540", -- Vampire Bat
+    "rbxassetid://3324821828"  -- Shiny Dwarf
+}
+
+local EpicIds = {
+    "rbxassetid://3324770049", -- Shiny Nova Fox
+    "rbxassetid://3471249879", -- Shiny Deep Sea Narwhal
+    "rbxassetid://3321301144"  -- Shiny Midnight Bat
+}
+
+local LegendaryIds = {
+    "rbxassetid://3554077323", -- Grim Demonlord
+    "rbxassetid://3971551900", -- 80M DJ Eagle
+    "rbxassetid://3321471512"  -- Inferno Serpent
+}
+
+local EzLegendaryIds = {
+    "rbxassetid://2867903124", -- Unicorn
+    "rbxassetid://2867899126", -- Android Dragon
+    "rbxassetid://2867901873"  -- Flame Fox
+}
+
+-- Combine all legendary IDs
+for _, id in ipairs(EzLegendaryIds) do
+    table.insert(LegendaryIds, id)
+end
+
+-- Rarity values for sorting (higher = better)
+local rarityValues = {
+    Legendary = 5,
+    Epic = 4,
+    Rare = 3,
+    Uncommon = 2,
+    Common = 1,
+    Unknown = 0
+}
+
+-- Function to determine pet rarity based on image ID
+local function getPetRarity(imageId)
+    -- Check each rarity table
+    for _, id in ipairs(CommonIds) do
+        if id == imageId then return "Common" end
+    end
+    
+    for _, id in ipairs(UncommonIds) do
+        if id == imageId then return "Uncommon" end
+    end
+    
+    for _, id in ipairs(RareIds) do
+        if id == imageId then return "Rare" end
+    end
+    
+    for _, id in ipairs(EpicIds) do
+        if id == imageId then return "Epic" end
+    end
+    
+    for _, id in ipairs(LegendaryIds) do
+        if id == imageId then return "Legendary" end
+    end
+    
+    return "Unknown" -- Default if not found
+end
+
+-- Function to get the rarity of a pet button
+local function getButtonRarity(button)
+    local petImage = button:FindFirstChild("PetImage")
+    if petImage and petImage:IsA("ImageButton") then
+        return getPetRarity(petImage.Image)
+    end
+    return "Unknown"
+end
+
+-- Function to sort buttons by rarity
+local function sortButtonsByRarity(buttons)
+    table.sort(buttons, function(a, b)
+        local rarityA = getButtonRarity(a)
+        local rarityB = getButtonRarity(b)
+        
+        -- Sort by rarity value (higher first)
+        return rarityValues[rarityA] > rarityValues[rarityB]
+    end)
+    
+    return buttons
+end
+
+-- Function to collect all buttons from a container
+local function collectButtons(container)
+    local buttons = {}
+    for _, obj in ipairs(container:GetChildren()) do
+        if obj:IsA("ImageButton") then
+            table.insert(buttons, obj)
+        end
+    end
+    return buttons
+end
+
+-- Function to reorder buttons in a container
+local function reorderButtons(container, sortedButtons)
+    -- Reorder the buttons in the container
+    for i, button in ipairs(sortedButtons) do
+        button.LayoutOrder = i
+    end
+end
+
+-- Function to check if paths exist
+local function checkPaths()
+    if not inventoryPath or not inventoryPath:FindFirstAncestor("PlayerGui") then
+        warn("Inventory path not found, waiting...")
+        return false
+    end
+    
+    if not equippedPath or not equippedPath:FindFirstAncestor("PlayerGui") then
+        warn("Equipped path not found, waiting...")
+        return false
+    end
+    
+    return true
+end
+
+-- Function to ensure UIGridLayout exists in a container
+local function ensureGridLayout(container)
+    local layout = container:FindFirstChildOfClass("UIGridLayout")
+    
+    if not layout then
+        layout = Instance.new("UIGridLayout")
+        layout.CellSize = UDim2.new(0, 70, 0, 70) -- Adjust as needed
+        layout.CellPadding = UDim2.new(0, 5, 0, 5) -- Adjust as needed
+        layout.SortOrder = Enum.SortOrder.LayoutOrder
+        layout.Parent = container
+    else
+        -- Make sure the layout is set to use LayoutOrder
+        layout.SortOrder = Enum.SortOrder.LayoutOrder
+    end
+    
+    return layout
+end
+
+-- Function to sort a specific container
+local function sortContainer(container)
+    -- Ensure the container has a grid layout
+    ensureGridLayout(container)
+    
+    -- Collect all buttons
+    local buttons = collectButtons(container)
+    
+    -- Sort buttons by rarity
+    local sortedButtons = sortButtonsByRarity(buttons)
+    
+    -- Reorder buttons in the container
+    reorderButtons(container, sortedButtons)
+end
+
+-- Main sorting function
+local function sortPets()
+    if not checkPaths() then
+        return
+    end
+    
+    -- Sort inventory pets
+    sortContainer(inventoryPath)
+    
+    -- Sort equipped pets
+    sortContainer(equippedPath)
+end
+
+-- Set up a connection to sort when children change
+local function setupSortingConnections()
+    -- Sort when inventory changes
+    inventoryPath.ChildAdded:Connect(function()
+        wait(0.1) -- Small delay to allow other scripts to finish
+        sortPets()
+    end)
+    
+    inventoryPath.ChildRemoved:Connect(function()
+        wait(0.1)
+        sortPets()
+    end)
+    
+    -- Sort when equipped pets change
+    equippedPath.ChildAdded:Connect(function()
+        wait(0.1)
+        sortPets()
+    end)
+    
+    equippedPath.ChildRemoved:Connect(function()
+        wait(0.1)
+        sortPets()
+    end)
+end
+
+-- Main function
+local function startPetSorting()
+    -- Initial sort
+    while not checkPaths() do
+        wait(1)
+    end
+    
+    -- Ensure grid layouts exist
+    ensureGridLayout(inventoryPath)
+    ensureGridLayout(equippedPath)
+    
+    -- Initial sort
+    sortPets()
+    
+    -- Set up connections for future changes
+    setupSortingConnections()
+    
+    -- Periodically sort in case we miss any events
+    spawn(function()
+        while wait(2) do
+            sortPets()
+        end
+    end)
+end
+
+-- Start the pet sorting
+startPetSorting()
+
+print("Pet Sorting Script started - pets will be sorted by rarity")
+
+----------------------------------------------------------------
+
+-- Path to the inventory frame containing ImageButtons
+local inventoryPath = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.PetInventoryScrollingFrame
+
+-- Path to the equipped pets frame
+local equippedPath = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.EquippedPets
+
+-- Path to the TextLabel that changes when a pet is equipped
+local petEquippedTextLabel = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.EquippedFrame.PetEquipped
+
+-- Target colors to check for
+local yellowColor = Color3.fromRGB(255, 255, 127) -- Color for equipped pets
+local whiteColor = Color3.fromRGB(255, 255, 255) -- Color for unequipped pets
+local greenColor = Color3.fromRGB(135, 255, 183) -- Color for selected pets
+
+-- Variables to track the previous TextLabel text
+local previousTextLabelText = ""
+local previousTextLabelNumber = 0
+
+-- Function to check if paths exist
+local function checkPaths()
+    if not inventoryPath or not inventoryPath:FindFirstAncestor("PlayerGui") then
+        warn("Inventory path not found, waiting...")
+        return false
+    end
+    if not equippedPath or not equippedPath:FindFirstAncestor("PlayerGui") then
+        warn("Equipped path not found, waiting...")
+        return false
+    end
+    if not petEquippedTextLabel or not petEquippedTextLabel:FindFirstAncestor("PlayerGui") then
+        warn("Pet equipped TextLabel not found, waiting...")
+        return false
+    end
+    return true
+end
+
+-- Function to extract number from TextLabel text
+local function getNumberFromText(text)
+    local number = tonumber(text:match("%d+"))
+    return number or 0
+end
+
+-- Main loop to run checks
+while wait(0.01) do -- Check every half second for more responsiveness
+    if not checkPaths() then
+        continue
+    end
+    
+    -- Store the buttons to move in arrays
+    local yellowButtons = {}
+    local whiteButtons = {}
+    local inventoryGreenButtons = {}
+    local equippedGreenButtons = {}
+    
+    -- Check if the TextLabel text has changed
+    local currentTextLabelText = petEquippedTextLabel.Text
+    local textLabelChanged = currentTextLabelText ~= previousTextLabelText
+    
+    -- Extract numbers from TextLabel text for comparison
+    local currentNumber = getNumberFromText(currentTextLabelText)
+    local previousNumber = getNumberFromText(previousTextLabelText)
+    
+    -- Determine if pets were equipped or unequipped
+    local petsEquipped = textLabelChanged and currentNumber > previousNumber
+    local petsUnequipped = textLabelChanged and currentNumber < previousNumber
+    
+    -- Update previous text value
+    previousTextLabelText = currentTextLabelText
+    
+    -- Find all yellow buttons in inventory
+    for _, obj in ipairs(inventoryPath:GetChildren()) do
+        if obj:IsA("ImageButton") and obj.ImageColor3 == yellowColor then
+            table.insert(yellowButtons, obj)
+        end
+    end
+    
+    -- Find all white buttons in equipped
+    for _, obj in ipairs(equippedPath:GetChildren()) do
+        if obj:IsA("ImageButton") and obj.ImageColor3 == whiteColor then
+            table.insert(whiteButtons, obj)
+        end
+    end
+    
+    -- Find all green buttons in inventory (selected pets to equip)
+    for _, obj in ipairs(inventoryPath:GetChildren()) do
+        if obj:IsA("ImageButton") and obj.ImageColor3 == greenColor then
+            table.insert(inventoryGreenButtons, obj)
+        end
+    end
+    
+    -- Find all green buttons in equipped (selected pets to unequip)
+    for _, obj in ipairs(equippedPath:GetChildren()) do
+        if obj:IsA("ImageButton") and obj.ImageColor3 == greenColor then
+            table.insert(equippedGreenButtons, obj)
+        end
+    end
+    
+    -- Move yellow buttons to equipped
+    for _, button in ipairs(yellowButtons) do
+        button.Parent = equippedPath
+    end
+    
+    -- Move white buttons to inventory
+    for _, button in ipairs(whiteButtons) do
+        button.Parent = inventoryPath
+    end
+    
+    -- If TextLabel number increased, move any green buttons from inventory to equipped
+    if petsEquipped and #inventoryGreenButtons > 0 then
+        for _, button in ipairs(inventoryGreenButtons) do
+            button.Parent = equippedPath
+        end
+    end
+    
+    -- If TextLabel number decreased, move any green buttons from equipped to inventory
+    if petsUnequipped and #equippedGreenButtons > 0 then
+        for _, button in ipairs(equippedGreenButtons) do
+            button.Parent = inventoryPath
+        end
+    end
+end
