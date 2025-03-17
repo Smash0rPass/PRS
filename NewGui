@@ -1420,29 +1420,32 @@ local function hasTargetImage(button)
     return button.Image == CONFIG.originalImageId
 end
 
--- Function to create a UIGradient with a single color
-local function createSolidGradient(button, color)
-    -- Check if button already has a UIGradient
-    local existingGradient = button:FindFirstChild("ColorGradient")
-    if not existingGradient then
-        -- Create a new UIGradient
-        local gradient = Instance.new("UIGradient")
-        gradient.Name = "ColorGradient"
-        gradient.Parent = button
-        existingGradient = gradient
+-- Function to create or get the replacement ImageLabel
+local function createReplacementImage(button)
+    -- Check if button already has a replacement image
+    local existingImage = button:FindFirstChild("ReplacementImage")
+    if not existingImage then
+        -- Create a new ImageLabel
+        local imageLabel = Instance.new("ImageLabel")
+        imageLabel.Name = "ReplacementImage"
+        imageLabel.Size = UDim2.new(1, 0, 1, 0)
+        imageLabel.Position = UDim2.new(0, 0, 0, 0)
+        imageLabel.BackgroundTransparency = 1
+        imageLabel.Image = CONFIG.replacementImageId
+        imageLabel.ScaleType = button.ScaleType
+        imageLabel.SliceCenter = button.SliceCenter
+        imageLabel.SliceScale = button.SliceScale
+        imageLabel.ZIndex = button.ZIndex
+        imageLabel.Parent = button
+        
+        existingImage = imageLabel
     end
     
-    -- Set solid color
-    existingGradient.Color = ColorSequence.new(color)
-    
-    return existingGradient
+    return existingImage
 end
 
 -- Function to apply a smooth RGB color cycle for legendary pets
-local function applyLegendaryCycle(button)
-    -- Create or get the gradient
-    local gradient = createSolidGradient(button, Color3.fromRGB(255, 0, 0))
-    
+local function applyLegendaryCycle(button, imageLabel)
     -- Remove any existing connection
     if colorCycleConnections[button] then
         colorCycleConnections[button]:Disconnect()
@@ -1460,7 +1463,7 @@ local function applyLegendaryCycle(button)
     --         5 = R->255, G->0, B->255->0
     
     local connection = game:GetService("RunService").Heartbeat:Connect(function()
-        if not gradient or not gradient.Parent then
+        if not imageLabel or not imageLabel.Parent then
             if colorCycleConnections[button] then
                 colorCycleConnections[button]:Disconnect()
                 colorCycleConnections[button] = nil
@@ -1521,19 +1524,19 @@ local function applyLegendaryCycle(button)
         b = math.clamp(b, 0, 255)
         
         -- Apply the new color
-        gradient.Color = ColorSequence.new(Color3.fromRGB(r, g, b))
+        imageLabel.ImageColor3 = Color3.fromRGB(r, g, b)
     end)
     
     colorCycleConnections[button] = connection
 end
 
 -- Function to apply the appropriate color based on rarity
-local function applyRarityColor(button, rarity)
+local function applyRarityColor(button, rarity, imageLabel)
     if rarity == "Legendary" then
-        applyLegendaryCycle(button)
+        applyLegendaryCycle(button, imageLabel)
     else
-        -- For non-legendary pets, create a solid gradient with the rarity color
-        createSolidGradient(button, CONFIG.colors[rarity])
+        -- For non-legendary pets, set a solid color
+        imageLabel.ImageColor3 = CONFIG.colors[rarity]
         
         -- Remove any existing color cycle connection
         if colorCycleConnections[button] then
@@ -1547,8 +1550,11 @@ end
 local function processButton(button)
     if processedButtons[button] then return end
     
-    -- Replace the main button image
-    button.Image = CONFIG.replacementImageId
+    -- Make the original button image transparent
+    button.ImageTransparency = 1
+    
+    -- Create the replacement image
+    local replacementImage = createReplacementImage(button)
     
     -- Look for PetImage child
     local petImage = button:FindFirstChild("PetImage")
@@ -1556,12 +1562,12 @@ local function processButton(button)
         local rarity = getPetRarity(petImage.Image)
         
         -- Apply color based on rarity
-        applyRarityColor(button, rarity)
+        applyRarityColor(button, rarity, replacementImage)
         
         print("Processed button with", rarity, "pet:", button:GetFullName())
     else
         -- Default to Common if no pet image found
-        createSolidGradient(button, CONFIG.colors.Common)
+        replacementImage.ImageColor3 = CONFIG.colors.Common
         print("Processed button with default Common rarity:", button:GetFullName())
     end
     
@@ -1643,251 +1649,7 @@ print("Pet Image Replacer started - looking for images to replace...")
 
 ----------------------------------------------------------------
 
--- Pet Sorting Script
--- This script sorts pets by rarity in both inventory and equipped sections
 
-local LocalPlayer = game:GetService("Players").LocalPlayer
-
--- Path to the inventory frame containing ImageButtons
-local inventoryPath = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.PetInventoryScrollingFrame
-
--- Path to the equipped pets frame
-local equippedPath = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.EquippedPets
-
--- Rarity identification tables (shortened for example)
-local CommonIds = {
-    "rbxassetid://3321300808", -- Blue Butterfly
-    "rbxassetid://3319895658", -- White Cat
-    "rbxassetid://3324883683"  -- Shiny Sweets Bat
-}
-
-local UncommonIds = {
-    "rbxassetid://3321470334", -- Shiny Tuxedo Cat
-    "rbxassetid://3319895561", -- Bunny
-    "rbxassetid://3321470447"  -- Tuxedo Cat
-}
-
-local RareIds = {
-    "rbxassetid://3652596139", -- Moonlight Sphinx
-    "rbxassetid://3321301540", -- Vampire Bat
-    "rbxassetid://3324821828"  -- Shiny Dwarf
-}
-
-local EpicIds = {
-    "rbxassetid://3324770049", -- Shiny Nova Fox
-    "rbxassetid://3471249879", -- Shiny Deep Sea Narwhal
-    "rbxassetid://3321301144"  -- Shiny Midnight Bat
-}
-
-local LegendaryIds = {
-    "rbxassetid://3554077323", -- Grim Demonlord
-    "rbxassetid://3971551900", -- 80M DJ Eagle
-    "rbxassetid://3321471512"  -- Inferno Serpent
-}
-
-local EzLegendaryIds = {
-    "rbxassetid://2867903124", -- Unicorn
-    "rbxassetid://2867899126", -- Android Dragon
-    "rbxassetid://2867901873"  -- Flame Fox
-}
-
--- Combine all legendary IDs
-for _, id in ipairs(EzLegendaryIds) do
-    table.insert(LegendaryIds, id)
-end
-
--- Rarity values for sorting (higher = better)
-local rarityValues = {
-    Legendary = 5,
-    Epic = 4,
-    Rare = 3,
-    Uncommon = 2,
-    Common = 1,
-    Unknown = 0
-}
-
--- Function to determine pet rarity based on image ID
-local function getPetRarity(imageId)
-    -- Check each rarity table
-    for _, id in ipairs(CommonIds) do
-        if id == imageId then return "Common" end
-    end
-    
-    for _, id in ipairs(UncommonIds) do
-        if id == imageId then return "Uncommon" end
-    end
-    
-    for _, id in ipairs(RareIds) do
-        if id == imageId then return "Rare" end
-    end
-    
-    for _, id in ipairs(EpicIds) do
-        if id == imageId then return "Epic" end
-    end
-    
-    for _, id in ipairs(LegendaryIds) do
-        if id == imageId then return "Legendary" end
-    end
-    
-    return "Unknown" -- Default if not found
-end
-
--- Function to get the rarity of a pet button
-local function getButtonRarity(button)
-    local petImage = button:FindFirstChild("PetImage")
-    if petImage and petImage:IsA("ImageButton") then
-        return getPetRarity(petImage.Image)
-    end
-    return "Unknown"
-end
-
--- Function to sort buttons by rarity
-local function sortButtonsByRarity(buttons)
-    table.sort(buttons, function(a, b)
-        local rarityA = getButtonRarity(a)
-        local rarityB = getButtonRarity(b)
-        
-        -- Sort by rarity value (higher first)
-        return rarityValues[rarityA] > rarityValues[rarityB]
-    end)
-    
-    return buttons
-end
-
--- Function to collect all buttons from a container
-local function collectButtons(container)
-    local buttons = {}
-    for _, obj in ipairs(container:GetChildren()) do
-        if obj:IsA("ImageButton") then
-            table.insert(buttons, obj)
-        end
-    end
-    return buttons
-end
-
--- Function to reorder buttons in a container
-local function reorderButtons(container, sortedButtons)
-    -- Reorder the buttons in the container
-    for i, button in ipairs(sortedButtons) do
-        button.LayoutOrder = i
-    end
-end
-
--- Function to check if paths exist
-local function checkPaths()
-    if not inventoryPath or not inventoryPath:FindFirstAncestor("PlayerGui") then
-        warn("Inventory path not found, waiting...")
-        return false
-    end
-    
-    if not equippedPath or not equippedPath:FindFirstAncestor("PlayerGui") then
-        warn("Equipped path not found, waiting...")
-        return false
-    end
-    
-    return true
-end
-
--- Function to ensure UIGridLayout exists in a container
-local function ensureGridLayout(container)
-    local layout = container:FindFirstChildOfClass("UIGridLayout")
-    
-    if not layout then
-        layout = Instance.new("UIGridLayout")
-        layout.CellSize = UDim2.new(0, 70, 0, 70) -- Adjust as needed
-        layout.CellPadding = UDim2.new(0, 5, 0, 5) -- Adjust as needed
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-        layout.Parent = container
-    else
-        -- Make sure the layout is set to use LayoutOrder
-        layout.SortOrder = Enum.SortOrder.LayoutOrder
-    end
-    
-    return layout
-end
-
--- Function to sort a specific container
-local function sortContainer(container)
-    -- Ensure the container has a grid layout
-    ensureGridLayout(container)
-    
-    -- Collect all buttons
-    local buttons = collectButtons(container)
-    
-    -- Sort buttons by rarity
-    local sortedButtons = sortButtonsByRarity(buttons)
-    
-    -- Reorder buttons in the container
-    reorderButtons(container, sortedButtons)
-end
-
--- Main sorting function
-local function sortPets()
-    if not checkPaths() then
-        return
-    end
-    
-    -- Sort inventory pets
-    sortContainer(inventoryPath)
-    
-    -- Sort equipped pets
-    sortContainer(equippedPath)
-end
-
--- Set up a connection to sort when children change
-local function setupSortingConnections()
-    -- Sort when inventory changes
-    inventoryPath.ChildAdded:Connect(function()
-        wait(0.1) -- Small delay to allow other scripts to finish
-        sortPets()
-    end)
-    
-    inventoryPath.ChildRemoved:Connect(function()
-        wait(0.1)
-        sortPets()
-    end)
-    
-    -- Sort when equipped pets change
-    equippedPath.ChildAdded:Connect(function()
-        wait(0.1)
-        sortPets()
-    end)
-    
-    equippedPath.ChildRemoved:Connect(function()
-        wait(0.1)
-        sortPets()
-    end)
-end
-
--- Main function
-local function startPetSorting()
-    -- Initial sort
-    while not checkPaths() do
-        wait(1)
-    end
-    
-    -- Ensure grid layouts exist
-    ensureGridLayout(inventoryPath)
-    ensureGridLayout(equippedPath)
-    
-    -- Initial sort
-    sortPets()
-    
-    -- Set up connections for future changes
-    setupSortingConnections()
-    
-    -- Periodically sort in case we miss any events
-    spawn(function()
-        while wait(2) do
-            sortPets()
-        end
-    end)
-end
-
--- Start the pet sorting
-startPetSorting()
-
-print("Pet Sorting Script started - pets will be sorted by rarity")
 
 ----------------------------------------------------------------
 
