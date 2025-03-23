@@ -1,58 +1,108 @@
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local PetInv = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory
-local PetInner = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame
-local PetScroll = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
-local MaxPetEquipped = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.MaxPetEquipped
-local PetEquipped = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetEquipped
-local PetOwnedSeparator = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetOwnedSeperator
-local MassDelete = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.MassDeleteButton
-local EquipTopPets = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.EquipTopPets
-local PetInvOver =game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryOverlay
-local TweenService = game:GetService("TweenService")
-local button = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightUIFrame.PetInventoryOpen
+Players = game:GetService("Players")
+LocalPlayer = Players.LocalPlayer
+PetInv = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory
+PetInner = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame
+PetScroll = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.PetInventoryScrollingFrame
+MassDelete = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.MassDeleteButton
+EquipTopPets = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.EquipTopPets
+PetInvOver = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryOverlay
+DeleteConfirm = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.DeletionFrame
+TweenService = game:GetService("TweenService")
+button = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightUIFrame.PetInventoryOpen
+
+MaxPetEquipped = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.MaxPetEquipped
+PetEquipped = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetEquipped
+PetOwnedSeparator = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetOwnedSeperator
+
+MaxPetsOwned = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.MaxPetOwned
+PetOwned = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetOwned
+PetOwnedSeparator2 = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory:GetChildren()[19]
+
+MassDeleteOverlay = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.MassDeleteOverlay
+
+UpgradeRanch = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame
+UpgradeRanchArrow = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame.Arrow
+UpgradeRanchImage1 = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame.RanchImage
+UpgradeRanchImage2 = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame:GetChildren()[8]
+RanchMaxUpgradeFrame = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame.RanchMaxUpgradeFrame
+UpgradeRanchButton = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame.RanchUpgrade
+UpgRanchText = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame.ReturningText1
+
+isInventoryOpen = false
+isRanchOpen = false
 
 button.Position = UDim2.new(0, 0, 0, 900)
 button.Size = UDim2.new(0.4, 0, 0.15, 0)
 button.AnchorPoint = Vector2.new(0.5, 0.5)
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "PetInv"
-ScreenGui.Parent = PetInv
+PetInv.ImageTransparency = 1
+PetInv.PetInventoryClose:Destroy()
+PetInv.InvPawIcon:Destroy()
+PetInv.InvBoxIcon:Destroy()
+PetInv.IconMinimizer:Destroy()
+PetInv.DeleteAllUnlocked:Destroy()
+PetInner.ImageTransparency = 1
 
 
-local ScreenGui2 = Instance.new("ScreenGui")
-ScreenGui2.Name = "NewGui"
-ScreenGui2.Parent = PetInner
-
-
-local MainFrame1 = Instance.new("Frame")
+MainFrame1 = Instance.new("Frame")
+MainFrame1.ZIndex = 0
 MainFrame1.Name = "MainFrame1"
 MainFrame1.Size = UDim2.new(0, 1000, 0, 500)
 MainFrame1.Position = UDim2.new(0, 455, 0, 250)
 MainFrame1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-MainFrame1.Parent = ScreenGui
+MainFrame1.Parent = PetInv
 
 
-local MainFrame2 = Instance.new("Frame")
+MainFrame2 = Instance.new("Frame")
 MainFrame2.Name = "MainFrame2"
 MainFrame2.BackgroundTransparency = 1
 MainFrame2.Size = UDim2.new(0, 1000, 0, 500)
 MainFrame2.Position = UDim2.new(0, 455, 0, 250)
 MainFrame2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-MainFrame2.Parent = ScreenGui2
+MainFrame2.Parent = PetInner
 
 
-local MainCorner = Instance.new("UICorner")
+MainCorner = Instance.new("UICorner")
 MainCorner.CornerRadius = UDim.new(0, 25)
 MainCorner.Parent = MainFrame1
 
-local MainStroke = Instance.new("UIStroke")
+MainStroke = Instance.new("UIStroke")
 MainStroke.Color = Color3.fromRGB(46, 46, 53)
 MainStroke.Thickness = 5
 MainStroke.Parent = MainFrame1
 
-local SpecialFrame = Instance.new("Frame")
+DeleteLabel = Instance.new("TextLabel")
+DeleteLabel.Name = "DeleteLabel"
+DeleteLabel.BackgroundTransparency = 1
+DeleteLabel.Visible = false
+DeleteLabel.Size = UDim2.new(1, 0, 1, 0)
+DeleteLabel.Text = "X"
+DeleteLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+DeleteLabel.TextScaled = true
+DeleteLabel.TextWrapped = true
+DeleteLabel.TextXAlignment = Enum.TextXAlignment.Center
+DeleteLabel.TextYAlignment = Enum.TextYAlignment.Bottom
+DeleteLabel.ZIndex = 11
+DeleteLabel.Parent = MainFrame2
+
+DeleteLabelUIStroke = Instance.new("UIStroke")
+DeleteLabelUIStroke.Name = "DeleteLabelUIStroke"
+DeleteLabelUIStroke.Color = Color3.fromRGB(100, 0, 0)
+DeleteLabelUIStroke.Thickness = 4
+DeleteLabelUIStroke.Parent = DeleteLabel
+
+DeleteLabelShadow = Instance.new("ImageLabel")
+DeleteLabelShadow.Name = "DeleteLabelShadow"
+DeleteLabelShadow.Size = UDim2.new(0, 90, 0, 90)
+DeleteLabelShadow.ImageTransparency = 0.7
+DeleteLabelShadow.Position = UDim2.new(0, 0, 0, 0)
+DeleteLabelShadow.BackgroundTransparency = 1
+DeleteLabelShadow.Image = "rbxassetid://14001321443"
+DeleteLabelShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+DeleteLabelShadow.ZIndex = 10
+DeleteLabelShadow.Parent = DeleteLabel
+
+SpecialFrame = Instance.new("Frame")
 SpecialFrame.Name = "SpecialBttns"
 SpecialFrame.Size = UDim2.new(0, 300, 0, 50)
 SpecialFrame.Position = UDim2.new(0, 650, 0, -25)
@@ -71,7 +121,7 @@ EquipTopPets.Image = "rbxassetid://133453817967093"
 EquipTopPets.ImageColor3 = Color3.fromRGB(46, 46, 53)
 EquipTopPets.Parent = SpecialFrame
 
-local UnequipAll = Instance.new("ImageButton")
+UnequipAll = Instance.new("ImageButton")
 UnequipAll.Name = "UnequipAll"
 UnequipAll.BackgroundTransparency = 1
 UnequipAll.Size = UDim2.new(0, 37, 0, 37)
@@ -82,17 +132,17 @@ UnequipAll.Parent = SpecialFrame
 
 EquipTopPets.EquipBestPetsText:Destroy()
 
-local ShrinkCorner = Instance.new("UICorner")
+ShrinkCorner = Instance.new("UICorner")
 ShrinkCorner.CornerRadius = UDim.new(0, 50)
 ShrinkCorner.Parent = SpecialFrame
 
 
-local ShrinkStroke = Instance.new("UIStroke")
+ShrinkStroke = Instance.new("UIStroke")
 ShrinkStroke.Color = Color3.fromRGB(46, 46, 53)
 ShrinkStroke.Thickness = 5
 ShrinkStroke.Parent = SpecialFrame
 
-local ShrinkButton = Instance.new("ImageButton")
+ShrinkButton = Instance.new("ImageButton")
 ShrinkButton.Name = "ShrinkButton"
 ShrinkButton.Size = UDim2.new(0.4, 0, 0.9, 0)
 ShrinkButton.Position = UDim2.new(0, 10, 0, 2)
@@ -101,11 +151,11 @@ ShrinkButton.Image = "rbxassetid://13654931441"
 ShrinkButton.ImageColor3 = Color3.fromRGB(46, 46, 53)
 ShrinkButton.Parent = SpecialFrame
 
-local ShrinkBttnUiAspect = Instance.new("UIAspectRatioConstraint")
+ShrinkBttnUiAspect = Instance.new("UIAspectRatioConstraint")
 ShrinkBttnUiAspect.Parent = ShrinkButton
 
 
-local EquippedFrame = Instance.new("Frame")
+EquippedFrame = Instance.new("Frame")
 EquippedFrame.Name = "EquippedFrame"
 EquippedFrame.Size = UDim2.new(0, 600, 0, 50)
 EquippedFrame.Position = UDim2.new(0, 200, 0, 40)
@@ -113,7 +163,7 @@ EquippedFrame.BackgroundTransparency = 1
 EquippedFrame.Parent = MainFrame2
 
 
-local RGradient = Instance.new("Frame")
+RGradient = Instance.new("Frame")
 RGradient.Name = "RGradient"
 RGradient.Size = UDim2.new(0, 250, 0, 3)
 RGradient.Position = UDim2.new(0, 450, 0, 25)
@@ -121,7 +171,7 @@ RGradient.BorderSizePixel = 0
 RGradient.Parent = EquippedFrame
 
 
-local LGradient = Instance.new("Frame")
+LGradient = Instance.new("Frame")
 LGradient.Name = "LGradient"
 LGradient.Size = UDim2.new(0, 250, 0, 3)
 LGradient.Position = UDim2.new(0, -100, 0, 25)
@@ -129,7 +179,7 @@ LGradient.BorderSizePixel = 0
 LGradient.Parent = EquippedFrame
 
 
-local RGradient2 = Instance.new("UIGradient")
+RGradient2 = Instance.new("UIGradient")
 RGradient2.Transparency = NumberSequence.new({
 NumberSequenceKeypoint.new(0, 1),
 NumberSequenceKeypoint.new(0.5, 0.5),
@@ -138,7 +188,7 @@ NumberSequenceKeypoint.new(1, 1)
 RGradient2.Parent = RGradient
 
 
-local LGradient2 = Instance.new("UIGradient")
+LGradient2 = Instance.new("UIGradient")
 LGradient2.Transparency = NumberSequence.new({
 NumberSequenceKeypoint.new(0, 1),
 NumberSequenceKeypoint.new(0.5, 0.5),
@@ -146,9 +196,24 @@ NumberSequenceKeypoint.new(1, 1)
 })
 LGradient2.Parent = LGradient
 
+MaxPets = Instance.new("Frame")
+MaxPets.Name = "MaxPets"
+MaxPets.AnchorPoint = Vector2.new(0.5, 0.5)
+MaxPets.BackgroundTransparency = 1
+MaxPets.Size = UDim2.new(0, 200, 0, 50)
+MaxPets.Position = UDim2.new(0, 455, 0, 27)
+MaxPets.Parent = EquippedFrame
 
-local PetEquippedLabel = Instance.new("TextLabel")
-PetEquippedLabel.Name = "Equipped"
+MaxPetsUIGrid = Instance.new("UIGridLayout")
+MaxPetsUIGrid.CellPadding = UDim2.new(0, 0, 0, 0)
+MaxPetsUIGrid.CellSize = UDim2.new(0, 30, 0, 30)
+MaxPetsUIGrid.FillDirection = Enum.FillDirection.Horizontal
+MaxPetsUIGrid.VerticalAlignment = Enum.VerticalAlignment.Center
+MaxPetsUIGrid.Parent = MaxPets
+
+
+PetEquippedLabel = Instance.new("TextLabel")
+PetEquippedLabel.Name = "Total Pets"
 PetEquippedLabel.BackgroundTransparency = 1
 PetEquippedLabel.Position = UDim2.new(0, 100, 0, 13)
 PetEquippedLabel.Size = UDim2.new(0, 300, 0, 25)
@@ -160,11 +225,12 @@ PetEquippedLabel.Parent = EquippedFrame
 
 
 MaxPetEquipped.Position = UDim2.new(0, 410, 0, 5)
+MaxPetEquipped.Name = "Z-MaxPetEquipped"
 MaxPetEquipped.Size = UDim2.new(0, 40, 0, 40)
 MaxPetEquipped.TextColor3 = Color3.fromRGB(0, 166, 242)
 MaxPetEquipped.TextXAlignment = Enum.TextXAlignment.Right
 MaxPetEquipped.TextStrokeTransparency = 1
-MaxPetEquipped.Parent = EquippedFrame
+MaxPetEquipped.Parent = MaxPets
 
 
 PetEquipped.Position = UDim2.new(0, 355, 0, 5)
@@ -172,17 +238,16 @@ PetEquipped.Size = UDim2.new(0, 38, 0, 38)
 PetEquipped.TextColor3 = Color3.fromRGB(0, 166, 242)
 PetEquipped.TextStrokeTransparency = 1
 MaxPetEquipped.TextXAlignment = Enum.TextXAlignment.Right
-PetEquipped.Parent = EquippedFrame
+PetEquipped.Parent = MaxPets
 
-
-PetOwnedSeparator.Parent = EquippedFrame
+PetOwnedSeparator.Parent = MaxPets
 PetOwnedSeparator.Position = UDim2.new(0, 380, 0, 5)
 PetOwnedSeparator.Size = UDim2.new(0, 40, 0, 40)
 PetOwnedSeparator.TextColor3 = Color3.fromRGB(0, 166, 242)
 PetOwnedSeparator.TextStrokeTransparency = 1
 
 
-local Pets = Instance.new("ScrollingFrame")
+Pets = Instance.new("ScrollingFrame")
 Pets.Name = "Pets"
 Pets.BackgroundTransparency = 1
 Pets.CanvasSize = UDim2.new(0, 0, 3, 0)
@@ -193,13 +258,13 @@ Pets.Size = UDim2.new(0, 1000, 0, 400)
 Pets.Parent = MainFrame2
 
 
-local PetsUIAspect = Instance.new("UIAspectRatioConstraint")
+PetsUIAspect = Instance.new("UIAspectRatioConstraint")
 PetsUIAspect.Name = "PetsUIAspect"
 PetsUIAspect.AspectRatio = 2.5
 PetsUIAspect.Parent = Pets
 
 
-local PetsUIPadding = Instance.new("UIPadding")
+PetsUIPadding = Instance.new("UIPadding")
 PetsUIPadding.Name = "PetsUIPadding"
 PetsUIPadding.PaddingBottom = UDim.new(0, 20)
 PetsUIPadding.PaddingBottom = UDim.new(0.005, 5)
@@ -208,14 +273,14 @@ PetsUIPadding.PaddingBottom = UDim.new(0, 30)
 PetsUIPadding.Parent = Pets
 
 
-local PetsUIList = Instance.new("UIListLayout")
+PetsUIList = Instance.new("UIListLayout")
 PetsUIList.Name = "PetsUIList"
 PetsUIList.HorizontalAlignment = Enum.HorizontalAlignment.Center
 PetsUIList.Padding = UDim.new(0, 25)
 PetsUIList.Parent = Pets
 
 
-local EquippedPets = Instance.new("Frame")
+EquippedPets = Instance.new("Frame")
 EquippedPets.Name = "EquippedPets"
 EquippedPets.AutomaticSize = Enum.AutomaticSize.Y
 EquippedPets.BackgroundTransparency = 1
@@ -224,42 +289,112 @@ EquippedPets.Size = UDim2.new(1,0, 0, 0)
 EquippedPets.Parent = Pets
 
 
-local EquippedPetsGridLayout = Instance.new("UIGridLayout")
+EquippedPetsGridLayout = Instance.new("UIGridLayout")
 EquippedPetsGridLayout.CellPadding = UDim2.new(0, 5, 0, 5)
 EquippedPetsGridLayout.CellSize = UDim2.new(0, 90, 0, 90)
+EquippedPetsGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+EquippedPetsGridLayout.StartCorner = Enum.StartCorner.TopLeft
 EquippedPetsGridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 EquippedPetsGridLayout.Parent = EquippedPets
 
 
-local Div = Instance.new("Frame")
+Div = Instance.new("Frame")
 Div.Name = "ODiv"
 Div.BackgroundTransparency = 1
 Div.Size = UDim2.new(0, 900, 0, 3)
 Div.Parent = Pets
 
 
-local DivAspectRatio = Instance.new("UIAspectRatioConstraint")
+DivAspectRatio = Instance.new("UIAspectRatioConstraint")
 DivAspectRatio.Name = "DivAspectRatio"
 DivAspectRatio.AspectRatio = 300
 DivAspectRatio.Parent = Div
 
 
-local DivGradientFrame = Instance.new("Frame")
-DivGradientFrame.BackgroundTransparency = 0
-DivGradientFrame.Name = "DivGradientFrame"
-DivGradientFrame.BorderSizePixel = 0
-DivGradientFrame.Position = UDim2.new(0, 0, 0, 0)
-DivGradientFrame.Size = UDim2.new(0, 900, 0, 3)
-DivGradientFrame.Parent = Div
+TotalPetsFrame = Instance.new("Frame")
+TotalPetsFrame.Name = "TotalPets"
+TotalPetsFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+TotalPetsFrame.BackgroundTransparency = 1
+TotalPetsFrame.BorderSizePixel = 0
+TotalPetsFrame.Position = UDim2.new(0, 510, 0, 0)
+TotalPetsFrame.Size = UDim2.new(0, 50, 0, 50)
+TotalPetsFrame.Parent = Div
+
+TotalPetsUIGrid = Instance.new("UIGridLayout")
+TotalPetsUIGrid.Name = "TotalPetsUIGrid"
+TotalPetsUIGrid.CellPadding = UDim2.new(0, 0, 0, 0)
+TotalPetsUIGrid.CellSize = UDim2.new(0, 30, 0, 30)
+TotalPetsUIGrid.FillDirection = Enum.FillDirection.Vertical
+TotalPetsUIGrid.VerticalAlignment = Enum.VerticalAlignment.Center
+TotalPetsUIGrid.Parent = TotalPetsFrame
+
+--TotalPets:
+
+PetOwned.Parent = TotalPetsFrame
+PetOwned.TextColor3 = Color3.fromRGB(0, 166, 242)
+PetOwned.TextSize = 30
+PetOwned.TextStrokeTransparency = 1
+PetOwned.TextXAlignment = Enum.TextXAlignment.Center
+PetOwned.TextWrapped = false
+PetOwned.TextScaled = false
+
+MaxPetsOwned.Parent = TotalPetsFrame
+MaxPetsOwned.Name = "Z-MaxPetsOwned"
+MaxPetsOwned.TextSize = 30
+MaxPetsOwned.TextColor3 = Color3.fromRGB(0, 166, 242)
+MaxPetsOwned.TextStrokeTransparency = 1
+MaxPetsOwned.TextXAlignment = Enum.TextXAlignment.Center
+MaxPetsOwned.TextWrapped = false
+MaxPetsOwned.TextScaled = false
+
+PetOwnedSeparator2.Parent = TotalPetsFrame
+PetOwnedSeparator2.TextColor3 = Color3.fromRGB(0, 166, 242)
+PetOwnedSeparator2.TextSize = 30
+PetOwnedSeparator2.TextStrokeTransparency = 1
+PetOwnedSeparator2.TextXAlignment = Enum.TextXAlignment.Center
+PetOwnedSeparator2.TextWrapped = false
+PetOwnedSeparator2.TextScaled = false
+
+RGradient3 = Instance.new("Frame")
+RGradient3.Name = "RGradient"
+RGradient3.Size = UDim2.new(0, 250, 0, 3)
+RGradient3.Position = UDim2.new(0, 600, 0, 0)
+RGradient3.BorderSizePixel = 0
+RGradient3.Parent = Div
 
 
-local DivGradient = Instance.new("UIGradient")
-DivGradient.Transparency = NumberSequence.new({
-NumberSequenceKeypoint.new(0, 2.5),
-NumberSequenceKeypoint.new(0.5, 0.7),
-NumberSequenceKeypoint.new(1, 2.5)
+LGradient3 = Instance.new("Frame")
+LGradient3.Name = "LGradient"
+LGradient3.Size = UDim2.new(0, 250, 0, 3)
+LGradient3.Position = UDim2.new(0, 50, 0, 0)
+LGradient3.BorderSizePixel = 0
+LGradient3.Parent = Div
+
+
+RGradient4 = Instance.new("UIGradient")
+RGradient4.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 1),
+NumberSequenceKeypoint.new(0.5, 0.5),
+NumberSequenceKeypoint.new(1, 1)
 })
-DivGradient.Parent = DivGradientFrame
+RGradient4.Parent = RGradient3
+
+
+LGradient4 = Instance.new("UIGradient")
+LGradient4.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 1),
+NumberSequenceKeypoint.new(0.5, 0.5),
+NumberSequenceKeypoint.new(1, 1)
+})
+LGradient4.Parent = LGradient3
+
+TotalPetsLabel = Instance.new("TextLabel")
+TotalPetsLabel.Name = "TotalPetsLabel"
+TotalPetsLabel.Text = "Total Pets :"
+TotalPetsLabel.TextSize = 30
+TotalPetsLabel.Position = UDim2.new(0, 400, 0, 0)
+TotalPetsLabel.Font = Enum.Font.FredokaOne
+TotalPetsLabel.Parent = Div
 
 
 PetScroll.Size = UDim2.new(0, 900, 0, 400)
@@ -274,11 +409,11 @@ PetScroll.ScrollBarImageTransparency = 1
 PetScroll.Parent = Pets
 
 
-local PetScrollPadding = Instance.new("UIPadding")
+PetScrollPadding = Instance.new("UIPadding")
 PetScrollPadding.PaddingRight = UDim.new(0, -10)
 PetScrollPadding.Parent = PetScroll
 
-local PetScrollUIAspect = Instance.new("UIAspectRatioConstraint")
+PetScrollUIAspect = Instance.new("UIAspectRatioConstraint")
 PetScrollUIAspect.Name = "PetScrollUIAspect"
 PetScrollUIAspect.AspectRatio = 3.51
 PetScrollUIAspect.Parent = PetScroll
@@ -289,28 +424,28 @@ PetInvOver.BackgroundTransparency = 1
 PetInvOver.ImageTransparency = 1
 PetInvOver.Parent = MainFrame2
 
-local PetInvOverFrame = Instance.new("Frame")
+PetInvOverFrame = Instance.new("Frame")
 PetInvOverFrame.Size = UDim2.new(0, 350, 0, 500)
 PetInvOverFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 PetInvOverFrame.Parent = PetInvOver
 
-local PetInvOverUiCor = Instance.new("UICorner")
+PetInvOverUiCor = Instance.new("UICorner")
 PetInvOverUiCor. CornerRadius = UDim.new(0, 25)
 PetInvOverUiCor.Parent = PetInvOverFrame
 
-local PetInvOverUiStroke = Instance.new("UIStroke")
+PetInvOverUiStroke = Instance.new("UIStroke")
 PetInvOverUiStroke.Color = Color3.fromRGB(46, 46, 53)
 PetInvOverUiStroke.Thickness = 5
 PetInvOverUiStroke.Parent = PetInvOverFrame
 
 ------------------------------------------------------
 
-local UIStroke1 = Instance.new("UIStroke")
+UIStroke1 = Instance.new("UIStroke")
 UIStroke1.Color = Color3.fromRGB(46, 46, 53)
 UIStroke1.Thickness = 3
 UIStroke1.Parent = PetInvOver.Upgrade5Frame.Upgrade5Box
 
-local UIStroke2 = Instance.new("UIStroke")
+UIStroke2 = Instance.new("UIStroke")
 UIStroke2.Color = Color3.fromRGB(46, 46, 53)
 UIStroke2.Thickness = 3
 UIStroke2.Parent = PetInvOver.ItemName
@@ -326,21 +461,182 @@ PetInvOver.Upgrade5Frame.Upgrade5Box.Image = "rbxassetid://75147311088478"
 PetInvOver.Upgrade5Frame.Upgrade5Box.Size = UDim2.new(0, 45, 0, 40)
 PetInvOver.Upgrade5Frame.Upgrade5Text.TextSize = 40
 
-local UICorner1 = Instance.new("UICorner")
+UICorner1 = Instance.new("UICorner")
 UICorner1.CornerRadius = UDim.new(0, 5)
 UICorner1.Parent = PetInvOver.OverlayShinyButton
 
-local UICorner2 = Instance.new("UICorner")
+UICorner2 = Instance.new("UICorner")
 UICorner2.CornerRadius = UDim.new(0, 5)
 UICorner2.Parent = PetInvOver.OverlayUnequipButton
 
-local UICorner3 = Instance.new("UICorner")
+UICorner3 = Instance.new("UICorner")
 UICorner3.CornerRadius = UDim.new(0, 5)
 UICorner3.Parent = PetInvOver.OverlayUpgradeButton
 
-local UICorner4 = Instance.new("UICorner")
+UICorner4 = Instance.new("UICorner")
 UICorner4.CornerRadius = UDim.new(0, 5)
 UICorner4.Parent = PetInvOver.OverlayDeleteButton
+
+DeleteConfirm.Parent = PetInv
+DeleteConfirm.Position = UDim2.new(0, 0, 0, 250)
+DeleteConfirm.Size = UDim2.new(0, 1000, 0, 500)
+DeleteConfirm.ImageTransparency = 1
+
+DeleteConfirm.DeletionFrameClose:Destroy()
+
+DeleteConfirm.DeletionInnerFrame.Position = UDim2.new(0, 50, 0 ,70)
+DeleteConfirm.DeletionInnerFrame.Size = UDim2.new(0, 930, 0, 350)
+
+DeleteConfirm.DeletionInnerFrame.DeletionScrollingFrame.Position = UDim2.new(0, 40, 0, 0)
+DeleteConfirm.DeletionInnerFrame.DeletionScrollingFrame.Size = UDim2.new(0, 870, 0, 340)
+
+DeleteConfirm.DeletionInnerFrame.ImageTransparency = 1
+DeleteConfirm.DeletionInnerFrame.DeletionScrollingFrame.UIGridLayout.CellPadding = UDim2.new(0, 9, 0, 9)
+DeleteConfirm.DeletionInnerFrame.DeletionScrollingFrame.UIGridLayout.CellSize = UDim2.new(0, 70, 0, 70)
+DeleteConfirm.DeletionInnerFrame.DeletionScrollingFrame.UIGridLayout.FillDirectionMaxCells = 100
+
+
+DeleteConfirm.MassDeleteText.Position = UDim2.new(0, 100, 0, -35)
+DeleteConfirm.MassDeleteText.Size = UDim2.new(0, 800, 0, 100)
+
+MassDeleteStroke = Instance.new("UIStroke")
+MassDeleteStroke.Color = Color3.fromRGB(46, 46, 53)
+MassDeleteStroke.Thickness = 3
+MassDeleteStroke.Parent = DeleteConfirm.MassDeleteText
+
+UICorner5 = Instance.new("UICorner")
+UICorner5.CornerRadius = UDim.new(0, 15)
+UICorner5.Parent = DeleteConfirm.MassDeleteNo
+
+UICorner6 = Instance.new("UICorner")
+UICorner6.CornerRadius = UDim.new(0, 15)
+UICorner6.Parent = DeleteConfirm.MassDeleteYes
+
+DeleteConfirm.MassDeleteYes.BackgroundTransparency = 1
+DeleteConfirm.MassDeleteYes.Position = UDim2.new(0, 150, 0, 420)
+DeleteConfirm.MassDeleteYes.Size = UDim2.new(0, 300, 0, 60)
+
+MassYesCloseButton = Instance.new("Frame")
+MassYesCloseButton.Name = "MassYesCloseButton"
+MassYesCloseButton.Size = UDim2.new(0, 300, 0, 60)
+MassYesCloseButton.Position = UDim2.new(0, 0, 0, 0)
+MassYesCloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MassYesCloseButton.ZIndex = 3
+MassYesCloseButton.Parent = DeleteConfirm.MassDeleteYes
+
+MassYesCorner = Instance.new("UICorner")
+MassYesCorner.CornerRadius = UDim.new(0, 15)
+MassYesCorner.Parent = MassYesCloseButton
+
+MassYesStroke = Instance.new("UIStroke")
+MassYesStroke.Color = Color3.fromRGB(142, 0, 34)
+MassYesStroke.Thickness = 4
+MassYesStroke.Parent = MassYesCloseButton
+
+
+MassYesCloseGradient = Instance.new("UIGradient")
+MassYesCloseGradient.Rotation = 90
+MassYesCloseGradient.Color = ColorSequence.new({
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 0)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(150, 13, 35))
+})
+MassYesCloseGradient.Parent = MassYesCloseButton
+
+
+DeleteConfirm.MassDeleteNo.BackgroundTransparency = 1
+DeleteConfirm.MassDeleteNo.Position = UDim2.new(0, 550, 0, 420)
+DeleteConfirm.MassDeleteNo.Size = UDim2.new(0, 300, 0, 60)
+
+
+MassNoCloseButton = Instance.new("Frame")
+MassNoCloseButton.Name = "MassYesCloseButton"
+MassNoCloseButton.Size = UDim2.new(0, 300, 0, 60)
+MassNoCloseButton.Position = UDim2.new(0, 0, 0, 0)
+MassNoCloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MassNoCloseButton.ZIndex = 3
+MassNoCloseButton.Parent = DeleteConfirm.MassDeleteNo
+
+MassNoCorner = Instance.new("UICorner")
+MassNoCorner.CornerRadius = UDim.new(0, 15)
+MassNoCorner.Parent = MassNoCloseButton
+
+MassNoStroke = Instance.new("UIStroke")
+MassNoStroke.Color = Color3.fromRGB(190, 150, 18)
+MassNoStroke.Thickness = 4
+MassNoStroke.Parent = MassNoCloseButton
+
+
+
+MassNoCloseGradient = Instance.new("UIGradient")
+MassNoCloseGradient.Rotation = 90
+MassNoCloseGradient.Color = ColorSequence.new({
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 170, 0)),
+ColorSequenceKeypoint.new(0.8, Color3.fromRGB(220, 147, 0)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(183, 123, 3))
+})
+MassNoCloseGradient.Parent = MassNoCloseButton
+
+
+
+
+DeleteConfirmFrame = Instance.new("Frame")
+DeleteConfirmFrame.Name = "DeleteConfirmFrame"
+DeleteConfirmFrame.Size = UDim2.new(0, 1030, 0, 550)
+DeleteConfirmFrame.Position = UDim2.new(0, 0, 0, -50)
+DeleteConfirmFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DeleteConfirmFrame.Parent = DeleteConfirm
+
+DeleteConfirmCorner = Instance.new("UICorner")
+DeleteConfirmCorner.CornerRadius = UDim.new(0, 25)
+DeleteConfirmCorner.Parent = DeleteConfirmFrame
+
+DeleteConfirmStroke = Instance.new("UIStroke")
+DeleteConfirmStroke.Color = Color3.fromRGB(46, 46, 53)
+DeleteConfirmStroke.Thickness = 5
+DeleteConfirmStroke.Parent = DeleteConfirmFrame
+
+DeleteConfirmBackground = Instance.new("ImageLabel")
+DeleteConfirmBackground.Name = "DeleteConfirmBackground"
+DeleteConfirmBackground.Size = UDim2.new(1, 0, 1, 0)
+DeleteConfirmBackground.BackgroundTransparency = 1
+DeleteConfirmBackground.Image = "rbxassetid://13581793331"
+DeleteConfirmBackground.ImageColor3 = Color3.fromRGB(20, 58, 67)
+DeleteConfirmBackground.ImageTransparency = 0.95
+DeleteConfirmBackground.ScaleType = Enum.ScaleType.Tile
+DeleteConfirmBackground.TileSize = UDim2.new(0, 171, 0, 135)
+DeleteConfirmBackground.Parent = DeleteConfirmFrame
+
+
+DeleteConfirmBackgroundCorner = Instance.new("UICorner")
+DeleteConfirmBackgroundCorner.CornerRadius = UDim.new(0, 20)
+DeleteConfirmBackgroundCorner.Parent = DeleteConfirmBackground
+
+
+DeleteConfirmBackgroundGradient = Instance.new("UIGradient")
+DeleteConfirmBackgroundGradient.Rotation = -90
+DeleteConfirmBackgroundGradient.Color = ColorSequence.new({
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+})
+DeleteConfirmBackgroundGradient.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 0),
+NumberSequenceKeypoint.new(0.31, 0.58),
+NumberSequenceKeypoint.new(0.507, 0.757),
+NumberSequenceKeypoint.new(0.756, 0.994),
+NumberSequenceKeypoint.new(1, 1.29)
+})
+DeleteConfirmBackgroundGradient.Parent = DeleteConfirmBackground
+
+
+DeleteConfirmShadowFrame = Instance.new("ImageLabel")
+DeleteConfirmShadowFrame.Name = "Shadow"
+DeleteConfirmShadowFrame.ZIndex = 0
+DeleteConfirmShadowFrame.BackgroundTransparency = 1
+DeleteConfirmShadowFrame.Image = "rbxassetid://14001321443"
+DeleteConfirmShadowFrame.ImageColor3 = Color3.fromRGB(0, 0, 0)
+DeleteConfirmShadowFrame.ImageTransparency = 0.6
+DeleteConfirmShadowFrame.Size = UDim2.new(1, 35, 1, 35)
+DeleteConfirmShadowFrame.Parent = DeleteConfirmFrame
 
 ------------------------------------------------------
 
@@ -349,7 +645,7 @@ PetInvOver.OverlayCancelButton.Size = UDim2.new(0, 100, 0, 100)
 PetInvOver.OverlayCancelButton.ImageTransparency = 1
 PetInvOver.OverlayCancelButton.Rotation = 0
 
-local OverlayCloseButton = Instance.new("ImageButton")
+OverlayCloseButton = Instance.new("ImageButton")
 OverlayCloseButton.Name = "OverlayCloseButton"
 OverlayCloseButton.Size = UDim2.new(0, 100, 0, 75)
 OverlayCloseButton.Position = UDim2.new(0, 0, 0, 0)
@@ -362,17 +658,17 @@ OverlayCloseButton.Parent = PetInvOver.OverlayCancelButton
 -- Connect the click event
 OverlayCloseButton.MouseButton1Click:Connect(function()
     -- Store the original position
-    local originalPosition = PetInvOver.Position
+    originalPosition = PetInvOver.Position
     
     -- Create a tween to slide to the left
-    local tweenInfo = TweenInfo.new(
+    tweenInfo = TweenInfo.new(
         0.1,                -- Duration (0.5 seconds)
         Enum.EasingStyle.Quad,  -- Easing style
         Enum.EasingDirection.Out -- Easing direction
     )
     
     -- Calculate the target position (move left by the width of the frame plus a bit extra)
-    local targetPosition = UDim2.new(
+    targetPosition = UDim2.new(
         originalPosition.X.Scale - 0.02,  -- Move left by 100% of screen width
         originalPosition.X.Offset,
         originalPosition.Y.Scale,
@@ -380,7 +676,7 @@ OverlayCloseButton.MouseButton1Click:Connect(function()
     )
     
     -- Create the tween
-    local tween = TweenService:Create(
+    tween = TweenService:Create(
         PetInvOver,
         tweenInfo,
         {Position = targetPosition}
@@ -395,12 +691,12 @@ OverlayCloseButton.MouseButton1Click:Connect(function()
     end)
 end)
 
-local OverlayCloseAspectRatio = Instance.new("UIAspectRatioConstraint")
+OverlayCloseAspectRatio = Instance.new("UIAspectRatioConstraint")
 OverlayCloseAspectRatio.Name = "CloseAspectRatio"
 OverlayCloseAspectRatio.Parent = OverlayCloseButton
 
 
-local OverlayCloseGradient = Instance.new("UIGradient")
+OverlayCloseGradient = Instance.new("UIGradient")
 OverlayCloseGradient.Rotation = -90
 OverlayCloseGradient.Color = ColorSequence.new({
 ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 2, 61)),
@@ -409,12 +705,12 @@ ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 39, 125))
 OverlayCloseGradient.Parent = OverlayCloseButton
 
 
-local OverlayCloseUiScale = Instance.new("UIScale")
+OverlayCloseUiScale = Instance.new("UIScale")
 OverlayCloseUiScale.Scale = 1
 OverlayCloseUiScale.Parent = OverlayCloseButton
 
 
-local OverlayCloseShadow = Instance.new("ImageLabel")
+OverlayCloseShadow = Instance.new("ImageLabel")
 OverlayCloseShadow.Name = "Shadow"
 OverlayCloseShadow.Size = UDim2.new(1, 0, 1.1, 0)
 OverlayCloseShadow.ImageTransparency = 0.5
@@ -426,7 +722,7 @@ OverlayCloseShadow.ZIndex = 0
 OverlayCloseShadow.Parent = OverlayCloseButton
 
 
-local OverlayCloseTextLabel = Instance.new("TextLabel")
+OverlayCloseTextLabel = Instance.new("TextLabel")
 OverlayCloseTextLabel.Name = "X"
 OverlayCloseTextLabel.Size = UDim2.new(0.9, 0, 0.6, 0)
 OverlayCloseTextLabel.Position = UDim2.new(0.06, 0, 0.2, 0)
@@ -439,15 +735,56 @@ OverlayCloseTextLabel.Font = Enum.Font.FredokaOne
 OverlayCloseTextLabel.Parent = OverlayCloseButton
 OverlayCloseTextLabel.ZIndex = 4
 
-
-local OverlayTextLabelStroke = Instance.new("UIStroke")
+OverlayTextLabelStroke = Instance.new("UIStroke")
 OverlayTextLabelStroke.Thickness = 3
 OverlayTextLabelStroke.Color = Color3.fromRGB(0, 0, 0)
 OverlayTextLabelStroke.Parent = OverlayCloseTextLabel
 
+MassDeleteOverlay.Parent = MainFrame2
+MassDeleteOverlay.Size = UDim2.new(0, 350, 0, 170)
+MassDeleteOverlay.ImageTransparency = 1
+MassDeleteOverlay.Position = UDim2.new(0, 1025, 0, 50)
 
+MassDeleteOverlayFrame = Instance.new("Frame")
+MassDeleteOverlayFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+MassDeleteOverlayFrame.Name = "MassDeleteOverlayFrame"
+MassDeleteOverlayFrame.Size = UDim2.new(0, 350, 0, 190)
+MassDeleteOverlayFrame.Parent = MassDeleteOverlay
 
-local CloseButton = Instance.new("ImageButton")
+-- Connect the click event
+MassDeleteOverlay.MassDeleteOverlayYes.MouseButton1Click:Connect(function()
+        MassDeleteOverlay.Visible = false
+end)
+
+MSDELETEOVERUICorner = Instance.new("UICorner")
+MSDELETEOVERUICorner.CornerRadius = UDim.new(0, 15)
+MSDELETEOVERUICorner.Parent = MassDeleteOverlayFrame
+
+MSDELETEOVERUIStroke = Instance.new("UIStroke")
+MSDELETEOVERUIStroke.Name = "MSDELETEOVERUIStroke"
+MSDELETEOVERUIStroke.Color = Color3.fromRGB(46, 46, 53)
+MSDELETEOVERUIStroke.Thickness = 5
+MSDELETEOVERUIStroke.Parent = MassDeleteOverlayFrame
+
+NoUICorner = Instance.new("UICorner")
+NoUICorner.CornerRadius = UDim.new(0, 15)
+NoUICorner.Parent = MassDeleteOverlay.MassDeleteOverlayNo
+
+YesUICorner = Instance.new("UICorner")
+YesUICorner.CornerRadius = UDim.new(0, 15)
+YesUICorner.Parent = MassDeleteOverlay.MassDeleteOverlayYes
+
+MassDeleteOverlay.MassDeleteOverlayYes.Position = UDim2.new(0, 10, 0, 120)
+MassDeleteOverlay.MassDeleteOverlayYes.Size = UDim2.new(0, 150, 0, 50)
+MassDeleteOverlay.MassDeleteOverlayYes.TextStrokeColor3 = Color3.fromRGB(0, 85, 0)
+
+MassDeleteOverlay.MassDeleteOverlayNo.Position = UDim2.new(0, 190, 0, 120)
+MassDeleteOverlay.MassDeleteOverlayNo.Size = UDim2.new(0, 150, 0, 50)
+MassDeleteOverlay.MassDeleteOverlayNo.TextStrokeColor3 = Color3.fromRGB(85, 0, 0)
+
+MassDeleteOverlay.MassDeleteOverlayText.TextColor3 = Color3.fromRGB(46, 46, 53)
+
+CloseButton = Instance.new("ImageButton")
 CloseButton.Name = "CloseButton"
 CloseButton.Size = UDim2.new(1, 0, 0.06, 45)
 CloseButton.Position = UDim2.new(0, 960, 0, -25)
@@ -457,12 +794,12 @@ CloseButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
 CloseButton.Parent = MainFrame2
 
 
-local CloseAspectRatio = Instance.new("UIAspectRatioConstraint")
+CloseAspectRatio = Instance.new("UIAspectRatioConstraint")
 CloseAspectRatio.Name = "CloseAspectRatio"
 CloseAspectRatio.Parent = CloseButton
 
 
-local CloseGradient = Instance.new("UIGradient")
+CloseGradient = Instance.new("UIGradient")
 CloseGradient.Rotation = -90
 CloseGradient.Color = ColorSequence.new({
 ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 2, 61)),
@@ -471,12 +808,12 @@ ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 39, 125))
 CloseGradient.Parent = CloseButton
 
 
-local CloseUiScale = Instance.new("UIScale")
+CloseUiScale = Instance.new("UIScale")
 CloseUiScale.Scale = 1
 CloseUiScale.Parent = CloseButton
 
 
-local CloseShadow = Instance.new("ImageLabel")
+CloseShadow = Instance.new("ImageLabel")
 CloseShadow.Name = "Shadow"
 CloseShadow.Size = UDim2.new(1, 0, 1.1, 0)
 CloseShadow.ImageTransparency = 0.5
@@ -488,7 +825,7 @@ CloseShadow.ZIndex = 0
 CloseShadow.Parent = CloseButton
 
 
-local CloseTextLabel = Instance.new("TextLabel")
+CloseTextLabel = Instance.new("TextLabel")
 CloseTextLabel.Name = "X"
 CloseTextLabel.Size = UDim2.new(0.9, 0, 0.6, 0)
 CloseTextLabel.Position = UDim2.new(0.06, 0, 0.2, 0)
@@ -501,13 +838,13 @@ CloseTextLabel.Font = Enum.Font.FredokaOne
 CloseTextLabel.Parent = CloseButton
 
 
-local TextLabelStroke1 = Instance.new("UIStroke")
+TextLabelStroke1 = Instance.new("UIStroke")
 TextLabelStroke1.Thickness = 3
 TextLabelStroke1.Color = Color3.fromRGB(0, 0, 0)
 TextLabelStroke1.Parent = CloseTextLabel
 
 
-local Background = Instance.new("ImageLabel")
+Background = Instance.new("ImageLabel")
 Background.Name = "Background"
 Background.Size = UDim2.new(1, 0, 1, 0)
 Background.BackgroundTransparency = 1
@@ -519,12 +856,12 @@ Background.TileSize = UDim2.new(0, 171, 0, 135)
 Background.Parent = MainFrame1
 
 
-local BackgroundCorner = Instance.new("UICorner")
+BackgroundCorner = Instance.new("UICorner")
 BackgroundCorner.CornerRadius = UDim.new(0, 20)
 BackgroundCorner.Parent = Background
 
 
-local BackgroundGradient = Instance.new("UIGradient")
+BackgroundGradient = Instance.new("UIGradient")
 BackgroundGradient.Rotation = -90
 BackgroundGradient.Color = ColorSequence.new({
 ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
@@ -540,9 +877,9 @@ NumberSequenceKeypoint.new(1, 1.29)
 BackgroundGradient.Parent = Background
 
 
-local ShadowFrame1 = Instance.new("ImageLabel")
+ShadowFrame1 = Instance.new("ImageLabel")
 ShadowFrame1.Name = "Shadow"
-ShadowFrame1.ZIndex = 0
+ShadowFrame1.ZIndex = -1
 ShadowFrame1.BackgroundTransparency = 1
 ShadowFrame1.Image = "rbxassetid://14001321443"
 ShadowFrame1.ImageColor3 = Color3.fromRGB(0, 0, 0)
@@ -551,7 +888,7 @@ ShadowFrame1.Size = UDim2.new(1, 35, 1, 35)
 ShadowFrame1.Parent = MainFrame1
 
 
-local PetLabel = Instance.new("TextLabel")
+PetLabel = Instance.new("TextLabel")
 PetLabel.Name = "PetLabel"
 PetLabel.BackgroundTransparency = 1
 PetLabel.Size = UDim2.new(0, 300, 0, 100)
@@ -563,7 +900,7 @@ PetLabel.Font = Enum.Font.FredokaOne
 PetLabel.Parent = MainFrame2
 
 
-local PetLabelStroke = Instance.new("UIStroke")
+PetLabelStroke = Instance.new("UIStroke")
 PetLabelStroke.Color = Color3.fromRGB(46, 46, 53)
 PetLabelStroke.Thickness = 5
 PetLabelStroke.Parent = PetLabel
@@ -573,11 +910,11 @@ PetLabelStroke.Parent = PetLabel
 -- Add the click functionality
 UnequipAll.MouseButton1Click:Connect(function()
     -- Get the path to the equipped pets
-    local player = game:GetService("Players").LocalPlayer
-    local equippedPetsFrame = player.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.EquippedPets
+    player = game:GetService("Players").LocalPlayer
+    equippedPetsFrame = player.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.MainFrame2.Pets.EquippedPets
     
     -- Get all ImageButtons (pets) in the EquippedPets frame
-    local equippedPets = {}
+    equippedPets = {}
     for _, child in pairs(equippedPetsFrame:GetChildren()) do
         if child:IsA("ImageButton") then
             table.insert(equippedPets, child)
@@ -585,7 +922,7 @@ UnequipAll.MouseButton1Click:Connect(function()
     end
     
     -- Remote function reference
-    local remoteFunction = game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction")
+    remoteFunction = game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction")
     
     -- Unequip each pet
     for _, pet in ipairs(equippedPets) do
@@ -602,182 +939,435 @@ UnequipAll.MouseButton1Click:Connect(function()
     end
 end)
 
+
 ----------------------------------------------------------------
 
 
-local petInventoryUIGridLayout = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.PetInventoryScrollingFrame.UIGridLayout
+RightUI = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightUIFrame
 
--- Track the current state (false = normal size, true = shrunk)
-local isShrunk = false
-local isTransitioning = false
-local isHovering = false
+HUD = Instance.new("Frame")
+HUD.Parent = RightUI
+HUD.Name = "HUD"
+HUD.Position = UDim2.new(0, 740, 0, 250)
+HUD.Size = UDim2.new(0, 170, 0, 330)
+HUD.BackgroundTransparency = 1
 
--- Faster transition durations
-local MAIN_TRANSITION_DURATION = 0.1
-local HOVER_TRANSITION_DURATION = 0.1
+HUDUIListLayout = Instance.new("UIListLayout")
+HUDUIListLayout.Parent = HUD
+HUDUIListLayout.FillDirection = Enum.FillDirection.Horizontal
+HUDUIListLayout.Name = "HUDUIListLayout"
+HUDUIListLayout.Padding = UDim.new(0, -5)
 
--- Store the base colors for each state
-local NORMAL_COLOR = Color3.fromRGB(46, 46, 53)
-local SHRUNK_COLOR = Color3.fromRGB(0, 166, 242)
-local NORMAL_HOVER_COLOR = Color3.fromRGB(76, 76, 83)
-local SHRUNK_HOVER_COLOR = Color3.fromRGB(30, 196, 255)
+HUDUIScale = Instance.new("UIScale")
+HUDUIScale.Parent = HUD
+HUDUIScale.Scale = 1.25
 
--- Function to get the current base color based on state
-local function getCurrentBaseColor()
-    return isShrunk and SHRUNK_COLOR or NORMAL_COLOR
-end
+Bttns1 = Instance.new("Frame")
+Bttns1.Parent = HUD
+Bttns1.BackgroundTransparency = 1 
+Bttns1.Name = "ButtonsFrame1"
+Bttns1.AnchorPoint = Vector2.new(0.5, 0.5)
+Bttns1.Size = UDim2.new(0, 75, 0, 418)
 
--- Function to get the current hover color based on state
-local function getCurrentHoverColor()
-    return isShrunk and SHRUNK_HOVER_COLOR or NORMAL_HOVER_COLOR
-end
+Bttns2 = Instance.new("Frame")
+Bttns2.BackgroundTransparency = 1 
+Bttns2.Parent = HUD
+Bttns2.Name = "ButtonsFrame2"
+Bttns2.AnchorPoint = Vector2.new(0.5, 0.5)
+Bttns2.Size = UDim2.new(0, 70, 0, 418)
 
--- Function to get the target color based on current state
-local function getTargetColor()
-    if isHovering then
-        return getCurrentHoverColor()
-    else
-        return getCurrentBaseColor()
-    end
-end
+Bttns1UiListLayout = Instance.new("UIListLayout")
+Bttns1UiListLayout.Parent = Bttns1
+Bttns1UiListLayout.SortOrder = Enum.SortOrder.Name
+Bttns1UiListLayout.Padding = UDim.new(0, -5)
+Bttns1UiListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- Improved color transition function with cancellation support
-local currentColorTween = nil
-local function fadeColor(targetColor, duration)
-    -- Cancel any existing tween
-    if currentColorTween then
-        currentColorTween:Cancel()
-        currentColorTween = nil
-    end
-    
-    local startColor = ShrinkButton.ImageColor3
-    local startTime = tick()
-    local runService = game:GetService("RunService")
-    
-    isTransitioning = true
-    
-    local connection
-    connection = runService.RenderStepped:Connect(function()
-        local elapsed = tick() - startTime
-        local alpha = math.min(elapsed / duration, 1)
-        
-        -- Smooth easing function (ease in-out)
-        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
-        
-        -- Interpolate between colors
-        local currentR = startColor.R + (targetColor.R - startColor.R) * alpha
-        local currentG = startColor.G + (targetColor.G - startColor.G) * alpha
-        local currentB = startColor.B + (targetColor.B - startColor.B) * alpha
-        
-        ShrinkButton.ImageColor3 = Color3.new(currentR, currentG, currentB)
-        
-        if alpha >= 1 then
-            connection:Disconnect()
-            currentColorTween = nil
-            isTransitioning = false
-            
-            -- Check if state changed during transition
-            if ShrinkButton.ImageColor3 ~= getTargetColor() then
-                fadeColor(getTargetColor(), HOVER_TRANSITION_DURATION)
-            end
+Bttns1UIScale = Instance.new("UIScale")
+Bttns1UIScale.Parent = Bttns1
+Bttns1UIScale.Scale = 1.25
+
+Bttns2UiListLayout = Instance.new("UIListLayout")
+Bttns2UiListLayout.Parent = Bttns2
+Bttns2UiListLayout.SortOrder = Enum.SortOrder.Name
+Bttns2UiListLayout.Padding = UDim.new(0, -5)
+Bttns2UiListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+
+Bttns2UIScale = Instance.new("UIScale")
+Bttns2UIScale.Parent = Bttns2
+Bttns2UIScale.Scale = 1.25
+
+RightUI.RanchUpgradeOpen.Parent = Bttns1
+HUD.ButtonsFrame1.RanchUpgradeOpen.Name = "0-RanchUpgradeOpen"
+HUD.ButtonsFrame1["0-RanchUpgradeOpen"].Size = UDim2.new(0, 70, 0, 70)
+
+
+RightUI.RebirthOpen.Parent = Bttns1
+HUD.ButtonsFrame1.RebirthOpen.Name = "1-RebirthOpen"
+HUD.ButtonsFrame1["1-RebirthOpen"].Size = UDim2.new(0, 70, 0, 70)
+
+
+RightUI.CodeOpen.Parent = Bttns1
+HUD.ButtonsFrame1.CodeOpen.Name = "2-CodeOpen"
+HUD.ButtonsFrame1["2-CodeOpen"].Size = UDim2.new(0, 70, 0, 70)
+
+
+RightUI.GiftOpen.Parent = Bttns1
+HUD.ButtonsFrame1.GiftOpen.Name = "3-GiftOpen"
+HUD.ButtonsFrame1["3-GiftOpen"].Size = UDim2.new(0, 70, 0, 70)
+
+
+RightUI.ShopOpen.Parent = Bttns2
+HUD.ButtonsFrame2.ShopOpen.Name = "1-ShopOpen"
+HUD.ButtonsFrame2["1-ShopOpen"].Size = UDim2.new(0, 70, 0, 70)
+
+
+RightUI.LoginOpen.Parent = Bttns2
+HUD.ButtonsFrame2.LoginOpen.Name = "2-LoginOpen"
+HUD.ButtonsFrame2["2-LoginOpen"].Size = UDim2.new(0, 70, 0, 70)
+
+
+RightUI.IndexOpen.Parent = Bttns2
+HUD.ButtonsFrame2.IndexOpen.Name = "3-IndexOpen"
+HUD.ButtonsFrame2["3-IndexOpen"].Size = UDim2.new(0, 70, 0, 70)
+
+
+RightUI.SettingsOpen.Parent = Bttns2
+HUD.ButtonsFrame2.SettingsOpen.Name = "4-SettingsOpen"
+HUD.ButtonsFrame2["4-SettingsOpen"].Size = UDim2.new(0, 70, 0, 70)
+
+----------------------------------------------------------------
+
+                local ButtonManager = {}
+
+                ButtonManager.Buttons = {
+                    EquipTopPets = {
+                        instance = EquipTopPets,
+                        normalColor = Color3.fromRGB(46, 46, 53),
+                        hoverColor = Color3.fromRGB(230, 200, 0),
+                        transitionDuration = 0.3,
+                        isHovering = false,
+                        isTransitioning = false,
+                        colorTween = nil
+                    },
+                    
+                    ShrinkButton = {
+                        instance = ShrinkButton,
+                        normalColor = Color3.fromRGB(46, 46, 53),
+                        hoverColor = Color3.fromRGB(76, 76, 83),
+                        shrunkColor = Color3.fromRGB(0, 166, 242),
+                        shrunkHoverColor = Color3.fromRGB(30, 196, 255),
+                        transitionDuration = 0.1,
+                        isHovering = false,
+                        isTransitioning = false,
+                        isShrunk = false,
+                        colorTween = nil,
+                        getTargetColor = function(self)
+                            if self.isHovering then
+                                return self.isShrunk and self.shrunkHoverColor or self.hoverColor
+                            else
+                                return self.isShrunk and self.shrunkColor or self.normalColor
+                            end
+                        end
+                    },
+                
+                    UnequipAll = {
+                        instance = UnequipAll,
+                        normalColor = Color3.fromRGB(46, 46, 53),
+                        hoverColor = Color3.fromRGB(200, 50, 50),
+                        transitionDuration = 0.3,
+                        isHovering = false,
+                        isTransitioning = false,
+                        colorTween = nil
+                    },
+                
+                    MassDelete = {
+                        instance = MassDelete,
+                        normalColor = Color3.fromRGB(46, 46, 53),
+                        hoverColor = Color3.fromRGB(100, 200, 100),
+                        activeColor = Color3.fromRGB(200, 50, 50), -- Red color when toggled on
+                        activeHoverColor = Color3.fromRGB(230, 80, 80), -- Slightly lighter red when hovering in active state
+                        transitionDuration = 0.1,
+                        isHovering = false,
+                        isTransitioning = false,
+                        isActive = false, -- New property to track if MassDelete is toggled on
+                        colorTween = nil,
+                        getTargetColor = function(self)
+                            if self.isActive then
+                                return self.isHovering and self.activeHoverColor or self.activeColor
+                            else
+                                return self.isHovering and self.hoverColor or self.normalColor
+                            end
+                        end
+                    },
+                    
+                    MassNoCloseButton = {
+                        instance = MassNoCloseButton,
+                        normalColor = Color3.fromRGB(225, 225, 225),
+                        hoverColor = Color3.fromRGB(255, 255, 255),
+                        transitionDuration = 0.1,
+                        isHovering = false,
+                        isTransitioning = false,
+                        colorTween = nil,
+                        isFrame = true
+                    },
+                
+                    MassYesCloseButton = {
+                        instance = MassYesCloseButton,
+                        normalColor = Color3.fromRGB(225, 225, 225),
+                        hoverColor = Color3.fromRGB(255, 255, 255),
+                        transitionDuration = 0.1,
+                        isHovering = false,
+                        isTransitioning = false,
+                        colorTween = nil,
+                        isFrame = true
+                    }
+                }
+                
+                function ButtonManager:getTargetColor(buttonName)
+                    local button = self.Buttons[buttonName]
+                    
+                    if button.getTargetColor then
+                        return button:getTargetColor()
+                    end
+                    
+                    if button.isHovering then
+                        return button.hoverColor
+                    else
+                        return button.normalColor
+                    end
+                end
+                
+                function ButtonManager:fadeColor(buttonName, targetColor, duration)
+                    local button = self.Buttons[buttonName]
+                    
+                    if button.colorTween then
+                        button.colorTween:Cancel()
+                        button.colorTween = nil
+                    end
+                    
+                    local colorProperty = button.isFrame and "BackgroundColor3" or "ImageColor3"
+                    local startColor = button.instance[colorProperty]
+                    local startTime = tick()
+                    local runService = game:GetService("RunService")
+                    
+                    button.isTransitioning = true
+                    
+                    local connection
+                    connection = runService.RenderStepped:Connect(function()
+                        local elapsed = tick() - startTime
+                        local alpha = math.min(elapsed / duration, 1)
+                        
+                        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
+                        
+                        local currentR = startColor.R + (targetColor.R - startColor.R) * alpha
+                        local currentG = startColor.G + (targetColor.G - startColor.G) * alpha
+                        local currentB = startColor.B + (targetColor.B - startColor.B) * alpha
+                        
+                        button.instance[colorProperty] = Color3.new(currentR, currentG, currentB)
+                        
+                        if alpha >= 1 then
+                            connection:Disconnect()
+                            button.colorTween = nil
+                            button.isTransitioning = false
+                            
+                            local currentTargetColor = self:getTargetColor(buttonName)
+                            if button.instance[colorProperty] ~= currentTargetColor then
+                                self:fadeColor(buttonName, currentTargetColor, button.transitionDuration)
+                            end
+                        end
+                    end)
+                    
+                    button.colorTween = {
+                        Cancel = function()
+                            if connection then
+                                connection:Disconnect()
+                                button.isTransitioning = false
+                            end
+                        end
+                    }
+                end
+                
+                function ButtonManager:setupHoverEffects(buttonName)
+                    local button = self.Buttons[buttonName]
+                    
+                    button.instance.MouseEnter:Connect(function()
+                        button.isHovering = true
+                        self:fadeColor(buttonName, self:getTargetColor(buttonName), button.transitionDuration)
+                    end)
+                    
+                    button.instance.MouseLeave:Connect(function()
+                        button.isHovering = false
+                        self:fadeColor(buttonName, self:getTargetColor(buttonName), button.transitionDuration)
+                    end)
+                    
+                    local colorProperty = button.isFrame and "BackgroundColor3" or "ImageColor3"
+                    button.instance[colorProperty] = button.normalColor
+                end
+                
+                function ButtonManager:toggleShrink(buttonName)
+                    local button = self.Buttons[buttonName]
+                    
+                    if button.isShrunk ~= nil then
+                        button.isShrunk = not button.isShrunk
+                        self:fadeColor(buttonName, self:getTargetColor(buttonName), button.transitionDuration)
+                        
+                        if button.onShrinkToggle then
+                            button:onShrinkToggle()
+                        end
+                    end
+                end
+                
+                -- New function to toggle MassDelete active state
+                function ButtonManager:toggleMassDelete()
+                    local button = self.Buttons.MassDelete
+                    button.isActive = not button.isActive
+                    self:fadeColor("MassDelete", button:getTargetColor(), button.transitionDuration)
+                    
+                    -- Return the current state so other code can react to it
+                    return button.isActive
+                end
+                
+                -- Function to set MassDelete state directly
+                function ButtonManager:setMassDeleteActive(active)
+                    local button = self.Buttons.MassDelete
+                    if button.isActive ~= active then
+                        button.isActive = active
+                        self:fadeColor("MassDelete", button:getTargetColor(), button.transitionDuration)
+                    end
+                    return button.isActive
+                end
+                
+                function ButtonManager:initialize()
+                    for buttonName, _ in pairs(self.Buttons) do
+                        self:setupHoverEffects(buttonName)
+                    end
+                    
+                    if self.Buttons.ShrinkButton then
+                        local shrinkButton = self.Buttons.ShrinkButton
+                        
+                        local petInventoryUIGridLayout = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.MainFrame2.Pets.PetInventoryScrollingFrame.UIGridLayout
+                        
+                        petInventoryUIGridLayout.CellSize = UDim2.new(0, 90, 0, 90)
+                        
+                        shrinkButton.onShrinkToggle = function(self)
+                            if self.isShrunk then
+                                ButtonManager:transitionGridLayout(
+                                    petInventoryUIGridLayout,
+                                    UDim2.new(0, 90, 0, 90),
+                                    UDim2.new(0, 70, 0, 70),
+                                    9,
+                                    11,
+                                    self.transitionDuration
+                                )
+                            else
+                                ButtonManager:transitionGridLayout(
+                                    petInventoryUIGridLayout,
+                                    UDim2.new(0, 70, 0, 70),
+                                    UDim2.new(0, 90, 0, 90),
+                                    11,
+                                    9,
+                                    self.transitionDuration
+                                )
+                            end
+                        end
+                        
+                        shrinkButton.instance.MouseButton1Click:Connect(function()
+                            if not shrinkButton.isTransitioning then
+                                self:toggleShrink("ShrinkButton")
+                            end
+                        end)
+                    end
+                    
+                    -- Set up MassDelete button click handler
+                    if self.Buttons.MassDelete then
+                        local massDeleteButton = self.Buttons.MassDelete
+                        
+                        massDeleteButton.instance.MouseButton1Click:Connect(function()
+                            if not massDeleteButton.isTransitioning then
+                                local isActive = self:toggleMassDelete()
+                                -- Here you can add any additional logic that should happen when MassDelete is toggled
+                                -- For example, enabling/disabling delete mode in your pet inventory
+                            end
+                        end)
+                    end
+                end
+                
+                function ButtonManager:transitionGridLayout(gridLayout, startSize, endSize, startCells, endCells, duration)
+                    local startTime = tick()
+                    local runService = game:GetService("RunService")
+                    
+                    local connection
+                    connection = runService.RenderStepped:Connect(function()
+                        local elapsed = tick() - startTime
+                        local alpha = math.min(elapsed / duration, 1)
+                        
+                        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
+                        
+                        local currentWidth = startSize.X.Offset + (endSize.X.Offset - startSize.X.Offset) * alpha
+                        local currentHeight = startSize.Y.Offset + (endSize.Y.Offset - startSize.Y.Offset) * alpha
+                        
+                        gridLayout.CellSize = UDim2.new(0, currentWidth, 0, currentHeight)
+                        
+                        if alpha >= 0.5 and gridLayout.FillDirectionMaxCells ~= endCells then
+                            gridLayout.FillDirectionMaxCells = endCells
+                        end
+                        
+                        if alpha >= 1 then
+                            connection:Disconnect()
+                        end
+                    end)
+                end
+                
+                function ButtonManager:addButton(name, instance, normalColor, hoverColor, transitionDuration, options)
+                    options = options or {}
+                    
+                    self.Buttons[name] = {
+                        instance = instance,
+                        normalColor = normalColor,
+                        hoverColor = hoverColor,
+                        transitionDuration = transitionDuration or 0.1,
+                        isHovering = false,
+                        isTransitioning = false,
+                        colorTween = nil,
+                        isFrame = options.isFrame or false
+                    }
+                    
+                    for key, value in pairs(options) do
+                        self.Buttons[name][key] = value
+                    end
+                    
+                    self:setupHoverEffects(name)
+                    
+                    return self.Buttons[name]
+                end
+                
+                ButtonManager:initialize()
+                
+
+----------------------------------------------------------------
+
+
+
+----------------------------------------------------------------
+
+spawn(function()
+    while wait() do
+        if MassDelete and MassDelete.ImageColor3 == Color3.fromRGB(255, 255, 255) then
+            MassDelete.ImageColor3 = Color3.fromRGB(46, 46, 53)
         end
-    end)
-    
-    currentColorTween = {
-        Cancel = function()
-            if connection then
-                connection:Disconnect()
-                isTransitioning = false
-            end
-        end
-    }
-end
-
--- Function to smoothly transition UIGridLayout properties
-local function transitionGridLayout(startSize, endSize, startCells, endCells, duration)
-    local startTime = tick()
-    local runService = game:GetService("RunService")
-    
-    local connection
-    connection = runService.RenderStepped:Connect(function()
-        local elapsed = tick() - startTime
-        local alpha = math.min(elapsed / duration, 1)
-        
-        -- Smooth easing function
-        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
-        
-        -- Interpolate size
-        local currentWidth = startSize.X.Offset + (endSize.X.Offset - startSize.X.Offset) * alpha
-        local currentHeight = startSize.Y.Offset + (endSize.Y.Offset - startSize.Y.Offset) * alpha
-        
-        petInventoryUIGridLayout.CellSize = UDim2.new(0, currentWidth, 0, currentHeight)
-        
-        -- When we reach halfway through the transition, update the cell count
-        if alpha >= 0.5 and petInventoryUIGridLayout.FillDirectionMaxCells ~= endCells then
-            petInventoryUIGridLayout.FillDirectionMaxCells = endCells
-        end
-        
-        if alpha >= 1 then
-            connection:Disconnect()
-        end
-    end)
-end
-
--- Connect the click event to the ShrinkButton
-ShrinkButton.MouseButton1Click:Connect(function()
-    if isTransitioning then return end
-    
-    if not isShrunk then
-        -- Change to shrunk state
-        isShrunk = true
-        fadeColor(getTargetColor(), MAIN_TRANSITION_DURATION)
-        transitionGridLayout(
-            UDim2.new(0, 90, 0, 90), -- Changed from 100 to 90
-            UDim2.new(0, 70, 0, 70), -- Changed from 80 to 70
-            9,
-            11,
-            MAIN_TRANSITION_DURATION
-        )
-    else
-        -- Change back to normal state
-        isShrunk = false
-        fadeColor(getTargetColor(), MAIN_TRANSITION_DURATION)
-        transitionGridLayout(
-            UDim2.new(0, 70, 0, 70), -- Changed from 80 to 70
-            UDim2.new(0, 90, 0, 90), -- Changed from 100 to 90
-            11,
-            9,
-            MAIN_TRANSITION_DURATION
-        )
     end
 end)
-
--- Hover effects with improved tracking
-ShrinkButton.MouseEnter:Connect(function()
-    isHovering = true
-    fadeColor(getCurrentHoverColor(), HOVER_TRANSITION_DURATION)
-end)
-
-ShrinkButton.MouseLeave:Connect(function()
-    isHovering = false
-    fadeColor(getCurrentBaseColor(), HOVER_TRANSITION_DURATION)
-end)
-
--- Set initial state
-petInventoryUIGridLayout.CellSize = UDim2.new(0, 90, 0, 90)
-ShrinkButton.ImageColor3 = NORMAL_COLOR
-
 
 ----------------------------------------------------------------
 
 -- Add this code at the end of your existing script
 
 -- Constants for the CloseButton hover effect
-local CLOSE_BUTTON_HOVER_DURATION = 0.1
-local CLOSE_BUTTON_SCALE_NORMAL = 1
-local CLOSE_BUTTON_SCALE_HOVER = 1.05
-local CLOSE_BUTTON_ROTATION_NORMAL = 0
-local CLOSE_BUTTON_ROTATION_HOVER = 5
+CLOSE_BUTTON_HOVER_DURATION = 0.1
+CLOSE_BUTTON_SCALE_NORMAL = 1
+CLOSE_BUTTON_SCALE_HOVER = 1.05
+CLOSE_BUTTON_ROTATION_NORMAL = 0
+CLOSE_BUTTON_ROTATION_HOVER = 5
 
 -- Function to smoothly transition the CloseButton properties
 local function transitionCloseButton(startScale, endScale, startRotation, endRotation, duration)
@@ -834,11 +1424,11 @@ end)
 ----------------------------------------------------------------
 
 -- Constants for the CloseButton hover effect
-local CLOSE_OVERLAY_BUTTON_HOVER_DURATION = 0.1
-local CLOSE_OVERLAY_BUTTON_SCALE_NORMAL = 1
-local CLOSE_OVERLAY_BUTTON_SCALE_HOVER = 1.05
-local CLOSE_OVERLAY_BUTTON_ROTATION_NORMAL = 0
-local CLOSE_OVERLAY_BUTTON_ROTATION_HOVER = 5
+CLOSE_OVERLAY_BUTTON_HOVER_DURATION = 0.1
+CLOSE_OVERLAY_BUTTON_SCALE_NORMAL = 1
+CLOSE_OVERLAY_BUTTON_SCALE_HOVER = 1.05
+CLOSE_OVERLAY_BUTTON_ROTATION_NORMAL = 0
+CLOSE_OVERLAY_BUTTON_ROTATION_HOVER = 5
 
 -- Function to smoothly transition the CloseButton properties
 local function transitionOverlayCloseButton(startScale, endScale, startRotation, endRotation, duration)
@@ -893,117 +1483,88 @@ end)
 
 ----------------------------------------------------------------
 
--- Constants for the MassDelete button hover effect
-local MASS_DELETE_HOVER_DURATION = 0.1
-local MASS_DELETE_SCALE_NORMAL = 1
-local MASS_DELETE_SCALE_HOVER = 1.05
-local MASS_DELETE_ROTATION_NORMAL = 0
-local MASS_DELETE_ROTATION_HOVER = 0
+-- Define tween properties
+local hoverInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local originalSize = UDim2.new(0, 70, 0, 70)
+local hoverSize = UDim2.new(0, 80, 0, 80)
 
--- Create UIScale for the MassDelete button if it doesn't exist
-local MassDeleteUiScale = MassDelete:FindFirstChild("UIScale")
-if not MassDeleteUiScale then
-    MassDeleteUiScale = Instance.new("UIScale")
-    MassDeleteUiScale.Scale = MASS_DELETE_SCALE_NORMAL
-    MassDeleteUiScale.Parent = MassDelete
-end
 
--- Function to smoothly transition the MassDelete button properties
-local function transitionMassDeleteButton(startScale, endScale, startRotation, endRotation, duration)
-    local startTime = tick()
-    local runService = game:GetService("RunService")
+local function applyHoverEffect(button)
+    local hoverTween = TweenService:Create(button, hoverInfo, {Size = hoverSize})
+    local unhoverTween = TweenService:Create(button, hoverInfo, {Size = originalSize})
     
-    -- Store the original position to maintain centering during scaling
-    local originalPosition = MassDelete.Position
+    button.MouseEnter:Connect(function()
+        hoverTween:Play()
+    end)
     
-    local connection
-    connection = runService.RenderStepped:Connect(function()
-        local elapsed = tick() - startTime
-        local alpha = math.min(elapsed / duration, 1)
-        
-        -- Smooth easing function (ease in-out)
-        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
-        
-        -- Interpolate scale
-        local currentScale = startScale + (endScale - startScale) * alpha
-        MassDeleteUiScale.Scale = currentScale
-        
-        -- Interpolate rotation
-        local currentRotation = startRotation + (endRotation - startRotation) * alpha
-        MassDelete.Rotation = currentRotation
-        
-        if alpha >= 1 then
-            connection:Disconnect()
-        end
+    button.MouseLeave:Connect(function()
+        unhoverTween:Play()
     end)
 end
 
--- Connect hover events to the MassDelete button
-MassDelete.MouseEnter:Connect(function()
-    transitionMassDeleteButton(
-        MASS_DELETE_SCALE_NORMAL,
-        MASS_DELETE_SCALE_HOVER,
-        MASS_DELETE_ROTATION_NORMAL,
-        MASS_DELETE_ROTATION_HOVER,
-        MASS_DELETE_HOVER_DURATION
-    )
-end)
+local buttonsFrame1 = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightUIFrame.HUD.ButtonsFrame1
+for _, button in pairs(buttonsFrame1:GetChildren()) do
+    if button:IsA("ImageButton") then
+        applyHoverEffect(button)
+    end
+end
 
-MassDelete.MouseLeave:Connect(function()
-    transitionMassDeleteButton(
-        MASS_DELETE_SCALE_HOVER,
-        MASS_DELETE_SCALE_NORMAL,
-        MASS_DELETE_ROTATION_HOVER,
-        MASS_DELETE_ROTATION_NORMAL,
-        MASS_DELETE_HOVER_DURATION
-    )
-end)
+local buttonsFrame2 = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.RightUIFrame.HUD.ButtonsFrame2
+for _, button in pairs(buttonsFrame2:GetChildren()) do
+    if button:IsA("ImageButton") then
+        applyHoverEffect(button)
+    end
+end
+
 
 ----------------------------------------------------------------
 
--- Set initial positions and visibility
-local originalPosition = UDim2.new(0, 455, 0, 250)
-local offscreenPosition = UDim2.new(0, 455, 0, 350)
+local originalPosition1 = UDim2.new(0, 0, 0, 125)
+local originalPosition2 = UDim2.new(0, -30, 0, 25) -- Different position but same animation style
 
--- Disconnect existing connections on the button
+-- Offscreen positions
+local offscreenPosition1 = UDim2.new(0, 0, 0, 350)
+local offscreenPosition2 = UDim2.new(0, -30, 0, 350) -- Different position but same animation style
+
+-- Disable existing connections
 for _, connection in pairs(getconnections(button.MouseButton1Click)) do
     connection:Disable()
 end
 
--- Also disconnect the close button connections
 for _, connection in pairs(getconnections(CloseButton.MouseButton1Click)) do
     connection:Disable()
 end
 
 -- Initialize frames
-MainFrame1.Position = offscreenPosition
-MainFrame2.Position = offscreenPosition
+MainFrame1.Position = offscreenPosition1
+MainFrame2.Position = offscreenPosition2
 MainFrame1.Visible = false
 MainFrame2.Visible = false
 
--- Create animations
-local hoverInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-local popUpInfo = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
-local popDownInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+-- Tween information - same for both frames
+hoverInfo = TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+popUpInfo = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+popDownInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
 
--- Define properties
-local hoverProperties = {Size = UDim2.new(0.44, 0, 0.165, 0)}
-local originalProperties = {Size = UDim2.new(0.4, 0, 0.15, 0)}
-local popUpProperties = {Position = originalPosition}
-local popDownProperties = {Position = offscreenPosition}
+-- Tween properties
+hoverProperties = {Size = UDim2.new(0.44, 0, 0.165, 0)}
+originalProperties = {Size = UDim2.new(0.4, 0, 0.15, 0)}
+popUpProperties1 = {Position = originalPosition1}
+popUpProperties2 = {Position = originalPosition2}
+popDownProperties1 = {Position = offscreenPosition1}
+popDownProperties2 = {Position = offscreenPosition2}
 
 -- Create tweens
-local hoverTween = TweenService:Create(button, hoverInfo, hoverProperties)
-local unhoverTween = TweenService:Create(button, hoverInfo, originalProperties)
-local popUpTween1 = TweenService:Create(MainFrame1, popUpInfo, popUpProperties)
-local popUpTween2 = TweenService:Create(MainFrame2, popUpInfo, popUpProperties)
-local popDownTween1 = TweenService:Create(MainFrame1, popDownInfo, popDownProperties)
-local popDownTween2 = TweenService:Create(MainFrame2, popDownInfo, popDownProperties)
+hoverTween = TweenService:Create(button, hoverInfo, hoverProperties)
+unhoverTween = TweenService:Create(button, hoverInfo, originalProperties)
 
--- Track inventory state
-local isInventoryOpen = false
+-- Same animation style for both frames
+popUpTween1 = TweenService:Create(MainFrame1, popUpInfo, popUpProperties1)
+popUpTween2 = TweenService:Create(MainFrame2, popUpInfo, popUpProperties2)
+popDownTween1 = TweenService:Create(MainFrame1, popDownInfo, popDownProperties1)
+popDownTween2 = TweenService:Create(MainFrame2, popDownInfo, popDownProperties2)
 
--- Connect new event handlers
+-- Button hover effects
 button.MouseEnter:Connect(function()
     hoverTween:Play()
 end)
@@ -1012,40 +1573,46 @@ button.MouseLeave:Connect(function()
     unhoverTween:Play()
 end)
 
--- Add our custom click handler
+-- Button click handler
 button.MouseButton1Click:Connect(function()
     if isInventoryOpen then
+        -- Close animation
         popDownTween1:Play()
         popDownTween2:Play()
         
         task.wait(0.1)
         
+        PetInv.Visible = false
         MainFrame1.Visible = false
         MainFrame2.Visible = false
     else
-        MainFrame1.Position = offscreenPosition
-        MainFrame2.Position = offscreenPosition
+        -- Reset positions
+        MainFrame1.Position = offscreenPosition1
+        MainFrame2.Position = offscreenPosition2
         
+        -- Show frames
+        PetInv.Visible = true
         MainFrame1.Visible = true
         MainFrame2.Visible = true
         
+        -- Open animation
         popUpTween1:Play()
         popUpTween2:Play()
     end
     
     isInventoryOpen = not isInventoryOpen
-    
-    -- Keep monitoring PetInv to force it to stay hidden if needed
-    end)
+end)
 
--- Connect close button
+-- Close button handler
 CloseButton.MouseButton1Click:Connect(function()
     if isInventoryOpen then
+        -- Close animation
         popDownTween1:Play()
         popDownTween2:Play()
         
         task.wait(0.1)
         
+        PetInv.Visible = false
         MainFrame1.Visible = false
         MainFrame2.Visible = false
         
@@ -1053,17 +1620,18 @@ CloseButton.MouseButton1Click:Connect(function()
     end
 end)
 
+
+
 ----------------------------------------------------------------
 
--- Configuration
-local CONFIG = {
-    checkInterval = 0.5, -- How often to check for images (in seconds)
-    originalImageId = "rbxassetid://3319539600", -- The image ID to search for
-    replacementImageId = "rbxassetid://111266790123938", -- The image ID to replace with
+CONFIG = {
+    checkInterval = 0.5,
+    originalImageId = "rbxassetid://3319539600",
+    replacementImageId = "rbxassetid://111266790123938",
     paths = {
-        -- Paths to check for ImageButtons
-        game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.EquippedPets,
-        game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.PetInventoryScrollingFrame
+        game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.MainFrame2.Pets.EquippedPets,
+        game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.MainFrame2.Pets.PetInventoryScrollingFrame,
+        game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.DeletionFrame.DeletionInnerFrame.DeletionScrollingFrame
     },
     colors = {
         Common = Color3.fromRGB(148, 148, 148),
@@ -1071,10 +1639,10 @@ local CONFIG = {
         Rare = Color3.fromRGB(5, 138, 255),
         Epic = Color3.fromRGB(255, 0, 201)
     },
-    colorCycleSpeed = 2 -- Higher = faster color cycling
+    colorCycleSpeed = 1 -- Higher = faster color cycling
 }
 
-local CommonIds = {
+CommonIds = {
 	"rbxassetid://3321300808", --["Blue Butterfly"] // rarity = "Common"
     "rbxassetid://3319895658", --["White Cat"] // rarity = "Common"
     "rbxassetid://3324883683", --["Shiny Sweets Bat"] // rarity = "Common"
@@ -1101,7 +1669,7 @@ local CommonIds = {
     "rbxassetid://3321272690", --["Bat"] // rarity = "Common"
     "rbxassetid://3321327915", --["Red Butterfly"] // rarity = "Common"
 }
-local UncommonIds = {
+UncommonIds = {
     "rbxassetid://3321470334", --["Shiny Tuxedo Cat"] // rarity = "Uncommon"
     "rbxassetid://3319895561", --["Bunny"] // rarity = "Uncommon"
     "rbxassetid://3321470447", --["Tuxedo Cat"] // rarity = "Uncommon"
@@ -1123,7 +1691,7 @@ local UncommonIds = {
     "rbxassetid://3321301205", --["Shiny Stone Dog"] // rarity = "Uncommon"
     "rbxassetid://3321301417", --["Stone Dog"] // rarity = "Uncommon"
 }
-local RareIds = {
+RareIds = {
     "rbxassetid://3652596139", --["Moonlight Sphinx"] // rarity = "Rare"
     "rbxassetid://3321301540", --["Vampire Bat"] // rarity = "Rare"
     "rbxassetid://3324821828", --["Shiny Dwarf"] // rarity = "Rare"
@@ -1194,7 +1762,7 @@ local RareIds = {
     "rbxassetid://3326569354", --["Party Fox"] // rarity = "Rare"
 
 }
-local EpicIds = {
+EpicIds = {
     "rbxassetid://3324770049", --["Shiny Nova Fox"] // rarity = "Epic"
     "rbxassetid://3471249879", --["Shiny Deep Sea Narwhal"] // rarity = "Epic"
     "rbxassetid://3321301144", --["Shiny Midnight Bat"] // rarity = "Epic"
@@ -1259,7 +1827,7 @@ local EpicIds = {
     "rbxassetid://3554077156", --["Calico Cat"] // rarity = "Epic"
     "rbxassetid://3877247400", --["Shiny Ember Mouse"] // rarity = "Epic"
 }
-local LegendaryIds = {
+LegendaryIds = {
     "rbxassetid://3554077323", --["Grim Demonlord"] // rarity = "Legendary"
     "rbxassetid://3971551900", --["80M DJ Eagle"] // rarity = "Legendary"
     "rbxassetid://3321471512", --["Inferno Serpent"] // rarity = "Legendary"
@@ -1360,7 +1928,7 @@ local LegendaryIds = {
     "rbxassetid://3324821083", --["Duality"] // rarity = "Legendary"
 
 }
-local EzLegendaryIds = {
+EzLegendaryIds = {
     "rbxassetid://2867903124", --["Unicorn"] // rarity = "Legendary"
 	"rbxassetid://2867899126", --["Android Dragon"] // rarity = "Legendary"
 	"rbxassetid://2867901873", --["Flame Fox"] // rarity = "Legendary"
@@ -1386,8 +1954,8 @@ for _, id in ipairs(EzLegendaryIds) do
 end
 
 -- Keep track of buttons we've already processed
-local processedButtons = {}
-local colorCycleConnections = {}
+processedButtons = {}
+colorCycleConnections = {}
 
 -- Function to determine pet rarity based on image ID
 local function getPetRarity(imageId)
@@ -1426,7 +1994,7 @@ local function createReplacementImage(button)
     local existingImage = button:FindFirstChild("ReplacementImage")
     if not existingImage then
         -- Create a new ImageLabel
-        local imageLabel = Instance.new("ImageLabel")
+        imageLabel = Instance.new("ImageLabel")
         imageLabel.Name = "ReplacementImage"
         imageLabel.Size = UDim2.new(1, 0, 1, 0)
         imageLabel.Position = UDim2.new(0, 0, 0, 0)
@@ -1554,21 +2122,19 @@ local function processButton(button)
     button.ImageTransparency = 1
     
     -- Create the replacement image
-    local replacementImage = createReplacementImage(button)
+    replacementImage = createReplacementImage(button)
     
     -- Look for PetImage child
-    local petImage = button:FindFirstChild("PetImage")
+    petImage = button:FindFirstChild("PetImage")
     if petImage and petImage:IsA("ImageButton") then
-        local rarity = getPetRarity(petImage.Image)
+        rarity = getPetRarity(petImage.Image)
         
         -- Apply color based on rarity
         applyRarityColor(button, rarity, replacementImage)
         
-        print("Processed button with", rarity, "pet:", button:GetFullName())
     else
         -- Default to Common if no pet image found
         replacementImage.ImageColor3 = CONFIG.colors.Common
-        print("Processed button with default Common rarity:", button:GetFullName())
     end
     
     processedButtons[button] = true
@@ -1645,44 +2211,783 @@ end
 -- Start the image replacer
 spawn(startImageReplacer)
 
-print("Pet Image Replacer started - looking for images to replace...")
+
+----------------------------SORTER------------------------------
+
+-- Function to determine rarity based on image ID
+local function getRarityFromImageId(imageId)
+    for _, id in ipairs(CommonIds) do
+        if imageId == id then return "Common", 6 end
+    end
+    
+    for _, id in ipairs(UncommonIds) do
+        if imageId == id then return "Uncommon", 5 end
+    end
+    
+    for _, id in ipairs(RareIds) do
+        if imageId == id then return "Rare", 4 end
+    end
+    
+    for _, id in ipairs(EpicIds) do
+        if imageId == id then return "Epic", 3 end
+    end
+    
+    for _, id in ipairs(LegendaryIds) do
+        if imageId == id then return "Legendary", 2 end
+    end
+    
+    for _, id in ipairs(EzLegendaryIds) do
+        if imageId == id then return "EzLegendary", 1 end
+    end
+    
+    return "Unknown", 7
+end
+
+-- Function to add rarity attribute to pet buttons
+local function addRarityAttributeToPets()
+    -- Process pets in PetInventoryScrollingFrame
+    for _, petButton in pairs(PetScroll:GetChildren()) do
+        if petButton:IsA("ImageButton") and petButton:FindFirstChild("PetImage") then
+            petImage = petButton.PetImage
+            imageId = petImage.Image
+            rarityName, rarityValue = getRarityFromImageId(imageId)
+            
+            -- Set attributes
+            petButton:SetAttribute("Rarity", rarityName)
+            petButton:SetAttribute("RarityValue", rarityValue)
+            
+            -- Optional: Add visual indicator of rarity
+            if not petButton:FindFirstChild("RarityLabel") then
+                rarityLabel = Instance.new("TextLabel")
+                rarityLabel.Name = "RarityLabel"
+                rarityLabel.Size = UDim2.new(1, 0, 0, 20)
+                rarityLabel.Position = UDim2.new(0, 0, 0, 0)
+                rarityLabel.BackgroundTransparency = 0.5
+                rarityLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                rarityLabel.TextSize = 12
+                rarityLabel.Text = rarityName
+                rarityLabel.ZIndex = 2
+                rarityLabel.Parent = petButton
+                
+                -- Color based on rarity
+                if rarityName == "Common" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "Uncommon" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(0, 180, 0)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "Rare" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(0, 112, 221)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "Epic" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(163, 53, 238)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "Legendary" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "EzLegendary" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+                    rarityLabel.BackgroundTransparency = 1
+                end
+            end
+        end
+    end
+    
+    -- Process pets in EquippedPets
+    for _, petButton in pairs(EquippedPets:GetChildren()) do
+        if petButton:IsA("ImageButton") and petButton:FindFirstChild("PetImage") then
+            petImage = petButton.PetImage
+            imageId = petImage.Image
+            rarityName, rarityValue = getRarityFromImageId(imageId)
+            
+            -- Set attributes
+            petButton:SetAttribute("Rarity", rarityName)
+            petButton:SetAttribute("RarityValue", rarityValue)
+            
+            -- Optional: Add visual indicator of rarity
+            if not petButton:FindFirstChild("RarityLabel") then
+                rarityLabel = Instance.new("TextLabel")
+                rarityLabel.Name = "RarityLabel"
+                rarityLabel.Size = UDim2.new(1, 0, 0, 20)
+                rarityLabel.Position = UDim2.new(0, 0, 0, 0)
+                rarityLabel.BackgroundTransparency = 1
+                rarityLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+                rarityLabel.TextSize =0
+                rarityLabel.Text = rarityName
+                rarityLabel.ZIndex = 2
+                rarityLabel.Parent = petButton
+                
+                -- Color based on rarity
+                if rarityName == "Common" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(150, 150, 150)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "Uncommon" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(0, 180, 0)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "Rare" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(0, 112, 221)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "Epic" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(163, 53, 238)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "Legendary" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
+                    rarityLabel.BackgroundTransparency = 1
+                elseif rarityName == "EzLegendary" then
+                    rarityLabel.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+                    rarityLabel.BackgroundTransparency = 1
+                end
+            end
+        end
+    end
+end
+
+-- Function to sort pets by rarity
+local function sortPetsByRarity()
+    -- Sort pets in PetInventoryScrollingFrame
+    petButtons = {}
+    for _, petButton in pairs(PetScroll:GetChildren()) do
+        if petButton:IsA("ImageButton") then
+            table.insert(petButtons, petButton)
+        end
+    end
+    
+    -- Sort by rarity value (lowest first - EzLegendary=1, Legendary=2, etc.)
+    table.sort(petButtons, function(a, b)
+        aRarity = a:GetAttribute("RarityValue") or 7
+        bRarity = b:GetAttribute("RarityValue") or 7
+        return aRarity < bRarity
+    end)
+    
+    -- Reorder in the UI
+    for i, petButton in ipairs(petButtons) do
+        petButton.LayoutOrder = i
+    end
+    
+    -- Sort pets in EquippedPets
+    equippedPetButtons = {}
+    for _, petButton in pairs(EquippedPets:GetChildren()) do
+        if petButton:IsA("ImageButton") then
+            table.insert(equippedPetButtons, petButton)
+        end
+    end
+    
+    -- Sort by rarity value (lowest first)
+    table.sort(equippedPetButtons, function(a, b)
+        aRarity = a:GetAttribute("RarityValue") or 7
+        bRarity = b:GetAttribute("RarityValue") or 7
+        return aRarity < bRarity
+    end)
+    
+    -- Reorder in the UI
+    for i, petButton in ipairs(equippedPetButtons) do
+        petButton.LayoutOrder = i
+    end
+end
+
+-- Create a UIListLayout for PetInventoryScrollingFrame if it doesn't exist
+local function ensureUIListLayout()
+    if not PetScroll:FindFirstChildOfClass("UIListLayout") then
+        listLayout = Instance.new("UIListLayout")
+        listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        listLayout.Parent = PetScroll
+    end
+    
+    if not EquippedPets:FindFirstChildOfClass("UIListLayout") then
+        listLayout = Instance.new("UIListLayout")
+        listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        listLayout.Parent = EquippedPets
+    end
+end
+
+-- Override the game's sorting functions
+local function overrideSortingFunctions()
+    -- Create a flag to track if we're currently sorting
+    isSorting = false
+    
+    -- Function to handle when the inventory is updated
+    local function handleInventoryUpdate()
+        if isSorting then return end
+        isSorting = true
+        
+        -- Wait a moment for the game to finish its updates
+        task.wait(0.1)
+        
+        -- Apply our sorting
+        addRarityAttributeToPets()
+        sortPetsByRarity()
+        
+        isSorting = false
+    end
+    
+    -- Connect to relevant events
+    PetScroll.ChildAdded:Connect(function()
+        handleInventoryUpdate()
+    end)
+    
+    PetScroll.ChildRemoved:Connect(function()
+        handleInventoryUpdate()
+    end)
+    
+    EquippedPets.ChildAdded:Connect(function()
+        handleInventoryUpdate()
+    end)
+    
+    EquippedPets.ChildRemoved:Connect(function()
+        handleInventoryUpdate()
+    end)
+    
+    -- Set up a periodic check to ensure our sorting is maintained
+    task.spawn(function()
+        while true do
+            task.wait(1)
+            handleInventoryUpdate()
+        end
+    end)
+    
+    -- Try to hook into the game's UI buttons that might trigger sorting
+    for _, button in pairs(MainFrame2:GetDescendants()) do
+        if button:IsA("TextButton") or button:IsA("ImageButton") then
+            button.MouseButton1Click:Connect(function()
+                -- Wait a moment for the game's sorting to complete
+                task.wait(0.2)
+                handleInventoryUpdate()
+            end)
+        end
+    end
+end
+
+-- Run the functions initially
+ensureUIListLayout()
+addRarityAttributeToPets()
+sortPetsByRarity()
+overrideSortingFunctions()
+
+----------------------------------------------------------------
+
+-- Break all existing connections on the button
+for _, connection in pairs(getconnections(EquipTopPets.MouseButton1Click)) do
+    connection:Disconnect()
+end
+
+-- Create a new connection
+EquipTopPets.MouseButton1Click:Connect(function()
+    -- Set all direct ImageButton children's ImageColor3 to white
+    petsContainer = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.MainFrame2.Pets.PetInventoryScrollingFrame
+    
+    if petsContainer then
+        -- Loop through only the direct children
+        for _, child in pairs(petsContainer:GetChildren()) do
+            -- Check if the child is an ImageButton
+            if child:IsA("ImageButton") then
+                child.ImageColor3 = Color3.new(1, 1, 1) -- RGB 255, 255, 255 (white)
+            end
+        end
+        
+        -- Fire the remote function
+        local args = {
+            [1] = "EquipTopPets"
+        }
+        
+        game:GetService("ReplicatedStorage"):WaitForChild("RemoteFunctions"):WaitForChild("MainRemoteFunction"):InvokeServer(unpack(args))
+    else
+    end
+end)
+
+
+----------------------------------------------------------------
+
+UpgradeRanch.UpgradeRanchFrameClose:Destroy()
+UpgradeRanch.RanchUpgradeShadow:Destroy()
+UpgradeRanchButton.Position = UDim2.new(0.131999999, 0, 0.754000008, 0)
+
+UpgradeRanch.ImageTransparency = 1
+UpgradeRanch.ImageColor3 = Color3.fromRGB(255, 255, 255)
+UpgradeRanch.Position = UDim2.new(0.093, 0, 0.138, 0)
+UpgradeRanch.Size = UDim2.new(0.846, 0, 0.524, 0)
+
+UpgradeFrameHUD = Instance.new("Frame")
+UpgradeFrameHUD.BackgroundTransparency = 1
+UpgradeFrameHUD.Name = "UpgradeFrameHUD"
+UpgradeFrameHUD.Size = UDim2.new(0, 815, 0, 535)
+UpgradeFrameHUD.Parent = UpgradeRanch
+
+UpgradeRanch.Arrow.Parent = UpgradeFrameHUD
+game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame:GetChildren()[5].Parent = UpgradeFrameHUD
+game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame.RanchImage.Parent = UpgradeFrameHUD
+UpgradeRanch.RanchMaxUpgradeFrame.Parent = UpgradeFrameHUD
+UpgradeRanch.DragonCapAfter.Parent = UpgradeFrameHUD
+UpgradeRanch.DragonCapBefore.Parent = UpgradeFrameHUD
+game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.UpgradeRanchFrame.RanchUpgrade.Parent = UpgradeFrameHUD
+UpgradeRanch.ReturningText1.Parent = UpgradeFrameHUD
+
+UpgRanchFrame = Instance.new("Frame")
+UpgRanchFrame.Name = "UpgRanchFrame"
+UpgRanchFrame.Parent = UpgradeFrameHUD
+UpgRanchFrame.Position = UDim2.new(0,0,0,0)
+UpgRanchFrame.Size = UDim2.new(0, 812, 0, 535)
+UpgRanchFrame.BackgroundColor3 = Color3.fromRGB(255,255,255)
+
+UpgUICorner = Instance.new("UICorner")
+UpgUICorner.Name = "UpgUICorner"
+UpgUICorner.Parent = UpgRanchFrame
+UpgUICorner.CornerRadius = UDim.new(0, 25)
+
+UpgUIStroke = Instance.new("UIStroke")
+UpgUIStroke.Name = "UpgUIStroke"
+UpgUIStroke.Parent = UpgRanchFrame
+UpgUIStroke.Color = Color3.fromRGB(46,46,53)
+UpgUIStroke.Thickness = 5
+
+UpgBackground = Instance.new("ImageLabel")
+UpgBackground.Name = "UpgBackground"
+UpgBackground.Size = UDim2.new(1, 0, 1, 0)
+UpgBackground.BackgroundTransparency = 1
+UpgBackground.Image = "rbxassetid://90803316340171"
+UpgBackground.ImageColor3 = Color3.fromRGB(20, 58, 67)
+UpgBackground.ImageTransparency = 0.95
+UpgBackground.ScaleType = Enum.ScaleType.Tile
+UpgBackground.TileSize = UDim2.new(0, 90, 0, 90)
+UpgBackground.Parent = UpgRanchFrame
+
+
+UpgBackgroundGradient = Instance.new("UIGradient")
+UpgBackgroundGradient.Rotation = -90
+UpgBackgroundGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+})
+
+UpgBackgroundGradient.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 0),
+NumberSequenceKeypoint.new(0.30, 0.60),
+NumberSequenceKeypoint.new(0.5, 0.760),
+NumberSequenceKeypoint.new(0.76, 1),
+NumberSequenceKeypoint.new(1, 1.30)
+})
+UpgBackgroundGradient.Parent = UpgBackground
+
+----------------------------Arrow------------------------------------
+
+UpgradeRanchArrow.Position = UDim2.new(0, 370, 0, 170)
+UpgradeRanchArrow.Image = "rbxassetid://93870057009442"
+
+UpgRanchArrowGradient = Instance.new("UIGradient")
+UpgRanchArrowGradient.Rotation = -90
+UpgRanchArrowGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 170, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(10, 94, 137))
+})
+
+UpgRanchArrowGradient.Parent = UpgradeRanchArrow
+
+----------------------------CloseBttn------------------------------------
+
+UpgRanchCloseButton = Instance.new("ImageButton")
+UpgRanchCloseButton.ZIndex = 4
+UpgRanchCloseButton.Name = "UpgRanchCloseButton"
+UpgRanchCloseButton.Size = UDim2.new(1, 0, 0.06, 45)
+UpgRanchCloseButton.Position = UDim2.new(0, 770, 0, -30)
+UpgRanchCloseButton.BackgroundTransparency = 1
+UpgRanchCloseButton.Image = "rbxassetid://14423621163"
+UpgRanchCloseButton.ImageColor3 = Color3.fromRGB(255, 255, 255)
+UpgRanchCloseButton.Parent = UpgRanchFrame
+
+
+UpgRanchCloseAspectRatio = Instance.new("UIAspectRatioConstraint")
+UpgRanchCloseAspectRatio.Name = "CloseAspectRatio"
+UpgRanchCloseAspectRatio.Parent = UpgRanchCloseButton
+
+
+UpgRanchCloseGradient = Instance.new("UIGradient")
+UpgRanchCloseGradient.Rotation = -90
+UpgRanchCloseGradient.Color = ColorSequence.new({
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 2, 61)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 39, 125))
+})
+UpgRanchCloseGradient.Parent = UpgRanchCloseButton
+
+
+UpgRanchCloseUiScale = Instance.new("UIScale")
+UpgRanchCloseUiScale.Scale = 1
+UpgRanchCloseUiScale.Parent = UpgRanchCloseButton
+
+
+UpgRanchCloseShadow = Instance.new("ImageLabel")
+UpgRanchCloseShadow.Name = "Shadow"
+UpgRanchCloseShadow.Size = UDim2.new(1, 0, 1.1, 0)
+UpgRanchCloseShadow.ImageTransparency = 0.5
+UpgRanchCloseShadow.Position = UDim2.new(0, 0, 0, 0)
+UpgRanchCloseShadow.BackgroundTransparency = 1
+UpgRanchCloseShadow.Image = "rbxassetid://14001321443"
+UpgRanchCloseShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+UpgRanchCloseShadow.ZIndex = 0
+UpgRanchCloseShadow.Parent = UpgRanchCloseButton
+
+
+UpgRanchCloseTextLabel = Instance.new("TextLabel")
+UpgRanchCloseTextLabel.ZIndex = 4
+UpgRanchCloseTextLabel.Name = "X"
+UpgRanchCloseTextLabel.Size = UDim2.new(0.9, 0, 0.6, 0)
+UpgRanchCloseTextLabel.Position = UDim2.new(0.06, 0, 0.2, 0)
+UpgRanchCloseTextLabel.BackgroundTransparency = 1
+UpgRanchCloseTextLabel.Text = "X"
+UpgRanchCloseTextLabel.TextSize = 18
+UpgRanchCloseTextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+UpgRanchCloseTextLabel.TextScaled = true
+UpgRanchCloseTextLabel.Font = Enum.Font.FredokaOne
+UpgRanchCloseTextLabel.Parent = UpgRanchCloseButton
+
+
+UpgRanchTextLabelStroke1 = Instance.new("UIStroke")
+UpgRanchTextLabelStroke1.Thickness = 3
+UpgRanchTextLabelStroke1.Color = Color3.fromRGB(0, 0, 0)
+UpgRanchTextLabelStroke1.Parent = UpgRanchCloseTextLabel
 
 ----------------------------------------------------------------
 
 
 
+----------------------------RanchImages---------------------
+
+UpgradeRanchImage1Gradient = Instance.new("UIGradient")
+UpgradeRanchImage1Gradient.Rotation = 90
+UpgradeRanchImage1Gradient.Color = ColorSequence.new({
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(130, 130, 130))
+})
+UpgradeRanchImage1Gradient.Parent = UpgradeRanchImage1
+
+
+UpgradeRanchImage2Gradient = Instance.new("UIGradient")
+UpgradeRanchImage2Gradient.Rotation = 90
+UpgradeRanchImage2Gradient.Color = ColorSequence.new({
+ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+ColorSequenceKeypoint.new(1, Color3.fromRGB(130, 130, 130))
+})
+UpgradeRanchImage2Gradient.Parent = UpgradeRanchImage2
+
+
+------------------------------------------------------------
+
+RanchMaxUpgradeFrame.ImageTransparency = 1
+RanchMaxUpgradeFrame.BackgroundTransparency = 1
+RanchMaxUpgradeFrame.Position = UDim2.new(0, 225, 0, 550)
+
+RanchMaxUpgradeFrame2 = Instance.new("Frame")
+RanchMaxUpgradeFrame2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+RanchMaxUpgradeFrame2.Size = UDim2.new(0, 360, 0, 90)
+RanchMaxUpgradeFrame2.Parent = RanchMaxUpgradeFrame
+
+MaxUpgUICorner = Instance.new("UICorner")
+MaxUpgUICorner.CornerRadius = UDim.new(0, 15)
+MaxUpgUICorner.Parent = RanchMaxUpgradeFrame2
+
+MaxUpgUIStroke = Instance.new("UIStroke")
+MaxUpgUIStroke.Color = Color3.fromRGB(46, 46, 53)
+MaxUpgUIStroke.Thickness = 5
+MaxUpgUIStroke.Parent = RanchMaxUpgradeFrame2
+
+MaxUpgBackground = Instance.new("ImageLabel")
+MaxUpgBackground.Name = "MaxUpgBackground"
+MaxUpgBackground.Size = UDim2.new(1, 0, 1, 0)
+MaxUpgBackground.BackgroundTransparency = 1
+MaxUpgBackground.Image = "rbxassetid://90803316340171"
+MaxUpgBackground.ImageColor3 = Color3.fromRGB(0, 0, 0)
+MaxUpgBackground.ImageTransparency = 0.90
+MaxUpgBackground.ScaleType = Enum.ScaleType.Tile
+MaxUpgBackground.TileSize = UDim2.new(0, 40, 0, 40)
+MaxUpgBackground.Parent = RanchMaxUpgradeFrame2
+
+
+MaxUpgBackgroundGradient = Instance.new("UIGradient")
+MaxUpgBackgroundGradient.Rotation = -90
+MaxUpgBackgroundGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+})
+
+MaxUpgBackgroundGradient.Transparency = NumberSequence.new({
+NumberSequenceKeypoint.new(0, 0),
+NumberSequenceKeypoint.new(0.30, 0.60),
+NumberSequenceKeypoint.new(0.5, 0.760),
+NumberSequenceKeypoint.new(0.76, 1),
+NumberSequenceKeypoint.new(1, 1.30)
+})
+MaxUpgBackgroundGradient.Parent = MaxUpgBackground
+
+RanchMaxUpgradeBox = RanchMaxUpgradeFrame.RanchMaxUpgradeBox
+
+RanchMaxUpgradeBox.Image = "rbxassetid://119214585520707"
+RanchMaxUpgradeBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+RanchMaxUpgradeBox.Position = UDim2.new(0.03, 0, 0.105, 0)
+RanchMaxUpgradeBox.Size = UDim2.new(0, 70, 0, 70)
+
+MaxUpgBoxUICorner = Instance.new("UICorner")
+MaxUpgBoxUICorner.CornerRadius = UDim.new(0, 15)
+MaxUpgBoxUICorner.Parent = RanchMaxUpgradeBox
+
+MaxUpgBoxUGradient = Instance.new("UIGradient")
+MaxUpgBoxUGradient.Rotation = 90
+MaxUpgBoxUGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(193, 193, 193))
+})
+
+
+MaxUpgBoxUGradient.Parent = RanchMaxUpgradeBox
+
+MaxUpgBoxFrame = Instance.new("Frame")
+MaxUpgBoxFrame.ZIndex = 4
+MaxUpgBoxFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MaxUpgBoxFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+MaxUpgBoxFrame.BackgroundTransparency = 1
+MaxUpgBoxFrame.Position = UDim2.new(0, 35, 0, 35)
+MaxUpgBoxFrame.Size = UDim2.new(0.6, 0, 0.6, 0)
+MaxUpgBoxFrame.Parent = RanchMaxUpgradeBox
+
+MaxUpgBoxFrameUICorner = Instance.new("UICorner")
+MaxUpgBoxFrameUICorner.CornerRadius = UDim.new(0, 5)
+MaxUpgBoxFrameUICorner.Parent = MaxUpgBoxFrame
+
+MaxUpgBoxFrameUIStroke = Instance.new("UIStroke")
+MaxUpgBoxFrameUIStroke.Color = Color3.fromRGB(46, 46, 53)
+MaxUpgBoxFrameUIStroke.Thickness = 5
+MaxUpgBoxFrameUIStroke.Parent = MaxUpgBoxFrame
+
+------------------------------------------------------------
+
+UpgradeRanchButton.BackgroundTransparency = 1
+
+UpgRanchBttnFrame = Instance.new("Frame")
+UpgRanchBttnFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+UpgRanchBttnFrame.ZIndex = 2
+UpgRanchBttnFrame.Size = UDim2.new(0, 589, 0, 93)
+UpgRanchBttnFrame.Parent = UpgradeRanchButton
+
+UpgRanchBttnUICorner = Instance.new("UICorner")
+UpgRanchBttnUICorner.CornerRadius = UDim.new(0, 20)
+UpgRanchBttnUICorner.Parent = UpgRanchBttnFrame
+
+
+UpgRanchBttnUIGradient = Instance.new("UIGradient")
+UpgRanchBttnUIGradient.Rotation = 90
+UpgRanchBttnUIGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 170)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 143, 88))
+})
+
+UpgRanchBttnUIGradient.Parent = UpgRanchBttnFrame
+
+
+UpgRanchBttnUIStroke = Instance.new("UIStroke")
+UpgRanchBttnUIStroke.Color = Color3.fromRGB(0, 212, 131)
+UpgRanchBttnUIStroke.Thickness = 4
+UpgRanchBttnUIStroke.Parent = UpgRanchBttnFrame
+
+--------------------------UpgRanchText--------------------------------
+
+UpgRanchText.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+UpgRanchTextUIStroke = Instance.new("UIStroke")
+UpgRanchTextUIStroke.Color = Color3.fromRGB(46, 46, 53)
+UpgRanchTextUIStroke.Thickness = 3
+UpgRanchTextUIStroke.Parent = UpgRanchText
+
+
+--------------------------HoverFunc----------------------------------
+
+-- Constants for the CloseButton hover effect
+UpgRanchHoverDuration = 0.1
+UpgRanchNormalScale = 1
+UpgRanchHoverScale = 1.05
+UpgRanchNormalRotation = 0
+UpgRanchHoverRotation = 5
+
+-- Function to smoothly transition the CloseButton properties
+local function transitionCloseButton(startScale, endScale, startRotation, endRotation, duration)
+    local startTime = tick()
+    local runService = game:GetService("RunService")
+    
+    -- Store the original position to maintain centering during scaling
+    local originalPosition = UpgRanchCloseButton.Position
+    
+    local connection
+    connection = runService.RenderStepped:Connect(function()
+        local elapsed = tick() - startTime
+        local alpha = math.min(elapsed / duration, 1)
+        
+        -- Smooth easing function (ease in-out)
+        alpha = alpha < 0.5 and 2 * alpha * alpha or 1 - math.pow(-2 * alpha + 2, 2) / 2
+        
+        -- Interpolate scale
+        local currentScale = startScale + (endScale - startScale) * alpha
+        UpgRanchCloseUiScale.Scale = currentScale
+        
+        -- Interpolate rotation
+        local currentRotation = startRotation + (endRotation - startRotation) * alpha
+        UpgRanchCloseButton.Rotation = currentRotation
+        
+        if alpha >= 1 then
+            connection:Disconnect()
+        end
+    end)
+end
+
+-- Connect hover events to the CloseButton
+UpgRanchCloseButton.MouseEnter:Connect(function()
+    transitionCloseButton(
+        UpgRanchNormalScale,
+        UpgRanchHoverScale,
+        UpgRanchNormalRotation,
+        UpgRanchHoverRotation,
+        UpgRanchHoverDuration
+    )
+end)
+
+UpgRanchCloseButton.MouseLeave:Connect(function()
+    transitionCloseButton(
+        UpgRanchHoverScale,
+        UpgRanchNormalScale,
+        UpgRanchHoverRotation,
+        UpgRanchNormalRotation,
+        UpgRanchHoverDuration
+    )
+end)
+
+
 ----------------------------------------------------------------
 
--- Path to the inventory frame containing ImageButtons
-local inventoryPath = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.PetInventoryScrollingFrame
+local originalPosition1 = UDim2.new(0, 0, 0, 0)
+local offscreenPosition2 = UDim2.new(0, 0, 0, 100)
 
--- Path to the equipped pets frame
-local equippedPath = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.EquippedPets
+-- Disable existing connections
+for _, connection in pairs(getconnections(HUD.ButtonsFrame1["0-RanchUpgradeOpen"].MouseButton1Click)) do
+    connection:Disable()
+end
 
--- Path to the TextLabel that changes when a pet is equipped
-local petEquippedTextLabel = LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.EquippedFrame.PetEquipped
+-- Initialize frame
+UpgradeFrameHUD.Position = offscreenPosition2
+UpgradeFrameHUD.Visible = false
+
+-- Tween information
+local popUpInfo = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+local popDownInfo = TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+
+-- Tween properties
+local popUpProperties = {Position = originalPosition1}
+local popDownProperties = {Position = offscreenPosition2}
+
+-- Create tweens
+local popUpTween1 = TweenService:Create(UpgradeFrameHUD, popUpInfo, popUpProperties)
+local popDownTween1 = TweenService:Create(UpgradeFrameHUD, popDownInfo, popDownProperties)
+
+-- Connect event (only once)
+HUD.ButtonsFrame1["0-RanchUpgradeOpen"].MouseButton1Click:Connect(function()
+    if isRanchOpen then
+        popDownTween1:Play()
+        
+        task.wait(0.1)
+        
+        UpgradeRanch.Visible = false
+        UpgradeFrameHUD.Visible = false
+    else
+        UpgradeFrameHUD.Position = offscreenPosition2
+        
+        UpgradeRanch.Visible = true
+        UpgradeFrameHUD.Visible = true
+        
+        popUpTween1:Play()
+    end
+    
+    isRanchOpen = not isRanchOpen
+end)
+
+
+
+----------------------------------------------------------------
+
+UpgRanchCloseButton.MouseButton1Click:Connect(function()
+    originalPosition = UpgradeRanch.Position
+    
+    -- Create a tween to slide to the left
+    tweenInfo = TweenInfo.new(
+        0.1,                -- Duration (0.5 seconds)
+        Enum.EasingStyle.Quad,  -- Easing style
+        Enum.EasingDirection.Out -- Easing direction
+    )
+    
+    -- Calculate the target position (move left by the width of the frame plus a bit extra)
+    targetPosition = UDim2.new(
+        originalPosition.X.Scale,  -- Move left by 100% of screen width
+        originalPosition.X.Offset,
+        originalPosition.Y.Scale + 0.02,
+        originalPosition.Y.Offset
+    )
+    
+    -- Create the tween
+    tween = TweenService:Create(
+        UpgradeRanch,
+        tweenInfo,
+        {Position = targetPosition}
+    )
+    
+    -- Play the tween and set visibility to false when it completes
+    tween:Play()
+    tween.Completed:Connect(function()
+        UpgradeRanch.Visible = false
+        isRanchOpen = false
+        -- Reset position for next time it's shown
+        UpgradeRanch.Position = originalPosition
+    end)
+end)
+
+----------------------------------------------------------------
+
+deleteLabel = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.MainFrame2.DeleteLabel
+
+-- Path to the UIGridLayout to check CellSize
+uiGridLayout = PetScroll.UIGridLayout
 
 -- Target colors to check for
-local yellowColor = Color3.fromRGB(255, 255, 127) -- Color for equipped pets
-local whiteColor = Color3.fromRGB(255, 255, 255) -- Color for unequipped pets
-local greenColor = Color3.fromRGB(135, 255, 183) -- Color for selected pets
+yellowColor = Color3.fromRGB(255, 255, 127) -- Color for equipped pets
+whiteColor = Color3.fromRGB(255, 255, 255) -- Color for unequipped pets
+greenColor = Color3.fromRGB(135, 255, 183) -- Color for selected pets
+redColor = Color3.fromRGB(255, 86, 80) -- New color to check for delete functionality
 
 -- Variables to track the previous TextLabel text
-local previousTextLabelText = ""
-local previousTextLabelNumber = 0
+previousTextLabelText = ""
+previousTextLabelNumber = 0
+
+-- Variable to track the previous CellSize
+previousCellSize = nil
+
+-- Table to keep track of buttons with cloned DeleteLabels
+buttonsWithDeleteLabel = {}
+
+-- Fixed size for shadows in EquippedPets
+EQUIPPED_SHADOW_SIZE = UDim2.new(0, 90, 0, 90)
 
 -- Function to check if paths exist
 local function checkPaths()
-    if not inventoryPath or not inventoryPath:FindFirstAncestor("PlayerGui") then
+    if not PetScroll or not PetScroll:FindFirstAncestor("PlayerGui") then
         warn("Inventory path not found, waiting...")
         return false
     end
-    if not equippedPath or not equippedPath:FindFirstAncestor("PlayerGui") then
+    if not EquippedPets or not EquippedPets:FindFirstAncestor("PlayerGui") then
         warn("Equipped path not found, waiting...")
         return false
     end
-    if not petEquippedTextLabel or not petEquippedTextLabel:FindFirstAncestor("PlayerGui") then
+    if not PetEquipped or not PetEquipped:FindFirstAncestor("PlayerGui") then
         warn("Pet equipped TextLabel not found, waiting...")
+        return false
+    end
+    if not deleteLabel or not deleteLabel:FindFirstAncestor("PlayerGui") then
+        warn("Delete label not found, waiting...")
+        return false
+    end
+    if not uiGridLayout or not uiGridLayout:FindFirstAncestor("PlayerGui") then
+        warn("UIGridLayout not found, waiting...")
         return false
     end
     return true
@@ -1690,86 +2995,226 @@ end
 
 -- Function to extract number from TextLabel text
 local function getNumberFromText(text)
-    local number = tonumber(text:match("%d+"))
+    number = tonumber(text:match("%d+"))
     return number or 0
 end
 
+-- Function to get the appropriate size for the Shadow ImageLabel based on UIGridLayout CellSize
+local function getShadowSize()
+    cellSize = uiGridLayout.CellSize
+    
+    -- Extract the pixel values from the UDim2
+    pixelWidth = cellSize.X.Offset
+    pixelHeight = cellSize.Y.Offset
+    
+    -- Return a UDim2 with the same pixel values
+    return UDim2.new(0, pixelWidth, 0, pixelHeight)
+end
+
+-- Function to find the shadow in a delete label
+local function findShadowInLabel(label)
+    -- Check for both possible names of the shadow
+    return label:FindFirstChild("Shadow") or label:FindFirstChild("DeleteLabelShadow")
+end
+
+-- Function to add delete label to a button
+local function addDeleteLabelToButton(button)
+    -- Check if button already has a delete label
+    if buttonsWithDeleteLabel[button] then
+        -- Update the shadow size if it already exists and is in PetScroll
+        if button:IsDescendantOf(PetScroll) then
+            shadowSize = getShadowSize()
+            shadow = findShadowInLabel(buttonsWithDeleteLabel[button])
+            if shadow then
+                shadow.Size = shadowSize
+            end
+        end
+        return
+    end
+    
+    -- Clone the delete label
+    clonedLabel = deleteLabel:Clone()
+    clonedLabel.Visible = true
+    
+    -- Set the Shadow size based on parent
+    shadow = findShadowInLabel(clonedLabel)
+    if shadow then
+        if button:IsDescendantOf(PetScroll) then
+            shadow.Size = getShadowSize()
+        else
+            -- For EquippedPets, use fixed size
+            shadow.Size = EQUIPPED_SHADOW_SIZE
+        end
+    end
+    
+    clonedLabel.Parent = button
+    
+    -- Store reference to the cloned label
+    buttonsWithDeleteLabel[button] = clonedLabel
+end
+
+-- Function to remove delete label from a button
+local function removeDeleteLabelFromButton(button)
+    -- Check if button has a delete label
+    if buttonsWithDeleteLabel[button] then
+        -- Destroy the cloned label
+        buttonsWithDeleteLabel[button]:Destroy()
+        buttonsWithDeleteLabel[button] = nil
+    end
+end
+
+-- Function to update all shadow sizes
+local function updateAllShadowSizes()
+    shadowSize = getShadowSize()
+    for button, clonedLabel in pairs(buttonsWithDeleteLabel) do
+        -- Only update shadows for buttons in PetScroll
+        if button:IsDescendantOf(PetScroll) then
+            shadow = findShadowInLabel(clonedLabel)
+            if shadow then
+                shadow.Size = shadowSize
+            end
+        end
+    end
+end
+
+-- Initialize previousCellSize to current CellSize at start
+previousCellSize = uiGridLayout.CellSize
+
 -- Main loop to run checks
-while wait(0.01) do -- Check every half second for more responsiveness
+while wait(0.01) do -- Check every 0.01 seconds for more responsiveness
     if not checkPaths() then
         continue
     end
     
+    -- Always update shadow sizes on the first run and when CellSize changes
+    currentCellSize = uiGridLayout.CellSize
+    cellSizeChanged = previousCellSize ~= currentCellSize
+    
+    -- If CellSize changed, update all shadow sizes
+    if cellSizeChanged then
+        updateAllShadowSizes()
+        previousCellSize = currentCellSize
+    end
+    
     -- Store the buttons to move in arrays
-    local yellowButtons = {}
-    local whiteButtons = {}
-    local inventoryGreenButtons = {}
-    local equippedGreenButtons = {}
+    yellowButtons = {}
+    whiteButtons = {}
+    inventoryGreenButtons = {}
+    equippedGreenButtons = {}
+    redButtons = {} -- New array for red buttons
     
     -- Check if the TextLabel text has changed
-    local currentTextLabelText = petEquippedTextLabel.Text
-    local textLabelChanged = currentTextLabelText ~= previousTextLabelText
+    currentTextLabelText = PetEquipped.Text
+    textLabelChanged = currentTextLabelText ~= previousTextLabelText
     
     -- Extract numbers from TextLabel text for comparison
-    local currentNumber = getNumberFromText(currentTextLabelText)
-    local previousNumber = getNumberFromText(previousTextLabelText)
+    currentNumber = getNumberFromText(currentTextLabelText)
+    previousNumber = getNumberFromText(previousTextLabelText)
     
     -- Determine if pets were equipped or unequipped
-    local petsEquipped = textLabelChanged and currentNumber > previousNumber
-    local petsUnequipped = textLabelChanged and currentNumber < previousNumber
+    petsEquipped = textLabelChanged and currentNumber > previousNumber
+    petsUnequipped = textLabelChanged and currentNumber < previousNumber
     
     -- Update previous text value
     previousTextLabelText = currentTextLabelText
     
-    -- Find all yellow buttons in inventory
-    for _, obj in ipairs(inventoryPath:GetChildren()) do
-        if obj:IsA("ImageButton") and obj.ImageColor3 == yellowColor then
-            table.insert(yellowButtons, obj)
+    -- First, check all buttons with delete labels and remove them if they're no longer red
+    for button, label in pairs(buttonsWithDeleteLabel) do
+        if button:IsDescendantOf(game) then
+            if button.ImageColor3 ~= redColor then
+                -- Button is no longer red, remove the delete label
+                if label and label:IsDescendantOf(game) then
+                    label:Destroy()
+                end
+                buttonsWithDeleteLabel[button] = nil
+            end
+        else
+            -- Button no longer exists
+            buttonsWithDeleteLabel[button] = nil
         end
     end
     
-    -- Find all white buttons in equipped
-    for _, obj in ipairs(equippedPath:GetChildren()) do
-        if obj:IsA("ImageButton") and obj.ImageColor3 == whiteColor then
-            table.insert(whiteButtons, obj)
+    -- Process inventory buttons
+    for _, obj in ipairs(PetScroll:GetChildren()) do
+        if obj:IsA("ImageButton") then
+            if obj.ImageColor3 == yellowColor then
+                table.insert(yellowButtons, obj)
+            elseif obj.ImageColor3 == greenColor then
+                table.insert(inventoryGreenButtons, obj)
+            elseif obj.ImageColor3 == redColor then
+                table.insert(redButtons, obj)
+                addDeleteLabelToButton(obj)
+            end
         end
     end
     
-    -- Find all green buttons in inventory (selected pets to equip)
-    for _, obj in ipairs(inventoryPath:GetChildren()) do
-        if obj:IsA("ImageButton") and obj.ImageColor3 == greenColor then
-            table.insert(inventoryGreenButtons, obj)
-        end
-    end
-    
-    -- Find all green buttons in equipped (selected pets to unequip)
-    for _, obj in ipairs(equippedPath:GetChildren()) do
-        if obj:IsA("ImageButton") and obj.ImageColor3 == greenColor then
-            table.insert(equippedGreenButtons, obj)
+    -- Process equipped buttons
+    for _, obj in ipairs(EquippedPets:GetChildren()) do
+        if obj:IsA("ImageButton") then
+            if obj.ImageColor3 == whiteColor then
+                table.insert(whiteButtons, obj)
+            elseif obj.ImageColor3 == greenColor then
+                table.insert(equippedGreenButtons, obj)
+            elseif obj.ImageColor3 == redColor then
+                table.insert(redButtons, obj)
+                addDeleteLabelToButton(obj)
+            end
         end
     end
     
     -- Move yellow buttons to equipped
     for _, button in ipairs(yellowButtons) do
-        button.Parent = equippedPath
+        button.Parent = EquippedPets
+        
+        -- If the button has a delete label, update its shadow size to the equipped size
+        if buttonsWithDeleteLabel[button] then
+            shadow = findShadowInLabel(buttonsWithDeleteLabel[button])
+            if shadow then
+                shadow.Size = EQUIPPED_SHADOW_SIZE
+            end
+        end
     end
     
     -- Move white buttons to inventory
     for _, button in ipairs(whiteButtons) do
-        button.Parent = inventoryPath
+        button.Parent = PetScroll
+        
+        -- If the button has a delete label, update its shadow size to the inventory size
+        if buttonsWithDeleteLabel[button] then
+            shadow = findShadowInLabel(buttonsWithDeleteLabel[button])
+            if shadow then
+                shadow.Size = getShadowSize()
+            end
+        end
     end
     
     -- If TextLabel number increased, move any green buttons from inventory to equipped
     if petsEquipped and #inventoryGreenButtons > 0 then
         for _, button in ipairs(inventoryGreenButtons) do
-            button.Parent = equippedPath
+            button.Parent = EquippedPets
+            
+            -- If the button has a delete label, update its shadow size to the equipped size
+            if buttonsWithDeleteLabel[button] then
+                shadow = findShadowInLabel(buttonsWithDeleteLabel[button])
+                if shadow then
+                    shadow.Size = EQUIPPED_SHADOW_SIZE
+                end
+            end
         end
     end
     
     -- If TextLabel number decreased, move any green buttons from equipped to inventory
     if petsUnequipped and #equippedGreenButtons > 0 then
         for _, button in ipairs(equippedGreenButtons) do
-            button.Parent = inventoryPath
+            button.Parent = PetScroll
+            
+            -- If the button has a delete label, update its shadow size to the inventory size
+            if buttonsWithDeleteLabel[button] then
+                shadow = findShadowInLabel(buttonsWithDeleteLabel[button])
+                if shadow then
+                    shadow.Size = getShadowSize()
+                end
+            end
         end
     end
 end
