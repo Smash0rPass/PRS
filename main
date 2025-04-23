@@ -447,7 +447,22 @@ local EpicAuraIds = {
 
 }
 local LegendaryAuraIds = {
-	"rbxassetid://2867903124", --["Unicorn"] // rarity = "Legendary"
+    "rbxassetid://3326662947", --["Doom Aura"] // rarity = "Legendary"
+    "rbxassetid://3326663599", --["Shiny Doom Aura"] // rarity = "Legendary"
+    "rbxassetid://4154716526", --["Pumpkin Patch Aura"] // rarity = "Legendary"
+    "rbxassetid://3326662865", --["Crystal Aura"] // rarity = "Legendary"
+    "rbxassetid://4154716139", --["Harvest Moon Aura"] // rarity = "Legendary"
+    "rbxassetid://3326663664", --["Shiny Eggs Aura"] // rarity = "Legendary"
+    "rbxassetid://3421466420", --["Blackhole Aura"] // rarity = "Legendary"
+    "rbxassetid://4154716787", --["Shiny Harvest Moon Aura"] // rarity = "Legendary"
+    "rbxassetid://3326663548", --["Shiny Crystal Aura"] // rarity = "Legendary"
+    "rbxassetid://4154717195", --["Shiny Pumpkin Patch Aura"] // rarity = "Legendary"
+    "rbxassetid://4013449364", --["Leprechaun Aura"] // rarity = "Legendary"
+    "rbxassetid://3326663022", --["Eggs Aura"] // rarity = "Legendary"
+    "rbxassetid://4013450523", --["Shiny Timepiece Aura"] // rarity = "Legendary"
+    "rbxassetid://4013450166", --["Shiny Leprechaun Aura"] // rarity = "Legendary"
+    "rbxassetid://3421467011", --["Shiny Blackhole Aura"] // rarity = "Legendary"
+    "rbxassetid://4013450632", --["Timepiece Aura"] // rarity = "Legendary"
 
 }
 
@@ -1457,7 +1472,7 @@ AutoEquip.MouseButton1Click:Connect(function()
                 mrf:InvokeServer(unpack(equipArgs))
             end
             
-            task.wait(0.01)
+            task.wait(0.5)
         end
     end)
 end)
@@ -1557,75 +1572,7 @@ AutoCollectToggle.MouseButton1Click:Connect(function()
     end
 end)
 
-local notificationCount = 0
-local notifications = {}
-
-local function createNotification()
-    notificationCount = notificationCount + 1
-    
-    local NotificationFrame = Instance.new("Frame")
-    NotificationFrame.Name = "NotificationFrame" .. notificationCount
-    NotificationFrame.Size = UDim2.new(0, 300, 0, 50)
-    NotificationFrame.Position = UDim2.new(1, 0, 1, -50)
-    NotificationFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-    NotificationFrame.BorderSizePixel = 0
-    NotificationFrame.Parent = PetRanchSimulator
-
-    local NotificationText = Instance.new("TextLabel")
-    NotificationText.Size = UDim2.new(1, -10, 1, 0)
-    NotificationText.Position = UDim2.new(0, 5, 0, 0)
-    NotificationText.Text = "Requires to be in the middle to work otherwise will kick you."
-    NotificationText.TextColor3 = Color3.fromRGB(255, 255, 255)
-    NotificationText.BackgroundTransparency = 1
-    NotificationText.TextSize = 14
-    NotificationText.TextWrapped = true
-    NotificationText.Parent = NotificationFrame
-
-    local NotificationCorner = Instance.new("UICorner")
-    NotificationCorner.CornerRadius = UDim.new(0, 8)
-    NotificationCorner.Parent = NotificationFrame
-
-    table.insert(notifications, 1, NotificationFrame)
-    
-    -- Adjust positions of all notifications
-    for i, notif in ipairs(notifications) do
-        local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-        local showTween = TweenService:Create(notif, tweenInfo, {Position = UDim2.new(1, -300, 1, -50 - (55 * (i-1)))})
-        showTween:Play()
-    end
-    
-    -- Remove notification after delay
-    task.delay(3, function()
-        local hideTween = TweenService:Create(NotificationFrame, TweenInfo.new(0.5), {Position = UDim2.new(1, 0, NotificationFrame.Position.Y.Scale, NotificationFrame.Position.Y.Offset)})
-        hideTween:Play()
-        
-        hideTween.Completed:Wait()
-        table.remove(notifications, table.find(notifications, NotificationFrame))
-        NotificationFrame:Destroy()
-        
-        -- Readjust remaining notifications
-        for i, notif in ipairs(notifications) do
-            TweenService:Create(notif, TweenInfo.new(0.3), {Position = UDim2.new(1, -300, 1, -50 - (55 * (i-1)))})
-            :Play()
-        end
-    end)
-end
-
 AutoChest.MouseButton1Click:Connect(function()
-    local player = game.Players.LocalPlayer
-    local character = player.Character
-    if not character then return end
-    
-    local rootPart = character:FindFirstChild("HumanoidRootPart")
-    if not rootPart then return end
-    
-    local distance = (rootPart.Position - Vector3.new(48, 321, 32)).Magnitude
-
-    if distance > 100 then
-        createNotification()
-        return
-    end
-
     isAutoChest = not isAutoChest
     AutoChest.BackgroundColor3 = isAutoChest and Color3.fromRGB(100, 178, 115) or Color3.fromRGB(160, 55, 55)
     
@@ -2105,7 +2052,7 @@ EpicAura.MouseButton1Click:connect(function()
 end)
 
 LegendaryAura.MouseButton1Click:connect(function()
-	DeleteLegendaryAura = not LegendaryAura
+	DeleteLegendaryAura = not DeleteLegendaryAura
 	if DeleteLegendaryAura then
 		LegendaryAura.BackgroundColor3 = Color3.fromRGB(100, 178, 115)
 	else
