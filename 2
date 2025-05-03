@@ -1524,176 +1524,250 @@ StatusIndicator.Parent = SelectedPetsFrame
 SelectedPetsList.ChildAdded:Connect(UpdateStatusIndicator)
 SelectedPetsList.ChildRemoved:Connect(UpdateStatusIndicator)
 
--- Add this to your existing script with the pet/aura ID tables
-
--- Function to set up search functionality for all search boxes
-local function setupAllSearchBoxes()
-    -- Find all search textboxes in the UI
-    local searchBoxes = {}
+-- Function to sort pets alphabetically
+local function sortPetsAlphabetically()
+    print("Starting alphabetical sorting of pets and auras...")
     
-    for _, instance in pairs(game:GetDescendants()) do
-        if instance:IsA("TextBox") and 
-           (instance.Name:lower():find("search") or 
-            (instance.PlaceholderText and instance.PlaceholderText:lower():find("search"))) then
-            table.insert(searchBoxes, instance)
-            print("Found search box: " .. instance:GetFullName())
-        end
-    end
-    
-    if #searchBoxes == 0 then
-        print("No search boxes found!")
-        return
-    end
-    
-    print("Found " .. #searchBoxes .. " search boxes")
-    
-    -- Create a table with all pets and their information
-    local allPets = {}
-    
-    -- Helper function to extract pet name from the comment
+    -- Function to extract pet name from the comment
     local function extractPetName(comment)
         if not comment then return "" end
         local name = comment:match("%[(.-)%]")
         return name or ""
     end
     
-    -- Helper function to add pets to the allPets table
-    local function addPetsToTable(petsTable, rarity)
-        if not petsTable then return end
-        for i, assetId in ipairs(petsTable) do
-            local comment = petsTable[i]:match("%-%-(.*)") or ""
+    -- Create tables with pet names and their asset IDs
+    local function createSortedTable(idTable)
+        if not idTable or #idTable == 0 then return {} end
+        
+        local petsWithNames = {}
+        for i, assetId in ipairs(idTable) do
+            local comment = idTable[i]:match("%-%-(.*)") or ""
             local petName = extractPetName(comment)
-            table.insert(allPets, {
+            
+            table.insert(petsWithNames, {
                 assetId = assetId,
                 name = petName,
-                rarity = rarity,
                 comment = comment
             })
         end
+        
+        -- Sort by name alphabetically
+        table.sort(petsWithNames, function(a, b)
+            return a.name:lower() < b.name:lower()
+        end)
+        
+        return petsWithNames
     end
     
-    -- Add all pets to the search table
-    addPetsToTable(CommonIds, "Common")
-    addPetsToTable(UncommonIds, "Uncommon")
-    addPetsToTable(RareIds, "Rare")
-    addPetsToTable(EpicIds, "Epic")
-    addPetsToTable(LegendaryIds, "Legendary")
+    -- Sort all pet categories
+    local sortedCommon = createSortedTable(CommonIds)
+    local sortedUncommon = createSortedTable(UncommonIds)
+    local sortedRare = createSortedTable(RareIds)
+    local sortedEpic = createSortedTable(EpicIds)
+    local sortedLegendary = createSortedTable(LegendaryIds)
     
-    -- Also add auras if they exist
-    if CommonAuraIds then addPetsToTable(CommonAuraIds, "Common Aura") end
-    if UncommonAuraIds then addPetsToTable(UncommonAuraIds, "Uncommon Aura") end
-    if RareAuraIds then addPetsToTable(RareAuraIds, "Rare Aura") end
-    if EpicAuraIds then addPetsToTable(EpicAuraIds, "Epic Aura") end
-    if LegendaryAuraIds then addPetsToTable(LegendaryAuraIds, "Legendary Aura") end
+    -- Sort aura categories if they exist
+    local sortedCommonAura = CommonAuraIds and createSortedTable(CommonAuraIds) or {}
+    local sortedUncommonAura = UncommonAuraIds and createSortedTable(UncommonAuraIds) or {}
+    local sortedRareAura = RareAuraIds and createSortedTable(RareAuraIds) or {}
+    local sortedEpicAura = EpicAuraIds and createSortedTable(EpicAuraIds) or {}
+    local sortedLegendaryAura = LegendaryAuraIds and createSortedTable(LegendaryAuraIds) or {}
     
-    -- For each search box, set up the search functionality
-    for _, searchBox in ipairs(searchBoxes) do
-        -- Find the container that holds the pet items for this search box
-        local petsContainer = searchBox.Parent
-        
-        -- If the search box isn't directly in the container, try to find it
-        if not petsContainer:FindFirstChildOfClass("ImageLabel") and 
-           not petsContainer:FindFirstChildOfClass("Frame") then
-            -- Look for a container in the parent or siblings
-            for _, sibling in pairs(searchBox.Parent:GetChildren()) do
-                if (sibling:IsA("Frame") or sibling:IsA("ScrollingFrame")) and
-                   sibling ~= searchBox then
-                    petsContainer = sibling
-                    break
-                end
+    print("Pets sorted alphabetically. Now finding pet containers...")
+    
+    -- Find all pet containers in the UI
+    local petContainers = {}
+    
+    -- Look for containers that might hold pets
+    for _, instance in pairs(game:GetDescendants()) do
+        if (instance:IsA("Frame") or instance:IsA("ScrollingFrame")) then
+            -- Check if this is a pet container by looking for specific names or structures
+            local isPetContainer = false
+            
+            -- Check by name
+            if instance.Name:lower():find("pet") or 
+               instance.Name:lower():find("aura") or
+               instance.Name:lower():find("common") or
+               instance.Name:lower():find("uncommon") or
+               instance.Name:lower():find("rare") or
+               instance.Name:lower():find("epic") or
+               instance.Name:lower():find("legendary") then
+                isPetContainer = true
             end
             
-            -- If still not found, try parent's parent
-            if not petsContainer:FindFirstChildOfClass("ImageLabel") and 
-               not petsContainer:FindFirstChildOfClass("Frame") and
-               searchBox.Parent and searchBox.Parent.Parent then
-                for _, uncle in pairs(searchBox.Parent.Parent:GetChildren()) do
-                    if (uncle:IsA("Frame") or uncle:IsA("ScrollingFrame")) and
-                       uncle ~= searchBox.Parent then
-                        petsContainer = uncle
-                        break
+            -- Check by content (has multiple image labels)
+            if not isPetContainer then
+                local imageCount = 0
+                for _, child in pairs(instance:GetChildren()) do
+                    if child:IsA("ImageLabel") or 
+                       (child:IsA("Frame") and child:FindFirstChildOfClass("ImageLabel")) then
+                        imageCount = imageCount + 1
+                        if imageCount >= 3 then  -- If it has at least 3 images, likely a pet container
+                            isPetContainer = true
+                            break
+                        end
                     end
                 end
             end
+            
+            if isPetContainer then
+                table.insert(petContainers, instance)
+                print("Found potential pet container: " .. instance:GetFullName())
+            end
+        end
+    end
+    
+    print("Found " .. #petContainers .. " potential pet containers")
+    
+    -- Function to determine which sorted table to use for a container
+    local function getSortedTableForContainer(container)
+        local name = container.Name:lower()
+        
+        -- Check for pet vs aura
+        local isAura = name:find("aura")
+        
+        -- Check for rarity
+        if name:find("common") then
+            return isAura and sortedCommonAura or sortedCommon
+        elseif name:find("uncommon") then
+            return isAura and sortedUncommonAura or sortedUncommon
+        elseif name:find("rare") then
+            return isAura and sortedRareAura or sortedRare
+        elseif name:find("epic") then
+            return isAura and sortedEpicAura or sortedEpic
+        elseif name:find("legendary") then
+            return isAura and sortedLegendaryAura or sortedLegendary
         end
         
-        if not petsContainer then
-            print("Could not find pets container for: " .. searchBox:GetFullName())
-            continue
+        -- If can't determine by name, try to check the content
+        local foundAssetIds = {}
+        for _, child in pairs(container:GetDescendants()) do
+            if child:IsA("ImageLabel") and child.Image and child.Image ~= "" then
+                table.insert(foundAssetIds, child.Image)
+            end
         end
         
-        print("Using container: " .. petsContainer:GetFullName() .. " for search box: " .. searchBox:GetFullName())
+        -- Check which category has the most matches
+        local bestMatch = nil
+        local bestMatchCount = 0
+        
+        local function countMatches(sortedTable)
+            local count = 0
+            for _, pet in ipairs(sortedTable) do
+                for _, assetId in ipairs(foundAssetIds) do
+                    if assetId == pet.assetId then
+                        count = count + 1
+                    end
+                end
+            end
+            return count
+        end
+        
+        local tables = {
+            {sortedCommon, "Common"},
+            {sortedUncommon, "Uncommon"},
+            {sortedRare, "Rare"},
+            {sortedEpic, "Epic"},
+            {sortedLegendary, "Legendary"},
+            {sortedCommonAura, "CommonAura"},
+            {sortedUncommonAura, "UncommonAura"},
+            {sortedRareAura, "RareAura"},
+            {sortedEpicAura, "EpicAura"},
+            {sortedLegendaryAura, "LegendaryAura"}
+        }
+        
+        for _, tableInfo in ipairs(tables) do
+            local tbl = tableInfo[1]
+            local name = tableInfo[2]
+            
+            if #tbl > 0 then
+                local matches = countMatches(tbl)
+                if matches > bestMatchCount then
+                    bestMatchCount = matches
+                    bestMatch = tbl
+                end
+            end
+        end
+        
+        return bestMatch
+    end
+    
+    -- Function to reorder pet frames in a container
+    local function reorderPetsInContainer(container, sortedTable)
+        if not sortedTable or #sortedTable == 0 then
+            print("No sorted table available for container: " .. container:GetFullName())
+            return
+        end
+        
+        print("Reordering pets in container: " .. container:GetFullName())
         
         -- Get all pet frames in this container
         local petFrames = {}
-        local function collectPetFrames(parent)
-            for _, child in pairs(parent:GetChildren()) do
-                if child:IsA("ImageLabel") or 
-                   (child:IsA("Frame") and child:FindFirstChildOfClass("ImageLabel")) then
-                    table.insert(petFrames, child)
-                elseif child:IsA("Frame") or child:IsA("ScrollingFrame") then
-                    collectPetFrames(child)
-                end
+        for _, child in pairs(container:GetChildren()) do
+            if child:IsA("ImageLabel") or 
+               (child:IsA("Frame") and child:FindFirstChildOfClass("ImageLabel")) then
+                table.insert(petFrames, child)
             end
         end
-        
-        collectPetFrames(petsContainer)
         
         if #petFrames == 0 then
-            print("No pet frames found in container: " .. petsContainer:GetFullName())
-            continue
+            print("No pet frames found in container")
+            return
         end
         
-        print("Found " .. #petFrames .. " pet frames in container: " .. petsContainer:GetFullName())
+        print("Found " .. #petFrames .. " pet frames to reorder")
         
-        -- Function to filter pets based on search query for this specific container
-        local function filterPets(query)
-            query = query:lower()
-            
-            -- If empty query, show all pets
-            if query == "" then
-                for _, petFrame in pairs(petFrames) do
-                    petFrame.Visible = true
+        -- Create a mapping of asset IDs to pet frames
+        local framesByAssetId = {}
+        for _, frame in ipairs(petFrames) do
+            -- Find the image label with the asset ID
+            for _, child in pairs(frame:GetDescendants()) do
+                if child:IsA("ImageLabel") and child.Image and child.Image ~= "" then
+                    framesByAssetId[child.Image] = frame
+                    break
                 end
-                return
-            end
-            
-            -- Find matching pets
-            for _, petFrame in pairs(petFrames) do
-                local found = false
-                
-                -- Check all ImageLabels in this frame for matching asset IDs
-                for _, child in pairs(petFrame:GetDescendants()) do
-                    if child:IsA("ImageLabel") and child.Image then
-                        -- Find the pet data for this asset ID
-                        for _, pet in ipairs(allPets) do
-                            if child.Image == pet.assetId and 
-                               (pet.name:lower():find(query) or pet.rarity:lower():find(query)) then
-                                found = true
-                                break
-                            end
-                        end
-                        
-                        if found then break end
-                    end
-                end
-                
-                petFrame.Visible = found
             end
         end
         
-        -- Connect the search box to the filter function
-        searchBox:GetPropertyChangedSignal("Text"):Connect(function()
-            filterPets(searchBox.Text)
-        end)
+        -- Reorder the frames based on the sorted table
+        local positionIncrement = UDim2.new(0, 0, 0, 80)  -- Adjust based on your UI
+        local startPosition = petFrames[1].Position
         
-        print("Search functionality set up for: " .. searchBox:GetFullName())
+        -- First, make all frames invisible
+        for _, frame in ipairs(petFrames) do
+            frame.Visible = false
+        end
+        
+        -- Then position and show them in the correct order
+        local currentPosition = startPosition
+        local visibleCount = 0
+        
+        for _, pet in ipairs(sortedTable) do
+            local frame = framesByAssetId[pet.assetId]
+            if frame then
+                frame.Position = currentPosition
+                frame.Visible = true
+                frame.LayoutOrder = visibleCount  -- For UIGridLayout if used
+                
+                -- Update position for next frame
+                currentPosition = currentPosition + positionIncrement
+                visibleCount = visibleCount + 1
+            end
+        end
+        
+        print("Reordered " .. visibleCount .. " pet frames")
     end
     
-    print("All search boxes set up successfully!")
+    -- Reorder pets in all containers
+    for _, container in ipairs(petContainers) do
+        local sortedTable = getSortedTableForContainer(container)
+        reorderPetsInContainer(container, sortedTable)
+    end
+    
+    print("Alphabetical sorting complete!")
 end
 
--- Call the setup function
-setupAllSearchBoxes()
+-- Execute the sorting
+sortPetsAlphabetically()
 
 PopulatePetLists()
