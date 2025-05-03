@@ -1524,5 +1524,176 @@ StatusIndicator.Parent = SelectedPetsFrame
 SelectedPetsList.ChildAdded:Connect(UpdateStatusIndicator)
 SelectedPetsList.ChildRemoved:Connect(UpdateStatusIndicator)
 
--- Initialize the pet lists
+-- Add this to your existing script with the pet/aura ID tables
+
+-- Function to set up search functionality for all search boxes
+local function setupAllSearchBoxes()
+    -- Find all search textboxes in the UI
+    local searchBoxes = {}
+    
+    for _, instance in pairs(game:GetDescendants()) do
+        if instance:IsA("TextBox") and 
+           (instance.Name:lower():find("search") or 
+            (instance.PlaceholderText and instance.PlaceholderText:lower():find("search"))) then
+            table.insert(searchBoxes, instance)
+            print("Found search box: " .. instance:GetFullName())
+        end
+    end
+    
+    if #searchBoxes == 0 then
+        print("No search boxes found!")
+        return
+    end
+    
+    print("Found " .. #searchBoxes .. " search boxes")
+    
+    -- Create a table with all pets and their information
+    local allPets = {}
+    
+    -- Helper function to extract pet name from the comment
+    local function extractPetName(comment)
+        if not comment then return "" end
+        local name = comment:match("%[(.-)%]")
+        return name or ""
+    end
+    
+    -- Helper function to add pets to the allPets table
+    local function addPetsToTable(petsTable, rarity)
+        if not petsTable then return end
+        for i, assetId in ipairs(petsTable) do
+            local comment = petsTable[i]:match("%-%-(.*)") or ""
+            local petName = extractPetName(comment)
+            table.insert(allPets, {
+                assetId = assetId,
+                name = petName,
+                rarity = rarity,
+                comment = comment
+            })
+        end
+    end
+    
+    -- Add all pets to the search table
+    addPetsToTable(CommonIds, "Common")
+    addPetsToTable(UncommonIds, "Uncommon")
+    addPetsToTable(RareIds, "Rare")
+    addPetsToTable(EpicIds, "Epic")
+    addPetsToTable(LegendaryIds, "Legendary")
+    
+    -- Also add auras if they exist
+    if CommonAuraIds then addPetsToTable(CommonAuraIds, "Common Aura") end
+    if UncommonAuraIds then addPetsToTable(UncommonAuraIds, "Uncommon Aura") end
+    if RareAuraIds then addPetsToTable(RareAuraIds, "Rare Aura") end
+    if EpicAuraIds then addPetsToTable(EpicAuraIds, "Epic Aura") end
+    if LegendaryAuraIds then addPetsToTable(LegendaryAuraIds, "Legendary Aura") end
+    
+    -- For each search box, set up the search functionality
+    for _, searchBox in ipairs(searchBoxes) do
+        -- Find the container that holds the pet items for this search box
+        local petsContainer = searchBox.Parent
+        
+        -- If the search box isn't directly in the container, try to find it
+        if not petsContainer:FindFirstChildOfClass("ImageLabel") and 
+           not petsContainer:FindFirstChildOfClass("Frame") then
+            -- Look for a container in the parent or siblings
+            for _, sibling in pairs(searchBox.Parent:GetChildren()) do
+                if (sibling:IsA("Frame") or sibling:IsA("ScrollingFrame")) and
+                   sibling ~= searchBox then
+                    petsContainer = sibling
+                    break
+                end
+            end
+            
+            -- If still not found, try parent's parent
+            if not petsContainer:FindFirstChildOfClass("ImageLabel") and 
+               not petsContainer:FindFirstChildOfClass("Frame") and
+               searchBox.Parent and searchBox.Parent.Parent then
+                for _, uncle in pairs(searchBox.Parent.Parent:GetChildren()) do
+                    if (uncle:IsA("Frame") or uncle:IsA("ScrollingFrame")) and
+                       uncle ~= searchBox.Parent then
+                        petsContainer = uncle
+                        break
+                    end
+                end
+            end
+        end
+        
+        if not petsContainer then
+            print("Could not find pets container for: " .. searchBox:GetFullName())
+            continue
+        end
+        
+        print("Using container: " .. petsContainer:GetFullName() .. " for search box: " .. searchBox:GetFullName())
+        
+        -- Get all pet frames in this container
+        local petFrames = {}
+        local function collectPetFrames(parent)
+            for _, child in pairs(parent:GetChildren()) do
+                if child:IsA("ImageLabel") or 
+                   (child:IsA("Frame") and child:FindFirstChildOfClass("ImageLabel")) then
+                    table.insert(petFrames, child)
+                elseif child:IsA("Frame") or child:IsA("ScrollingFrame") then
+                    collectPetFrames(child)
+                end
+            end
+        end
+        
+        collectPetFrames(petsContainer)
+        
+        if #petFrames == 0 then
+            print("No pet frames found in container: " .. petsContainer:GetFullName())
+            continue
+        end
+        
+        print("Found " .. #petFrames .. " pet frames in container: " .. petsContainer:GetFullName())
+        
+        -- Function to filter pets based on search query for this specific container
+        local function filterPets(query)
+            query = query:lower()
+            
+            -- If empty query, show all pets
+            if query == "" then
+                for _, petFrame in pairs(petFrames) do
+                    petFrame.Visible = true
+                end
+                return
+            end
+            
+            -- Find matching pets
+            for _, petFrame in pairs(petFrames) do
+                local found = false
+                
+                -- Check all ImageLabels in this frame for matching asset IDs
+                for _, child in pairs(petFrame:GetDescendants()) do
+                    if child:IsA("ImageLabel") and child.Image then
+                        -- Find the pet data for this asset ID
+                        for _, pet in ipairs(allPets) do
+                            if child.Image == pet.assetId and 
+                               (pet.name:lower():find(query) or pet.rarity:lower():find(query)) then
+                                found = true
+                                break
+                            end
+                        end
+                        
+                        if found then break end
+                    end
+                end
+                
+                petFrame.Visible = found
+            end
+        end
+        
+        -- Connect the search box to the filter function
+        searchBox:GetPropertyChangedSignal("Text"):Connect(function()
+            filterPets(searchBox.Text)
+        end)
+        
+        print("Search functionality set up for: " .. searchBox:GetFullName())
+    end
+    
+    print("All search boxes set up successfully!")
+end
+
+-- Call the setup function
+setupAllSearchBoxes()
+
 PopulatePetLists()
