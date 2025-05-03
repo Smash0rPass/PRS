@@ -871,26 +871,13 @@ local function CreateRarityContentFrames(parent, rarities, contentType)
         frame.Parent = parent
         contentFrames[rarity] = frame
         
-        -- Add search bar with specific size
-        searchBar = Instance.new("TextBox")
-        searchBar.BorderSizePixel = 0
-        searchBar.Name = "SearchBar"
-        searchBar.BackgroundColor3 = Color3.fromRGB(60,60,60)
-        searchBar.Position = UDim2.new(0, 10, 0, 10)
-        searchBar.Size = UDim2.new(0, 275, 0, 30)
-        searchBar.Text = "Search for " .. string.lower(rarity) .. " " .. string.lower(contentType) .. "s..."
-        searchBar.TextColor3 = Color3.new(1, 1, 1)
-        searchBar.TextSize = 14
-        searchBar.TextStrokeTransparency = 1
-        searchBar.Parent = frame
-        
-        -- Add pet list
+        -- Add pet list (adjusted position and size since search bar is removed)
         petList = Instance.new("ScrollingFrame")
         petList.Name = "PetList"
         petList.BorderSizePixel = 0 
         petList.BackgroundColor3 = Color3.fromRGB(50,50,50)
-        petList.Position = UDim2.new(0, 10, 0, 50)
-        petList.Size = UDim2.new(0.6, -15, 1, -60)
+        petList.Position = UDim2.new(0, 10, 0, 10) -- Changed from 50 to 10
+        petList.Size = UDim2.new(0.6, -15, 1, -20) -- Changed from -60 to -20
         petList.AutomaticCanvasSize = Enum.AutomaticSize.Y
         petList.ScrollBarThickness = 6
         petList.Parent = frame
@@ -901,39 +888,11 @@ local function CreateRarityContentFrames(parent, rarities, contentType)
         petListUIList.HorizontalAlignment = Enum.HorizontalAlignment.Left
         petListUIList.VerticalAlignment = Enum.VerticalAlignment.Top
         petListUIList.Parent = petList
-        
-        -- Connect search bar functionality
-        searchBar.FocusLost:Connect(function(enterPressed)
-            defaultText = "Search for " .. string.lower(rarity) .. " " .. string.lower(contentType) .. "s..."
-            if searchBar.Text == "" then
-                searchBar.Text = defaultText
-            end
-            
-            searchText = (searchBar.Text ~= defaultText) and searchBar.Text or ""
-            for _, child in pairs(petList:GetChildren()) do
-                if child:IsA("Frame") then
-                    petNameLabel = child:FindFirstChildOfClass("TextLabel")
-                    if petNameLabel then
-                        if searchText == "" or string.find(string.lower(petNameLabel.Text), string.lower(searchText)) then
-                            child.Visible = true
-                        else
-                            child.Visible = false
-                        end
-                    end
-                end
-            end
-        end)
-        
-        searchBar.Focused:Connect(function()
-            defaultText = "Search for " .. string.lower(rarity) .. " " .. string.lower(contentType) .. "s..."
-            if searchBar.Text == defaultText then
-                searchBar.Text = ""
-            end
-        end)
     end
     
     return contentFrames
 end
+
 
 -- Create selected pets frame
 SelectedPetsFrame = Instance.new("Frame")
@@ -948,7 +907,7 @@ SelectedPetsTitle.BorderSizePixel = 0
 SelectedPetsTitle.BackgroundColor3 = Color3.fromRGB(35,35,35)
 SelectedPetsTitle.Position = UDim2.new(0, 0, 0, 0)
 SelectedPetsTitle.Size = UDim2.new(1, 0, 0, 30)
-SelectedPetsTitle.Text = "Selected Pets to Auto-Delete"
+SelectedPetsTitle.Text = "Selected Pets :"
 SelectedPetsTitle.TextColor3 = Color3.fromRGB(255,255,255)
 SelectedPetsTitle.TextSize = 14
 SelectedPetsTitle.Parent = SelectedPetsFrame
@@ -1059,6 +1018,7 @@ end
 -- Function to create a pet button
 local function CreatePetButton(petName, petData)
     local petButton = Instance.new("Frame")
+    petButton.Name = petName:gsub("%s+", "_") -- Name the frame exactly after the pet, replacing spaces with underscores
     petButton.Size = UDim2.new(1, -10, 0, 40)
     petButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
     petButton.BorderSizePixel = 0
@@ -1123,6 +1083,7 @@ local function CreatePetButton(petName, petData)
         
         -- Create a new frame for the selected pet with the correct name
         local selectedPet = Instance.new("Frame")
+        selectedPet.Name = petName:gsub("%s+", "_") -- Name the selected pet frame exactly after the pet
         selectedPet.Size = UDim2.new(1, -10, 0, 40)
         selectedPet.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
         selectedPet.BorderSizePixel = 0
@@ -1168,6 +1129,7 @@ local function CreatePetButton(petName, petData)
     
     return petButton
 end
+
 
 -- Function to populate pet lists
 local function PopulatePetLists()
@@ -1469,13 +1431,13 @@ ToggleButton.MouseButton1Click:Connect(function()
         
         -- Run an immediate check
         spawn(function()
-            wait(1) -- Wait a moment for UI to update
+            wait(0.1) -- Wait a moment for UI to update
             CheckAndDeletePets()
         end)
         
         autoDeleteConnection = game:GetService("RunService").Heartbeat:Connect(function()
             -- Only check every 3 seconds to reduce performance impact
-            if tick() % 3 < 0.1 then
+            if tick() % 0.1 < 0.1 then
                 spawn(function()
                     pcall(function()
                         print("Running auto-delete check...")
@@ -1507,18 +1469,6 @@ ToggleButton.MouseButton1Click:Connect(function()
         end
     end
 end)
-
-
--- Add a status indicator
-local StatusIndicator = Instance.new("TextLabel")
-StatusIndicator.BorderSizePixel = 0
-StatusIndicator.BackgroundTransparency = 1
-StatusIndicator.Position = UDim2.new(0, 5, 1, -60)
-StatusIndicator.Size = UDim2.new(1, -10, 0, 25)
-StatusIndicator.Text = "Select pets to auto-delete"
-StatusIndicator.TextColor3 = Color3.fromRGB(200, 200, 200)
-StatusIndicator.TextSize = 12
-StatusIndicator.Parent = SelectedPetsFrame
 
 -- Connect to ChildAdded and ChildRemoved events to update the status
 SelectedPetsList.ChildAdded:Connect(UpdateStatusIndicator)
