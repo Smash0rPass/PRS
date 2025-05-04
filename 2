@@ -690,6 +690,12 @@ PetNames = {
     
 }
 
+local checkboxes = {}  -- Will store references to all checkboxes by pet ID
+
+-- After creating your GUI and checkboxes, store references to them:
+-- For each checkbox you create, add:
+
+
 -- Create UI
 MainScreen = Instance.new("ScreenGui")
 MainScreen.Name = "PRSAutoDelete"
@@ -957,6 +963,8 @@ ToggleLabel.Parent = AutoDeleteToggle
 
 local autoDeleteEnabled = false
 local autoDeleteConnection = nil
+
+
 
 -- Create rarity tabs and content frames
 petRarities = {"Common", "Uncommon", "Rare", "Epic", "Legendary"}
@@ -1691,7 +1699,75 @@ local function sortPetsAlphabetically()
     
 end
 
--- Execute the sorting
+-- File path for saving selected pets
+local SAVE_FILE_PATH = "selected_pets.json"
+
+-- Function to save selected pets to a file
+local function SaveSelectedPets(selectedPets)
+    local file = io.open(SAVE_FILE_PATH, "w")
+    if file then
+        local jsonData = game:GetService("HttpService"):JSONEncode(selectedPets)
+        file:write(jsonData)
+        file:close()
+        print("Selected pets saved to " .. SAVE_FILE_PATH)
+    else
+        warn("Failed to open file for writing: " .. SAVE_FILE_PATH)
+    end
+end
+
+-- Function to load selected pets from a file
+local function LoadSelectedPets()
+    local file = io.open(SAVE_FILE_PATH, "r")
+    if file then
+        local content = file:read("*all")
+        file:close()
+        
+        local success, result = pcall(function()
+            return game:GetService("HttpService"):JSONDecode(content)
+        end)
+        
+        if success then
+            print("Selected pets loaded from " .. SAVE_FILE_PATH)
+            return result
+        else
+            warn("Failed to parse JSON from file: " .. SAVE_FILE_PATH)
+        end
+    end
+    
+    return nil
+end
+
+-- Function to apply loaded pet selection to the GUI
+local function ApplyLoadedSelection(selectedPets, checkboxes)
+    if not selectedPets then return end
+    
+    for petId, checkbox in pairs(checkboxes) do
+        -- Check if this pet ID is in the loaded selection
+        for _, id in pairs(selectedPets) do
+            if id == petId then
+                checkbox:SetState(true)
+                break
+            end
+        end
+    end
+end
+
+checkboxes[petId] = checkbox
+
+-- After creating all GUI elements, try to load saved selection:
+local savedSelection = LoadSelectedPets()
+if savedSelection then
+    ApplyLoadedSelection(savedSelection, checkboxes)
+end
+
+-- When the user clicks the "Delete" button, before performing deletion:
+local selectedPets = {}
+for petId, checkbox in pairs(checkboxes) do
+    if checkbox.State then
+        table.insert(selectedPets, petId)
+    end
+end
+SaveSelectedPets(selectedPets)
 sortPetsAlphabetically()
 
 PopulatePetLists()
