@@ -1078,8 +1078,6 @@ local function CreatePetButton(petName, petData)
     selectButton.Parent = petButton
     
     selectButton.MouseButton1Click:Connect(function()
-        -- Add functionality for when a pet is selected
-        print("Selected pet: " .. petName)
         
         -- Create a new frame for the selected pet with the correct name
         local selectedPet = Instance.new("Frame")
@@ -1315,16 +1313,12 @@ end
 local function CheckAndDeletePets()
     local selectedPets = GetSelectedPets()
     if #selectedPets == 0 then 
-        print("No pets selected for auto-delete")
         return 
     end
-    
-    print("Checking for pets to auto-delete. Selected count: " .. #selectedPets)
     
     -- Check pet inventory
     local petInventoryPath = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.PetInventoryInnerFrame.NewGui.MainFrame2.Pets.PetInventoryScrollingFrame
     if petInventoryPath then
-        print("Found pet inventory path")
         for _, petFrame in pairs(petInventoryPath:GetChildren()) do
             if petFrame:IsA("ImageButton") then
                 local petImage = petFrame:FindFirstChild("PetImage")
@@ -1333,7 +1327,6 @@ local function CheckAndDeletePets()
                     local imageId = petImage.Image
                     
                     -- Debug output
-                    print("Found pet with image: " .. imageId)
                     
                     -- Check if this pet's image matches any selected pet
                     for _, selectedPet in ipairs(selectedPets) do
@@ -1341,7 +1334,6 @@ local function CheckAndDeletePets()
                             -- Get the pet ID from the frame name
                             local petId = petFrame.Name
                             
-                            print("MATCH FOUND! Deleting pet: " .. selectedPet.name .. " (ID: " .. petId .. ")")
                             
                             -- Delete the pet
                             local args = {
@@ -1358,13 +1350,11 @@ local function CheckAndDeletePets()
             end
         end
     else
-        print("Could not find pet inventory path")
     end
     
     -- Check aura inventory
     local auraInventoryPath = game:GetService("Players").LocalPlayer.PlayerGui.MainGui.CenterUIFrame.PetInventory.AuraInventoryInnerFrame.ScreenGui.AuraFrame.Auras.AuraInventoryScrollingFrame
     if auraInventoryPath then
-        print("Found aura inventory path")
         for _, auraFrame in pairs(auraInventoryPath:GetChildren()) do
             -- Only process frames that could contain auras (skip UI elements)
             if auraFrame:IsA("ImageButton") then
@@ -1374,7 +1364,6 @@ local function CheckAndDeletePets()
                     local imageId = auraImage.Image
                     
                     -- Debug output
-                    print("Found aura with image: " .. imageId)
                     
                     -- Check if this aura's image matches any selected aura
                     for _, selectedPet in ipairs(selectedPets) do
@@ -1382,7 +1371,6 @@ local function CheckAndDeletePets()
                             -- Get the aura ID from the frame name
                             local auraId = auraFrame.Name
                             
-                            print("MATCH FOUND! Deleting aura: " .. selectedPet.name .. " (ID: " .. auraId .. ")")
                             
                             -- Delete the aura
                             local args = {
@@ -1399,7 +1387,6 @@ local function CheckAndDeletePets()
             end
         end
     else
-        print("Could not find aura inventory path")
     end
 end
 
@@ -1422,7 +1409,6 @@ ToggleButton.MouseButton1Click:Connect(function()
         confirmationLabel.Parent = SelectedPetsFrame
         game:GetService("Debris"):AddItem(confirmationLabel, 3)
         
-        print("Auto Delete enabled - starting check loop")
         
         -- Start the auto delete loop
         if autoDeleteConnection then
@@ -1440,7 +1426,6 @@ ToggleButton.MouseButton1Click:Connect(function()
             if tick() % 0.1 < 0.1 then
                 spawn(function()
                     pcall(function()
-                        print("Running auto-delete check...")
                         CheckAndDeletePets()
                     end)
                 end)
@@ -1460,7 +1445,6 @@ ToggleButton.MouseButton1Click:Connect(function()
         confirmationLabel.Parent = SelectedPetsFrame
         game:GetService("Debris"):AddItem(confirmationLabel, 3)
         
-        print("Auto Delete disabled")
         
         -- Stop the auto delete loop
         if autoDeleteConnection then
@@ -1473,5 +1457,241 @@ end)
 -- Connect to ChildAdded and ChildRemoved events to update the status
 SelectedPetsList.ChildAdded:Connect(UpdateStatusIndicator)
 SelectedPetsList.ChildRemoved:Connect(UpdateStatusIndicator)
+
+-- Function to sort pets alphabetically
+local function sortPetsAlphabetically()
+    
+    -- Function to extract pet name from the comment
+    local function extractPetName(comment)
+        if not comment then return "" end
+        local name = comment:match("%[(.-)%]")
+        return name or ""
+    end
+    
+    -- Create tables with pet names and their asset IDs
+    local function createSortedTable(idTable)
+        if not idTable or #idTable == 0 then return {} end
+        
+        local petsWithNames = {}
+        for i, assetId in ipairs(idTable) do
+            local comment = idTable[i]:match("%-%-(.*)") or ""
+            local petName = extractPetName(comment)
+            
+            table.insert(petsWithNames, {
+                assetId = assetId,
+                name = petName,
+                comment = comment
+            })
+        end
+        
+        -- Sort by name alphabetically
+        table.sort(petsWithNames, function(a, b)
+            return a.name:lower() < b.name:lower()
+        end)
+        
+        return petsWithNames
+    end
+    
+    -- Sort all pet categories
+    local sortedCommon = createSortedTable(CommonIds)
+    local sortedUncommon = createSortedTable(UncommonIds)
+    local sortedRare = createSortedTable(RareIds)
+    local sortedEpic = createSortedTable(EpicIds)
+    local sortedLegendary = createSortedTable(LegendaryIds)
+    
+    -- Sort aura categories if they exist
+    local sortedCommonAura = CommonAuraIds and createSortedTable(CommonAuraIds) or {}
+    local sortedUncommonAura = UncommonAuraIds and createSortedTable(UncommonAuraIds) or {}
+    local sortedRareAura = RareAuraIds and createSortedTable(RareAuraIds) or {}
+    local sortedEpicAura = EpicAuraIds and createSortedTable(EpicAuraIds) or {}
+    local sortedLegendaryAura = LegendaryAuraIds and createSortedTable(LegendaryAuraIds) or {}
+    
+    
+    -- Find all pet containers in the UI
+    local petContainers = {}
+    
+    -- Look for containers that might hold pets
+    for _, instance in pairs(game:GetDescendants()) do
+        if (instance:IsA("Frame") or instance:IsA("ScrollingFrame")) then
+            -- Check if this is a pet container by looking for specific names or structures
+            local isPetContainer = false
+            
+            -- Check by name
+            if instance.Name:lower():find("pet") or 
+               instance.Name:lower():find("aura") or
+               instance.Name:lower():find("common") or
+               instance.Name:lower():find("uncommon") or
+               instance.Name:lower():find("rare") or
+               instance.Name:lower():find("epic") or
+               instance.Name:lower():find("legendary") then
+                isPetContainer = true
+            end
+            
+            -- Check by content (has multiple image labels)
+            if not isPetContainer then
+                local imageCount = 0
+                for _, child in pairs(instance:GetChildren()) do
+                    if child:IsA("ImageLabel") or 
+                       (child:IsA("Frame") and child:FindFirstChildOfClass("ImageLabel")) then
+                        imageCount = imageCount + 1
+                        if imageCount >= 3 then  -- If it has at least 3 images, likely a pet container
+                            isPetContainer = true
+                            break
+                        end
+                    end
+                end
+            end
+            
+            if isPetContainer then
+                table.insert(petContainers, instance)
+            end
+        end
+    end
+    
+    
+    -- Function to determine which sorted table to use for a container
+    local function getSortedTableForContainer(container)
+        local name = container.Name:lower()
+        
+        -- Check for pet vs aura
+        local isAura = name:find("aura")
+        
+        -- Check for rarity
+        if name:find("common") then
+            return isAura and sortedCommonAura or sortedCommon
+        elseif name:find("uncommon") then
+            return isAura and sortedUncommonAura or sortedUncommon
+        elseif name:find("rare") then
+            return isAura and sortedRareAura or sortedRare
+        elseif name:find("epic") then
+            return isAura and sortedEpicAura or sortedEpic
+        elseif name:find("legendary") then
+            return isAura and sortedLegendaryAura or sortedLegendary
+        end
+        
+        -- If can't determine by name, try to check the content
+        local foundAssetIds = {}
+        for _, child in pairs(container:GetDescendants()) do
+            if child:IsA("ImageLabel") and child.Image and child.Image ~= "" then
+                table.insert(foundAssetIds, child.Image)
+            end
+        end
+        
+        -- Check which category has the most matches
+        local bestMatch = nil
+        local bestMatchCount = 0
+        
+        local function countMatches(sortedTable)
+            local count = 0
+            for _, pet in ipairs(sortedTable) do
+                for _, assetId in ipairs(foundAssetIds) do
+                    if assetId == pet.assetId then
+                        count = count + 1
+                    end
+                end
+            end
+            return count
+        end
+        
+        local tables = {
+            {sortedCommon, "Common"},
+            {sortedUncommon, "Uncommon"},
+            {sortedRare, "Rare"},
+            {sortedEpic, "Epic"},
+            {sortedLegendary, "Legendary"},
+            {sortedCommonAura, "CommonAura"},
+            {sortedUncommonAura, "UncommonAura"},
+            {sortedRareAura, "RareAura"},
+            {sortedEpicAura, "EpicAura"},
+            {sortedLegendaryAura, "LegendaryAura"}
+        }
+        
+        for _, tableInfo in ipairs(tables) do
+            local tbl = tableInfo[1]
+            local name = tableInfo[2]
+            
+            if #tbl > 0 then
+                local matches = countMatches(tbl)
+                if matches > bestMatchCount then
+                    bestMatchCount = matches
+                    bestMatch = tbl
+                end
+            end
+        end
+        
+        return bestMatch
+    end
+    
+    -- Function to reorder pet frames in a container
+    local function reorderPetsInContainer(container, sortedTable)
+        if not sortedTable or #sortedTable == 0 then
+            return
+        end
+        
+        
+        -- Get all pet frames in this container
+        local petFrames = {}
+        for _, child in pairs(container:GetChildren()) do
+            if child:IsA("ImageLabel") or 
+               (child:IsA("Frame") and child:FindFirstChildOfClass("ImageLabel")) then
+                table.insert(petFrames, child)
+            end
+        end
+        
+        if #petFrames == 0 then
+            return
+        end
+        
+        
+        -- Create a mapping of asset IDs to pet frames
+        local framesByAssetId = {}
+        for _, frame in ipairs(petFrames) do
+            -- Find the image label with the asset ID
+            for _, child in pairs(frame:GetDescendants()) do
+                if child:IsA("ImageLabel") and child.Image and child.Image ~= "" then
+                    framesByAssetId[child.Image] = frame
+                    break
+                end
+            end
+        end
+        
+        -- Reorder the frames based on the sorted table
+        local positionIncrement = UDim2.new(0, 0, 0, 80)  -- Adjust based on your UI
+        local startPosition = petFrames[1].Position
+        
+        -- First, make all frames invisible
+        for _, frame in ipairs(petFrames) do
+            frame.Visible = false
+        end
+        
+        -- Then position and show them in the correct order
+        local currentPosition = startPosition
+        local visibleCount = 0
+        
+        for _, pet in ipairs(sortedTable) do
+            local frame = framesByAssetId[pet.assetId]
+            if frame then
+                frame.Position = currentPosition
+                frame.Visible = true
+                frame.LayoutOrder = visibleCount  -- For UIGridLayout if used
+                
+                -- Update position for next frame
+                currentPosition = currentPosition + positionIncrement
+                visibleCount = visibleCount + 1
+            end
+        end
+        
+    end
+    
+    -- Reorder pets in all containers
+    for _, container in ipairs(petContainers) do
+        local sortedTable = getSortedTableForContainer(container)
+        reorderPetsInContainer(container, sortedTable)
+    end
+    
+end
+
+-- Execute the sorting
+sortPetsAlphabetically()
 
 PopulatePetLists()
